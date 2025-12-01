@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi;
 using Npgsql;
 using SemPaiGo.Contexts;
 using SemPaiGo.Models;
@@ -191,7 +190,7 @@ static void ConfigureSwagger(IServiceCollection services)
     {
         c.SwaggerDoc(
             "v1",
-            new OpenApiInfo
+            new Microsoft.OpenApi.OpenApiInfo
             {
                 Title = "SimplonHubApi API",
                 Version = "v1",
@@ -208,13 +207,13 @@ static void ConfigureSwagger(IServiceCollection services)
 
         c.AddSecurityDefinition(
             "Bearer",
-            new OpenApiSecurityScheme
+            new Microsoft.OpenApi.OpenApiSecurityScheme
             {
                 Name = "Authorization",
-                Type = SecuritySchemeType.ApiKey,
+                Type = Microsoft.OpenApi.SecuritySchemeType.ApiKey,
                 Scheme = "Bearer",
                 BearerFormat = "JWT",
-                In = ParameterLocation.Header,
+                In = Microsoft.OpenApi.ParameterLocation.Header,
                 Description =
                     "JWT Authorization header using the Bearer scheme. \r\n\r\n Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\nExample: \"Bearer 12345abcdef\"",
             }
