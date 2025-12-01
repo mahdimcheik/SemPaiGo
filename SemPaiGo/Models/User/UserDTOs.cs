@@ -3,7 +3,7 @@ using SemPaiGo.Models.Interfaces;
 using SemPaiGo.Utilities;
 using System.ComponentModel.DataAnnotations;
 
-public class UserResponseDTO : ICreatable
+public class UserDetailsDTO : ICreatable
 {
     [Required]
     public Guid Id { get; set; }
@@ -23,9 +23,9 @@ public class UserResponseDTO : ICreatable
     public DateTimeOffset CreatedAt { get; set; }
 
     [Required]
-    public ICollection<RoleAppResponseDTO> Roles { get; set; }
+    public ICollection<RoleAppDetailsDTO> Roles { get; set; }
 
-    public UserResponseDTO(UserApp user, List<RoleAppResponseDTO>? roles)
+    public UserDetailsDTO(UserApp user, List<RoleAppDetailsDTO>? roles)
     {
         Id = user.Id;
         FirstName = user.FirstName;
@@ -173,7 +173,7 @@ public class LoginOutputDTO
     public required string RefreshToken { get; set; } = null!;
 
     [Required]
-    public required UserResponseDTO User { get; set; } = null!;
+    public required UserDetailsDTO User { get; set; } = null!;
 }
 
 public class UserUpdateDTO
@@ -208,7 +208,7 @@ public class UserInfosWithtoken
     public required string Token { get; set; }
 
     [Required]
-    public required UserResponseDTO User { get; set; }
+    public required UserDetailsDTO User { get; set; }
 }
 
 public class UserPublicReport

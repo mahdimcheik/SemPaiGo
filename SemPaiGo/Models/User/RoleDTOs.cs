@@ -5,7 +5,7 @@ namespace SemPaiGo.Models;
 /// <summary>
 /// DTO pour l'affichage détaillé d'un rôle
 /// </summary>
-public class RoleAppResponseDTO
+public class RoleAppDetailsDTO
 {
     /// <summary>
     /// Identifiant unique du rôle
@@ -42,9 +42,9 @@ public class RoleAppResponseDTO
     /// <example>2023-01-20T14:45:00Z</example>
     public DateTimeOffset? UpdatedAt { get; set; }
 
-    public RoleAppResponseDTO() { }
+    public RoleAppDetailsDTO() { }
 
-    public RoleAppResponseDTO(RoleApp role)
+    public RoleAppDetailsDTO(RoleApp role)
     {
         Id = role.Id;
         Name = role.Name ?? string.Empty;

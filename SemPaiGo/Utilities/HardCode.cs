@@ -13,4 +13,10 @@ public static class HardCode
     public static Guid GENDER_FEMALE => Guid.Parse("B68C151B-DB34-462D-A65C-90989CC96E5E");
     public static Guid GENDER_OTHER => Guid.Parse("B07B2445-F39C-4B26-8FFE-E40FE561D8BC");
 
+    // Reservation Status
+    public static Guid RESERVATION_PENDING => Guid.Parse("2EC60A91-AAB8-4753-A5D8-B131B9441E77");
+    public static Guid RESERVATION_ACCEPTED => Guid.Parse ("32D854B6-6D4E-445A-9209-31A492970F2D") ;
+    public static Guid RESERVATION_REJECTED => Guid.Parse("CAAB85F5-D37B-4EA0-B035-5BA3CA8DD49F")  ;
+    public static Guid RESERVATION_DONE => Guid.Parse ("6D281AEC-D093-4071-8BF4-C8363361B5B4")  ;
+
 }

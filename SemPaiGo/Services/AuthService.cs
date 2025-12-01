@@ -47,12 +47,12 @@ public class AuthService
     /// </summary>
     /// <param name="newUserDTO">Données de création de l'utilisateur</param>
     /// <returns>Réponse contenant les informations de l'utilisateur créé</returns>
-    public async Task<ResponseDTO<UserResponseDTO>> Register(UserCreateDTO newUserDTO)
+    public async Task<ResponseDTO<UserDetailsDTO>> Register(UserCreateDTO newUserDTO)
     {
         // Vérifier le consentement
         if (!newUserDTO.DataProcessingConsent || !newUserDTO.PrivacyPolicyConsent)
         {
-            return new ResponseDTO<UserResponseDTO>
+            return new ResponseDTO<UserDetailsDTO>
             {
                 Status = 400,
                 Message =
@@ -65,7 +65,7 @@ public class AuthService
         if (isEmailAlreadyUsed)
         {
             // Si l'adresse e-mail est déjà utilisée, mettre à jour la réponse et sauter vers l'étiquette UserAlreadyExisted
-            return new ResponseDTO<UserResponseDTO>
+            return new ResponseDTO<UserDetailsDTO>
             {
                 Status = 400,
                 Message = "\"L'email est déjà utilisé\"",
@@ -98,7 +98,7 @@ public class AuthService
             }
 
             // Retourner une réponse BadRequest avec le modèle d'état contenant les erreurs
-            return new ResponseDTO<UserResponseDTO>
+            return new ResponseDTO<UserDetailsDTO>
             {
                 Message = "Création échouée",
                 Status = 401,
@@ -115,18 +115,18 @@ public class AuthService
             await mailService.SendConfirmAccount(newUser, confirmationLink ?? "");
 
             // Retourne une réponse avec le statut déterminé, l'identifiant de l'utilisateur, le message de réponse et le statut complet
-            return new ResponseDTO<UserResponseDTO>
+            return new ResponseDTO<UserDetailsDTO>
             {
                 Message = "Profil créé",
                 Status = 201,
-                Data = new UserResponseDTO(newUser, null),
+                Data = new UserDetailsDTO(newUser, null),
             };
         }
         catch (Exception e)
         {
             // En cas d'exception, afficher la trace et retourner une réponse avec le statut approprié
             Console.WriteLine(e);
-            return new ResponseDTO<UserResponseDTO>
+            return new ResponseDTO<UserDetailsDTO>
             {
                 Status = 40,
                 Message = "Le compte n'est pas créé!!!",
@@ -134,12 +134,12 @@ public class AuthService
         }
     }
 
-    public async Task<ResponseDTO<UserResponseDTO>> GetPublicInformations(Guid userId)
+    public async Task<ResponseDTO<UserDetailsDTO>> GetPublicInformations(Guid userId)
     {
         var user = await context.Users.FirstOrDefaultAsync(u => u.Id == userId);
         if (user is null)
         {
-            return new ResponseDTO<UserResponseDTO>
+            return new ResponseDTO<UserDetailsDTO>
             {
                 Message = "Demande acceptée",
                 Status = 400,
@@ -151,7 +151,7 @@ public class AuthService
 
         var rolesDetailed = roles
             .Where(r => userRoles.Contains(r.Name ?? string.Empty))
-            .Select(r => new RoleAppResponseDTO(r))
+            .Select(r => new RoleAppDetailsDTO(r))
             .ToList();
 
         if (user.ImgUrl is not null)
@@ -159,11 +159,11 @@ public class AuthService
             user.ImgUrl = await minioService.GetFileUrlAsync(user.ImgUrl);
         }
 
-        return new ResponseDTO<UserResponseDTO>
+        return new ResponseDTO<UserDetailsDTO>
         {
             Message = "Demande acceptée",
             Status = 200,
-            Data = new UserResponseDTO(user, rolesDetailed),
+            Data = new UserDetailsDTO(user, rolesDetailed),
         };
     }
 
@@ -174,7 +174,7 @@ public class AuthService
     /// <param name="model">Données de mise à jour</param>
     /// <param name="UserPrincipal">Principal de l'utilisateur connecté</param>
     /// <returns>Réponse contenant les informations mises à jour</returns>
-    public async Task<ResponseDTO<UserResponseDTO>> Update(
+    public async Task<ResponseDTO<UserDetailsDTO>> Update(
         UserUpdateDTO model,
         ClaimsPrincipal UserPrincipal
     )
@@ -182,7 +182,7 @@ public class AuthService
         var user = CheckUser.GetUserFromClaim(UserPrincipal, context);
         if (user is null)
         {
-            return new ResponseDTO<UserResponseDTO>
+            return new ResponseDTO<UserDetailsDTO>
             {
                 Status = 40,
                 Message = "Le compte n'existe pas ou ne correspond pas",
@@ -199,7 +199,7 @@ public class AuthService
 
             if (userWithLanguages == null)
             {
-                return new ResponseDTO<UserResponseDTO>
+                return new ResponseDTO<UserDetailsDTO>
                 {
                     Status = 404,
                     Message = "Utilisateur non trouvé",
@@ -217,19 +217,19 @@ public class AuthService
 
             var rolesDetailed = roles
                 .Where(r => userRoles.Contains(r.Name ?? string.Empty))
-                .Select(r => new RoleAppResponseDTO(r))
+                .Select(r => new RoleAppDetailsDTO(r))
                 .ToList();
-            return new ResponseDTO<UserResponseDTO>
+            return new ResponseDTO<UserDetailsDTO>
             {
                 Message = "Profil mis à jour",
                 Status = 200,
-                Data = new UserResponseDTO(userWithLanguages, rolesDetailed),
+                Data = new UserDetailsDTO(userWithLanguages, rolesDetailed),
             };
         }
         catch (Exception ex)
         {
             await transaction.RollbackAsync();
-            return new ResponseDTO<UserResponseDTO> { Status = 500, Message = ex.Message };
+            return new ResponseDTO<UserDetailsDTO> { Status = 500, Message = ex.Message };
         }
     }
 
@@ -301,7 +301,7 @@ public class AuthService
 
         var rolesDetailed = roles
             .Where(r => userRoles.Contains(r.Name ?? string.Empty))
-            .Select(r => new RoleAppResponseDTO(r))
+            .Select(r => new RoleAppDetailsDTO(r))
             .ToList();
         if (refreshTokenDB.User.ImgUrl is not null)
         {
@@ -315,7 +315,7 @@ public class AuthService
             Message = "Autorisation renouvelée",
             Data = new LoginOutputDTO
             {
-                User = new UserResponseDTO(refreshTokenDB.User, rolesDetailed),
+                User = new UserDetailsDTO(refreshTokenDB.User, rolesDetailed),
                 Token = await GenerateAccessTokenAsync(refreshTokenDB.User),
                 RefreshToken = refreshToken,
             },
@@ -473,7 +473,7 @@ public class AuthService
 
         var rolesDetailed = roles
             .Where(r => userRoles.Contains(r.Name ?? string.Empty))
-            .Select(r => new RoleAppResponseDTO(r))
+            .Select(r => new RoleAppDetailsDTO(r))
             .ToList();
 
         response.Cookies.Append(
@@ -502,7 +502,7 @@ public class AuthService
             {
                 Token = await GenerateAccessTokenAsync(user),
                 RefreshToken = refreshToken?.Token,
-                User = new UserResponseDTO(user, rolesDetailed),
+                User = new UserDetailsDTO(user, rolesDetailed),
             },
         };
     }

@@ -63,7 +63,7 @@ public class AuthController : ControllerBase
     [AllowAnonymous]
     [EnableCors]
     [HttpPost("register")]
-    public async Task<ActionResult<ResponseDTO<UserResponseDTO>>> Register(
+    public async Task<ActionResult<ResponseDTO<UserDetailsDTO>>> Register(
         [FromBody] UserCreateDTO model
     )
     {
@@ -91,7 +91,7 @@ public class AuthController : ControllerBase
     [EnableCors]
     [Route("update")]
     [HttpPatch]
-    public async Task<ActionResult<ResponseDTO<UserResponseDTO>>> Update(
+    public async Task<ActionResult<ResponseDTO<UserDetailsDTO>>> Update(
         [FromBody] UserUpdateDTO model
     )
     {
@@ -197,7 +197,7 @@ public class AuthController : ControllerBase
 
         var rolesDetailed = roles
             .Where(r => userRoles.Contains(r.Name ?? string.Empty))
-            .Select(r => new RoleAppResponseDTO(r))
+            .Select(r => new RoleAppDetailsDTO(r))
             .ToList();
 
         return Ok(
@@ -208,7 +208,7 @@ public class AuthController : ControllerBase
                 Data = new UserInfosWithtoken
                 {
                     Token = await authService.GenerateAccessTokenAsync(user),
-                    User = new UserResponseDTO(user, rolesDetailed),
+                    User = new UserDetailsDTO(user, rolesDetailed),
                 },
             }
         );
@@ -219,7 +219,7 @@ public class AuthController : ControllerBase
     /// </summary>
     /// <returns>Informations de l'utilisateur.</returns>
     [HttpGet("public-informations")]
-    public async Task<ActionResult<ResponseDTO<UserResponseDTO>>> GetPublicInformations(
+    public async Task<ActionResult<ResponseDTO<UserDetailsDTO>>> GetPublicInformations(
         Guid userId
     )
     {
