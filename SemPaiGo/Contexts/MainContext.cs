@@ -27,6 +27,7 @@ public class MainContext : IdentityDbContext<UserApp, RoleApp, Guid>
         builder.Entity<UserApp>().ToTable("Users");
         builder.Entity<RoleApp>().ToTable("Roles");
         builder.Entity<Gender>().ToTable("Genders");
+        builder.Entity<RefreshToken>().ToTable("RefreshTokens");
 
         // Entities  properties
 
@@ -47,7 +48,7 @@ public class MainContext : IdentityDbContext<UserApp, RoleApp, Guid>
                 .HasColumnType("timestamp with time zone")
                 .ValueGeneratedOnAdd()
                 .HasDefaultValueSql("CURRENT_TIMESTAMP");
-        });        
+        });
 
         builder.Entity<RoleApp>(r =>
         {
@@ -90,15 +91,17 @@ public class MainContext : IdentityDbContext<UserApp, RoleApp, Guid>
                 .HasDefaultValueSql("CURRENT_TIMESTAMP");
             g.Property(e => e.ArchivedAt).HasColumnType("timestamp with time zone");
             g.Property(a => a.UpdatedAt).HasColumnType("timestamp with time zone");
-        });   
+        });
 
-        // relationships      
+
+     
+
+        // relationships
         builder
             .Entity<UserApp>()
             .HasOne(u => u.Gender)
             .WithMany()
-            .HasForeignKey(u => u.GenderId);             
-      
+            .HasForeignKey(u => u.GenderId);   
 
         // UserRole => UserApp, RoleApp
         builder.Entity<Microsoft.AspNetCore.Identity.IdentityUserRole<Guid>>(userRole =>
@@ -123,8 +126,7 @@ public class MainContext : IdentityDbContext<UserApp, RoleApp, Guid>
             .WithOne()
             .HasForeignKey<RefreshToken>(a => a.UserId);
 
-      
-        // Seed Roles
+        // Seed Roles - Use static dates and ConcurrencyStamp instead of DateTime.UtcNow
         List<RoleApp> roles = new()
             {
                 new RoleApp
@@ -133,7 +135,8 @@ public class MainContext : IdentityDbContext<UserApp, RoleApp, Guid>
                     Name = "SuperAdmin",
                     NormalizedName = "SUPERADMIN",
                     DisplayName = "Super Administrateur",
-                    CreatedAt = DateTime.UtcNow,
+                    CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+                    ConcurrencyStamp = "SUPERADMIN-STAMP-2024"
                 },
                 new RoleApp
                 {
@@ -141,8 +144,8 @@ public class MainContext : IdentityDbContext<UserApp, RoleApp, Guid>
                     Name = "Admin",
                     NormalizedName = "ADMIN",
                     DisplayName = "Administrateur",
-
-                    CreatedAt = DateTime.UtcNow,
+                    CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+                    ConcurrencyStamp = "ADMIN-STAMP-2024"
                 },
                 new RoleApp
                 {
@@ -150,7 +153,8 @@ public class MainContext : IdentityDbContext<UserApp, RoleApp, Guid>
                     Name = "Teacher",
                     NormalizedName = "TEACHER",
                     DisplayName = "Professeur",
-                    CreatedAt = DateTime.UtcNow,
+                    CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+                    ConcurrencyStamp = "TEACHER-STAMP-2024"
                 },
                 new RoleApp
                 {
@@ -158,11 +162,13 @@ public class MainContext : IdentityDbContext<UserApp, RoleApp, Guid>
                     Name = "Student",
                     NormalizedName = "STUDENT",
                     DisplayName = "Elève",
-                    CreatedAt = DateTime.UtcNow,
+                    CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+                    ConcurrencyStamp = "STUDENT-STAMP-2024"
                 },
             };
         builder.Entity<RoleApp>().HasData(roles);
-        // Seed Genders
+        
+        // Seed Genders - Use static dates instead of DateTime.UtcNow
         List<Gender> genders = new()
             {
                 new Gender
@@ -171,7 +177,7 @@ public class MainContext : IdentityDbContext<UserApp, RoleApp, Guid>
                     Name = "Female",
                     Color = "#ff69b4",
                     Icon = "",
-                    CreatedAt = DateTime.UtcNow,
+                    CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc),
                 },
                 new Gender
                 {
@@ -179,7 +185,7 @@ public class MainContext : IdentityDbContext<UserApp, RoleApp, Guid>
                     Name = "Male",
                     Color = "#fa69b4",
                     Icon = "",
-                    CreatedAt = DateTime.UtcNow,
+                    CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc),
                 },
                 new Gender
                 {
@@ -187,16 +193,11 @@ public class MainContext : IdentityDbContext<UserApp, RoleApp, Guid>
                     Name = "Other",
                     Color = "#ab69b4",
                     Icon = "",
-                    CreatedAt = DateTime.UtcNow,
+                    CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc),
                 },
             };
 
         builder.Entity<Gender>().HasData(genders);
-
-        // Global Query Filters to exclude soft-deleted entities
-        //builder.Entity<Booking>().HasQueryFilter(b => b.ArchivedAt != null);
-        //builder.Entity<UserApp>().HasQueryFilter(b => b.ArchivedAt != null);
-        //builder.Entity<Slot>().HasQueryFilter(b => b.ArchivedAt != null);
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder builder)
