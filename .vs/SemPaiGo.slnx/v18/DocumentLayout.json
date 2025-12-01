@@ -1,0 +1,287 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\mahdi\\source\\repos\\SemPaiGo\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{A662BC3A-46A0-47DB-A94A-407633165C2A}|SemPaiGo\\SemPaiGo.csproj|c:\\users\\mahdi\\source\\repos\\sempaigo\\sempaigo\\.gitignore||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{A662BC3A-46A0-47DB-A94A-407633165C2A}|SemPaiGo\\SemPaiGo.csproj|solutionrelative:sempaigo\\.gitignore||{3B902123-F8A7-4915-9F01-361F908088D0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A662BC3A-46A0-47DB-A94A-407633165C2A}|SemPaiGo\\SemPaiGo.csproj|c:\\users\\mahdi\\source\\repos\\sempaigo\\sempaigo\\properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{A662BC3A-46A0-47DB-A94A-407633165C2A}|SemPaiGo\\SemPaiGo.csproj|solutionrelative:sempaigo\\properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A662BC3A-46A0-47DB-A94A-407633165C2A}|SemPaiGo\\SemPaiGo.csproj|c:\\users\\mahdi\\source\\repos\\sempaigo\\sempaigo\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A662BC3A-46A0-47DB-A94A-407633165C2A}|SemPaiGo\\SemPaiGo.csproj|solutionrelative:sempaigo\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A662BC3A-46A0-47DB-A94A-407633165C2A}|SemPaiGo\\SemPaiGo.csproj|c:\\users\\mahdi\\source\\repos\\sempaigo\\sempaigo\\contexts\\maincontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A662BC3A-46A0-47DB-A94A-407633165C2A}|SemPaiGo\\SemPaiGo.csproj|solutionrelative:sempaigo\\contexts\\maincontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A662BC3A-46A0-47DB-A94A-407633165C2A}|SemPaiGo\\SemPaiGo.csproj|c:\\users\\mahdi\\source\\repos\\sempaigo\\sempaigo\\utilities\\corshelper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A662BC3A-46A0-47DB-A94A-407633165C2A}|SemPaiGo\\SemPaiGo.csproj|solutionrelative:sempaigo\\utilities\\corshelper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A662BC3A-46A0-47DB-A94A-407633165C2A}|SemPaiGo\\SemPaiGo.csproj|c:\\users\\mahdi\\source\\repos\\sempaigo\\sempaigo\\utilities\\customdatetimeconversion.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A662BC3A-46A0-47DB-A94A-407633165C2A}|SemPaiGo\\SemPaiGo.csproj|solutionrelative:sempaigo\\utilities\\customdatetimeconversion.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A662BC3A-46A0-47DB-A94A-407633165C2A}|SemPaiGo\\SemPaiGo.csproj|c:\\users\\mahdi\\source\\repos\\sempaigo\\sempaigo\\models\\user\\refreshtoken.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A662BC3A-46A0-47DB-A94A-407633165C2A}|SemPaiGo\\SemPaiGo.csproj|solutionrelative:sempaigo\\models\\user\\refreshtoken.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A662BC3A-46A0-47DB-A94A-407633165C2A}|SemPaiGo\\SemPaiGo.csproj|c:\\users\\mahdi\\source\\repos\\sempaigo\\sempaigo\\utilities\\environmentvariables.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A662BC3A-46A0-47DB-A94A-407633165C2A}|SemPaiGo\\SemPaiGo.csproj|solutionrelative:sempaigo\\utilities\\environmentvariables.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A662BC3A-46A0-47DB-A94A-407633165C2A}|SemPaiGo\\SemPaiGo.csproj|c:\\users\\mahdi\\source\\repos\\sempaigo\\sempaigo\\models\\user\\userapp.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A662BC3A-46A0-47DB-A94A-407633165C2A}|SemPaiGo\\SemPaiGo.csproj|solutionrelative:sempaigo\\models\\user\\userapp.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A662BC3A-46A0-47DB-A94A-407633165C2A}|SemPaiGo\\SemPaiGo.csproj|c:\\users\\mahdi\\source\\repos\\sempaigo\\sempaigo\\utilities\\hardcode.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A662BC3A-46A0-47DB-A94A-407633165C2A}|SemPaiGo\\SemPaiGo.csproj|solutionrelative:sempaigo\\utilities\\hardcode.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A662BC3A-46A0-47DB-A94A-407633165C2A}|SemPaiGo\\SemPaiGo.csproj|c:\\users\\mahdi\\source\\repos\\sempaigo\\sempaigo\\models\\user\\roledtos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A662BC3A-46A0-47DB-A94A-407633165C2A}|SemPaiGo\\SemPaiGo.csproj|solutionrelative:sempaigo\\models\\user\\roledtos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A662BC3A-46A0-47DB-A94A-407633165C2A}|SemPaiGo\\SemPaiGo.csproj|c:\\users\\mahdi\\source\\repos\\sempaigo\\sempaigo\\models\\files\\fileurl.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A662BC3A-46A0-47DB-A94A-407633165C2A}|SemPaiGo\\SemPaiGo.csproj|solutionrelative:sempaigo\\models\\files\\fileurl.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A662BC3A-46A0-47DB-A94A-407633165C2A}|SemPaiGo\\SemPaiGo.csproj|c:\\users\\mahdi\\source\\repos\\sempaigo\\sempaigo\\models\\user\\roleapp.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A662BC3A-46A0-47DB-A94A-407633165C2A}|SemPaiGo\\SemPaiGo.csproj|solutionrelative:sempaigo\\models\\user\\roleapp.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A662BC3A-46A0-47DB-A94A-407633165C2A}|SemPaiGo\\SemPaiGo.csproj|c:\\users\\mahdi\\source\\repos\\sempaigo\\sempaigo\\models\\user\\gender.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A662BC3A-46A0-47DB-A94A-407633165C2A}|SemPaiGo\\SemPaiGo.csproj|solutionrelative:sempaigo\\models\\user\\gender.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A662BC3A-46A0-47DB-A94A-407633165C2A}|SemPaiGo\\SemPaiGo.csproj|c:\\users\\mahdi\\source\\repos\\sempaigo\\sempaigo\\models\\interfaces\\interfaces.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A662BC3A-46A0-47DB-A94A-407633165C2A}|SemPaiGo\\SemPaiGo.csproj|solutionrelative:sempaigo\\models\\interfaces\\interfaces.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 3,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:1:0:{e8b06f52-6d01-11d2-aa7d-00c04f990343}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:254354193:0:{71f361cc-493f-47c0-923f-f2570b6f8618}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": ".gitignore",
+              "DocumentMoniker": "C:\\Users\\mahdi\\source\\repos\\SemPaiGo\\SemPaiGo\\.gitignore",
+              "RelativeDocumentMoniker": "SemPaiGo\\.gitignore",
+              "ToolTip": "C:\\Users\\mahdi\\source\\repos\\SemPaiGo\\SemPaiGo\\.gitignore",
+              "RelativeToolTip": "SemPaiGo\\.gitignore",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAeAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2025-12-01T10:48:08.132Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "launchSettings.json",
+              "DocumentMoniker": "C:\\Users\\mahdi\\source\\repos\\SemPaiGo\\SemPaiGo\\Properties\\launchSettings.json",
+              "RelativeDocumentMoniker": "SemPaiGo\\Properties\\launchSettings.json",
+              "ToolTip": "C:\\Users\\mahdi\\source\\repos\\SemPaiGo\\SemPaiGo\\Properties\\launchSettings.json",
+              "RelativeToolTip": "SemPaiGo\\Properties\\launchSettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAB4AAAAlAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-12-01T10:40:08.074Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "CorsHelper.cs",
+              "DocumentMoniker": "C:\\Users\\mahdi\\source\\repos\\SemPaiGo\\SemPaiGo\\Utilities\\CorsHelper.cs",
+              "RelativeDocumentMoniker": "SemPaiGo\\Utilities\\CorsHelper.cs",
+              "ToolTip": "C:\\Users\\mahdi\\source\\repos\\SemPaiGo\\SemPaiGo\\Utilities\\CorsHelper.cs",
+              "RelativeToolTip": "SemPaiGo\\Utilities\\CorsHelper.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACIAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-01T10:27:28.365Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "CustomDateTimeConversion.cs",
+              "DocumentMoniker": "C:\\Users\\mahdi\\source\\repos\\SemPaiGo\\SemPaiGo\\Utilities\\CustomDateTimeConversion.cs",
+              "RelativeDocumentMoniker": "SemPaiGo\\Utilities\\CustomDateTimeConversion.cs",
+              "ToolTip": "C:\\Users\\mahdi\\source\\repos\\SemPaiGo\\SemPaiGo\\Utilities\\CustomDateTimeConversion.cs",
+              "RelativeToolTip": "SemPaiGo\\Utilities\\CustomDateTimeConversion.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-01T10:26:19.549Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "RefreshToken.cs",
+              "DocumentMoniker": "C:\\Users\\mahdi\\source\\repos\\SemPaiGo\\SemPaiGo\\Models\\User\\RefreshToken.cs",
+              "RelativeDocumentMoniker": "SemPaiGo\\Models\\User\\RefreshToken.cs",
+              "ToolTip": "C:\\Users\\mahdi\\source\\repos\\SemPaiGo\\SemPaiGo\\Models\\User\\RefreshToken.cs",
+              "RelativeToolTip": "SemPaiGo\\Models\\User\\RefreshToken.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-01T10:25:23.54Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "MainContext.cs",
+              "DocumentMoniker": "C:\\Users\\mahdi\\source\\repos\\SemPaiGo\\SemPaiGo\\Contexts\\MainContext.cs",
+              "RelativeDocumentMoniker": "SemPaiGo\\Contexts\\MainContext.cs",
+              "ToolTip": "C:\\Users\\mahdi\\source\\repos\\SemPaiGo\\SemPaiGo\\Contexts\\MainContext.cs",
+              "RelativeToolTip": "SemPaiGo\\Contexts\\MainContext.cs",
+              "ViewState": "AgIAAH4AAAAAAAAAAAAmwMQAAABOAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-01T10:20:04.738Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "EnvironmentVariables.cs",
+              "DocumentMoniker": "C:\\Users\\mahdi\\source\\repos\\SemPaiGo\\SemPaiGo\\Utilities\\EnvironmentVariables.cs",
+              "RelativeDocumentMoniker": "SemPaiGo\\Utilities\\EnvironmentVariables.cs",
+              "ToolTip": "C:\\Users\\mahdi\\source\\repos\\SemPaiGo\\SemPaiGo\\Utilities\\EnvironmentVariables.cs",
+              "RelativeToolTip": "SemPaiGo\\Utilities\\EnvironmentVariables.cs",
+              "ViewState": "AgIAACwAAAAAAAAAAAAqwCcAAABYAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-01T10:17:49.99Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "HardCode.cs",
+              "DocumentMoniker": "C:\\Users\\mahdi\\source\\repos\\SemPaiGo\\SemPaiGo\\Utilities\\HardCode.cs",
+              "RelativeDocumentMoniker": "SemPaiGo\\Utilities\\HardCode.cs",
+              "ToolTip": "C:\\Users\\mahdi\\source\\repos\\SemPaiGo\\SemPaiGo\\Utilities\\HardCode.cs",
+              "RelativeToolTip": "SemPaiGo\\Utilities\\HardCode.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAABZAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-01T10:15:01.65Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "RoleDTOs.cs",
+              "DocumentMoniker": "C:\\Users\\mahdi\\source\\repos\\SemPaiGo\\SemPaiGo\\Models\\User\\RoleDTOs.cs",
+              "RelativeDocumentMoniker": "SemPaiGo\\Models\\User\\RoleDTOs.cs",
+              "ToolTip": "C:\\Users\\mahdi\\source\\repos\\SemPaiGo\\SemPaiGo\\Models\\User\\RoleDTOs.cs",
+              "RelativeToolTip": "SemPaiGo\\Models\\User\\RoleDTOs.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAF8AAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-01T10:12:27.204Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "FileUrl.cs",
+              "DocumentMoniker": "C:\\Users\\mahdi\\source\\repos\\SemPaiGo\\SemPaiGo\\Models\\Files\\FileUrl.cs",
+              "RelativeDocumentMoniker": "SemPaiGo\\Models\\Files\\FileUrl.cs",
+              "ToolTip": "C:\\Users\\mahdi\\source\\repos\\SemPaiGo\\SemPaiGo\\Models\\Files\\FileUrl.cs",
+              "RelativeToolTip": "SemPaiGo\\Models\\Files\\FileUrl.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAZAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-01T10:11:42.233Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "RoleApp.cs",
+              "DocumentMoniker": "C:\\Users\\mahdi\\source\\repos\\SemPaiGo\\SemPaiGo\\Models\\User\\RoleApp.cs",
+              "RelativeDocumentMoniker": "SemPaiGo\\Models\\User\\RoleApp.cs",
+              "ToolTip": "C:\\Users\\mahdi\\source\\repos\\SemPaiGo\\SemPaiGo\\Models\\User\\RoleApp.cs",
+              "RelativeToolTip": "SemPaiGo\\Models\\User\\RoleApp.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-01T10:07:51.249Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "Gender.cs",
+              "DocumentMoniker": "C:\\Users\\mahdi\\source\\repos\\SemPaiGo\\SemPaiGo\\Models\\User\\Gender.cs",
+              "RelativeDocumentMoniker": "SemPaiGo\\Models\\User\\Gender.cs",
+              "ToolTip": "C:\\Users\\mahdi\\source\\repos\\SemPaiGo\\SemPaiGo\\Models\\User\\Gender.cs",
+              "RelativeToolTip": "SemPaiGo\\Models\\User\\Gender.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-01T10:05:23.345Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "Interfaces.cs",
+              "DocumentMoniker": "C:\\Users\\mahdi\\source\\repos\\SemPaiGo\\SemPaiGo\\Models\\Interfaces\\Interfaces.cs",
+              "RelativeDocumentMoniker": "SemPaiGo\\Models\\Interfaces\\Interfaces.cs",
+              "ToolTip": "C:\\Users\\mahdi\\source\\repos\\SemPaiGo\\SemPaiGo\\Models\\Interfaces\\Interfaces.cs",
+              "RelativeToolTip": "SemPaiGo\\Models\\Interfaces\\Interfaces.cs",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAowCIAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-01T10:03:45.609Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "UserApp.cs",
+              "DocumentMoniker": "C:\\Users\\mahdi\\source\\repos\\SemPaiGo\\SemPaiGo\\Models\\User\\UserApp.cs",
+              "RelativeDocumentMoniker": "SemPaiGo\\Models\\User\\UserApp.cs",
+              "ToolTip": "C:\\Users\\mahdi\\source\\repos\\SemPaiGo\\SemPaiGo\\Models\\User\\UserApp.cs",
+              "RelativeToolTip": "SemPaiGo\\Models\\User\\UserApp.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAHwAAAArAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-01T10:01:08.78Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\mahdi\\source\\repos\\SemPaiGo\\SemPaiGo\\Program.cs",
+              "RelativeDocumentMoniker": "SemPaiGo\\Program.cs",
+              "ToolTip": "C:\\Users\\mahdi\\source\\repos\\SemPaiGo\\SemPaiGo\\Program.cs*",
+              "RelativeToolTip": "SemPaiGo\\Program.cs*",
+              "ViewState": "AgIAANsAAAAAAAAAAAAmwCAAAAAhAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-01T09:50:32.932Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
