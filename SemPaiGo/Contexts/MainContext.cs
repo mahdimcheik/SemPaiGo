@@ -531,6 +531,107 @@ public class MainContext : IdentityDbContext<UserApp, RoleApp, Guid>
         };
 
         builder.Entity<Gender>().HasData(genders);
+
+        // Seed Transaction Status
+        List<StatusTransaction> statusTransactions = new()
+        {
+            new StatusTransaction
+            {
+                Id = HardCode.STATUS_TRANSACTION_PENDING,
+                Name = "Pending",
+                Color = "#ff69b4",
+                Icon = "",
+                CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+            },
+            new StatusTransaction
+            {
+                Id = HardCode.STATUS_TRANSACTION_PAID,
+                Name = "Paid",
+                Color = "#fa69b4",
+                Icon = "",
+                CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+            },
+            new StatusTransaction
+            {
+                Id = HardCode.STATUS_TRANSACTION_FAILED,
+                Name = "Failed",
+                Color = "#ab69b4",
+                Icon = "",
+                CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+            },
+        };
+
+        builder.Entity<StatusTransaction>().HasData(statusTransactions);
+
+        // Seed Transaction Status
+        List<TypeTeacherTransaction> typeTeacherTransactions = new()
+        {
+            new TypeTeacherTransaction
+            {
+                Id = HardCode.TYPE_TEACHER_TRANSACTION_PAYMENT,
+                Name = "Payment",
+                Color = "#ff69b4",
+                Icon = "",
+                CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+            },
+            new TypeTeacherTransaction
+            {
+                Id = HardCode.TYPE_TEACHER_TRANSACTION_PAYOUT,
+                Name = "Payout",
+                Color = "#fa69b4",
+                Icon = "",
+                CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+            },
+            new TypeTeacherTransaction
+            {
+                Id = HardCode.TYPE_TEACHER_TRANSACTION_REFUND,
+                Name = "Refund",
+                Color = "#ab69b4",
+                Icon = "",
+                CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+            },
+        };
+
+        builder.Entity<TypeTeacherTransaction>().HasData(typeTeacherTransactions);
+
+        // seed reservations status
+        List<StatusReservation> statusReservations = new()
+        {
+            new StatusReservation
+            {
+                Id = HardCode.RESERVATION_PENDING,
+                Name = "Pendind",
+                Color = "#ff69b4",
+                Icon = "",
+                CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+            },
+            new StatusReservation
+            {
+                Id = HardCode.RESERVATION_ACCEPTED,
+                Name = "Accepted",
+                Color = "#fa69b4",
+                Icon = "",
+                CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+            },
+            new StatusReservation
+            {
+                Id = HardCode.RESERVATION_DONE,
+                Name = "Done",
+                Color = "#ab69b4",
+                Icon = "",
+                CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+            },
+            new StatusReservation
+            {
+                Id = HardCode.RESERVATION_REJECTED,
+                Name = "Rejected",
+                Color = "#ab69b4",
+                Icon = "",
+                CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+            },
+        };
+
+        builder.Entity<StatusReservation>().HasData(statusReservations);
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder builder)

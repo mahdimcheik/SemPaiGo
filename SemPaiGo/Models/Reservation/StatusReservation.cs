@@ -4,6 +4,5 @@ namespace SemPaiGo.Models;
 
 public class StatusReservation : BaseModelOption
 {
-    public string DisplayName { get; set; }
 }
 

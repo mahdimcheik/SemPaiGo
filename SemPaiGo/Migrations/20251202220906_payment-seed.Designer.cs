@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SemPaiGo.Contexts;
@@ -11,9 +12,11 @@ using SemPaiGo.Contexts;
 namespace SemPaiGo.Migrations
 {
     [DbContext(typeof(MainContext))]
-    partial class MainContextModelSnapshot : ModelSnapshot
+    [Migration("20251202220906_payment-seed")]
+    partial class paymentseed
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -918,6 +921,10 @@ namespace SemPaiGo.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("DisplayName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("Icon")
                         .HasColumnType("text");
 
@@ -931,40 +938,6 @@ namespace SemPaiGo.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("StatusReservation");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("2ec60a91-aab8-4753-a5d8-b131b9441e77"),
-                            Color = "#ff69b4",
-                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Icon = "",
-                            Name = "Pendind"
-                        },
-                        new
-                        {
-                            Id = new Guid("32d854b6-6d4e-445a-9209-31a492970f2d"),
-                            Color = "#fa69b4",
-                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Icon = "",
-                            Name = "Accepted"
-                        },
-                        new
-                        {
-                            Id = new Guid("6d281aec-d093-4071-8bf4-c8363361b5b4"),
-                            Color = "#ab69b4",
-                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Icon = "",
-                            Name = "Done"
-                        },
-                        new
-                        {
-                            Id = new Guid("caab85f5-d37b-4ea0-b035-5ba3ca8dd49f"),
-                            Color = "#ab69b4",
-                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Icon = "",
-                            Name = "Rejected"
-                        });
                 });
 
             modelBuilder.Entity("SemPaiGo.Models.StatusTransaction", b =>

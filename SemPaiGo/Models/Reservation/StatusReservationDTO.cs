@@ -17,12 +17,6 @@ public class StatusReservationDTO(StatusReservation status)
     public string Name => status.Name;
 
     /// <summary>
-    /// Nom du statut
-    /// </summary>
-    [Required]
-    public string DisplayName => status.DisplayName;
-
-    /// <summary>
     /// Couleur associée au statut (code hexadécimal)
     /// </summary>
     [Required]
@@ -107,7 +101,6 @@ public class StatusReservationUpdateDTO
     public void UpdateModel(StatusReservation statusBooking)
     {
         statusBooking.Name = Name;
-        statusBooking.DisplayName = DisplayName;
         statusBooking.Color = Color;
         statusBooking.Icon = Icon;
         statusBooking.UpdatedAt = DateTimeOffset.UtcNow;

@@ -30,4 +30,15 @@ public static class HardCode
     public static Guid CATEGORY_TECHNICS => Guid.Parse("a7f8b05d-3d2d-43fa-870d-987c21f4e41d");
     public static Guid CATEGORY_FRONT => Guid.Parse("0b6865c4-76fc-4caa-8171-07f449ca6e5c");
     public static Guid CATEGORY_BACK => Guid.Parse("4133e2f8-f0e0-44f8-8cfb-8a8e1aaa86d7");
+
+    // Status Transaction
+    public static Guid STATUS_TRANSACTION_PAID => Guid.Parse("73f7fa42-196b-4040-b727-64a7b1e56458");
+    public static Guid STATUS_TRANSACTION_FAILED => Guid.Parse("584f233a-bf58-4db9-a24e-90baac3f6d42");
+    public static Guid STATUS_TRANSACTION_PENDING => Guid.Parse("ead0ecc1-a58d-4436-a87f-89c2dbc665a8");
+
+    // Type Teacher Transactions
+    public static Guid TYPE_TEACHER_TRANSACTION_PAYMENT => Guid.Parse("7305a3d5-bfa9-41ce-be10-174c406cb842");
+    public static Guid TYPE_TEACHER_TRANSACTION_PAYOUT => Guid.Parse("27aec3d1-dd41-4728-a29e-473da46779d9");
+    public static Guid TYPE_TEACHER_TRANSACTION_REFUND => Guid.Parse("50412518-6c82-40c1-b6bf-b9c7aadf67d1");
+
 }
