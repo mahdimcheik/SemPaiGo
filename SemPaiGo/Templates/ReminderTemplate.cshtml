@@ -46,20 +46,12 @@
 <body>
     <div class="container">
         <h2>Rappel</h2>
-        @if(Model.forTeacher)
-        {
-            <h2>Vous avez une réservation, le @Model.Slot.DateFrom.Date à @Model.Slot.DateFrom.TimeOfDay </h2>
-            <h2>Pour @Model.Student.FirstName  @Model.Student.LastName en @Model.Slot.Type.Name</h2>
 
-        }else{
-            <h2>Vous avez une réservation, le @Model.Slot.DateFrom.Date à @Model.Slot.DateFrom.TimeOfDay </h2>
-            <h2>Chez @Model.Teacher.FirstName  @Model.Teacher.LastName en @Model.Slot.Type.Name</h2>
-        }
 
         <br />
-        <h2>@Model.Slot.Booking.Title</h2>
+     
 
-        <p>@(!string.IsNullOrEmpty(Model.Slot.Booking.Description) ? Model.Slot.Booking.Description : "Sans description") </p>        
+         
         <hr>
         <p class="footer">Visiter notre site: <a href="@Model.WebsiteLink">Notre site</a></p>
     </div>

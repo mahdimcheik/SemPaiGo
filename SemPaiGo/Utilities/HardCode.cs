@@ -15,8 +15,19 @@ public static class HardCode
 
     // Reservation Status
     public static Guid RESERVATION_PENDING => Guid.Parse("2EC60A91-AAB8-4753-A5D8-B131B9441E77");
-    public static Guid RESERVATION_ACCEPTED => Guid.Parse ("32D854B6-6D4E-445A-9209-31A492970F2D") ;
-    public static Guid RESERVATION_REJECTED => Guid.Parse("CAAB85F5-D37B-4EA0-B035-5BA3CA8DD49F")  ;
-    public static Guid RESERVATION_DONE => Guid.Parse ("6D281AEC-D093-4071-8BF4-C8363361B5B4")  ;
+    public static Guid RESERVATION_ACCEPTED => Guid.Parse("32D854B6-6D4E-445A-9209-31A492970F2D");
+    public static Guid RESERVATION_REJECTED => Guid.Parse("CAAB85F5-D37B-4EA0-B035-5BA3CA8DD49F");
+    public static Guid RESERVATION_DONE => Guid.Parse("6D281AEC-D093-4071-8BF4-C8363361B5B4");
 
+    // Levels
+    public static Guid LEVEL_BEGINNER => Guid.Parse("eb4bd576-6855-4123-bb92-e921c8610542");
+    public static Guid LEVEL_INTERMEDIATE => Guid.Parse("19702cef-0a3b-46f8-932b-cf78634e741d");
+    public static Guid LEVEL_ADVANCED => Guid.Parse("a518f61e-8a19-44e6-b365-fb285ad0811e");
+    public static Guid LEVEL_ALL => Guid.Parse("b70134eb-060c-4069-a325-1251c75a1ac9");
+
+    // Categories
+    public static Guid CATEGORY_SOFT => Guid.Parse("86969bd8-e51f-4558-ac44-fc159ed31c53");
+    public static Guid CATEGORY_TECHNICS => Guid.Parse("a7f8b05d-3d2d-43fa-870d-987c21f4e41d");
+    public static Guid CATEGORY_FRONT => Guid.Parse("0b6865c4-76fc-4caa-8171-07f449ca6e5c");
+    public static Guid CATEGORY_BACK => Guid.Parse("4133e2f8-f0e0-44f8-8cfb-8a8e1aaa86d7");
 }

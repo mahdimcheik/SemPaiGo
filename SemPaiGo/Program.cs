@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi;
 using Npgsql;
 using SemPaiGo.Contexts;
 using SemPaiGo.Models;
@@ -64,9 +65,6 @@ static void ConfigureServices(IServiceCollection services)
     services.AddDbContext<MainContext>(options =>
     {
         options.UseNpgsql(dataSource);
-        //// Suppress PendingModelChangesWarning
-        //options.ConfigureWarnings(warnings =>
-        //    warnings.Ignore(Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.PendingModelChangesWarning));
     });
 
     services.Configure<DataProtectionTokenProviderOptions>(options =>
@@ -190,7 +188,7 @@ static void ConfigureSwagger(IServiceCollection services)
     {
         c.SwaggerDoc(
             "v1",
-            new Microsoft.OpenApi.OpenApiInfo
+            new OpenApiInfo
             {
                 Title = "SimplonHubApi API",
                 Version = "v1",
@@ -207,13 +205,13 @@ static void ConfigureSwagger(IServiceCollection services)
 
         c.AddSecurityDefinition(
             "Bearer",
-            new Microsoft.OpenApi.OpenApiSecurityScheme
+            new OpenApiSecurityScheme
             {
                 Name = "Authorization",
-                Type = Microsoft.OpenApi.SecuritySchemeType.ApiKey,
+                Type = SecuritySchemeType.ApiKey,
                 Scheme = "Bearer",
                 BearerFormat = "JWT",
-                In = Microsoft.OpenApi.ParameterLocation.Header,
+                In = ParameterLocation.Header,
                 Description =
                     "JWT Authorization header using the Bearer scheme. \r\n\r\n Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\nExample: \"Bearer 12345abcdef\"",
             }
