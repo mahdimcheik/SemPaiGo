@@ -11,11 +11,11 @@ public class MainContext : IdentityDbContext<UserApp, RoleApp, Guid>
     public DbSet<RoleApp> Roles { get; set; }
     public DbSet<RefreshToken> RefreshTokens { get; set; }
     public DbSet<Gender> Genders { get; set; }
-    
+
     // Profile entities
     public DbSet<ProfileTeacher> ProfileTeachers { get; set; }
     public DbSet<ProfileStudent> ProfileStudents { get; set; }
-    
+
     // Related entities
     public DbSet<Address> Addresses { get; set; }
     public DbSet<Cursus> Cursuses { get; set; }
@@ -30,6 +30,13 @@ public class MainContext : IdentityDbContext<UserApp, RoleApp, Guid>
     public DbSet<Reservation> Reservations { get; set; }
     public DbSet<Order> Orders { get; set; }
 
+    // payments and transactions
+    public DbSet<Payment> Payments { get; set; } // paiement d'une commande
+    public DbSet<TeacherPayout> TeacherPayouts { get; set; } // une ligne par professeur (les comptes des profs)
+    public DbSet<TeacherWalletTransaction> TeacherWalletTransactions { get; set; } // historique des transactions du portefeuille, acomptes, retraits, remboursements
+    public DbSet<TypeTeacherTransaction> TypeTransactions { get; set; } // types de transactions (acompte, retrait, remboursement)
+    public DbSet<StatusTransaction> StatusTransactions { get; set; } // statuts des transactions (en attente, complété, échoué)
+    public DbSet<PaymentMethod> PaymentMethods { get; set; } // méthodes de paiement (carte bancaire, PayPal, etc.)
 
     public MainContext(DbContextOptions options)
         : base(options) { }
@@ -160,12 +167,14 @@ public class MainContext : IdentityDbContext<UserApp, RoleApp, Guid>
                 .OnDelete(DeleteBehavior.Restrict);
 
             // Contrainte : une adresse doit avoir EXACTEMENT un propriétaire (with quoted column names for PostgreSQL)
-            entity.ToTable(t => t.HasCheckConstraint(
-                "CK_Address_OneOwnerOnly",
-                @"(""TeacherId"" IS NOT NULL AND ""StudentId"" IS NULL)
+            entity.ToTable(t =>
+                t.HasCheckConstraint(
+                    "CK_Address_OneOwnerOnly",
+                    @"(""TeacherId"" IS NOT NULL AND ""StudentId"" IS NULL)
               OR
               (""TeacherId"" IS NULL AND ""StudentId"" IS NOT NULL)"
-            ));
+                )
+            );
         });
 
         //  cursus
@@ -260,12 +269,14 @@ public class MainContext : IdentityDbContext<UserApp, RoleApp, Guid>
                 .OnDelete(DeleteBehavior.Restrict);
 
             // Contrainte : une formation doit avoir EXACTEMENT un propriétaire (with quoted column names for PostgreSQL)
-            f.ToTable(t => t.HasCheckConstraint(
-                "CK_Formation_OneOwnerOnly",
-                @"(""TeacherId"" IS NOT NULL AND ""StudentId"" IS NULL)
+            f.ToTable(t =>
+                t.HasCheckConstraint(
+                    "CK_Formation_OneOwnerOnly",
+                    @"(""TeacherId"" IS NOT NULL AND ""StudentId"" IS NULL)
               OR
               (""TeacherId"" IS NULL AND ""StudentId"" IS NOT NULL)"
-            ));
+                )
+            );
         });
 
         //languages
@@ -296,7 +307,6 @@ public class MainContext : IdentityDbContext<UserApp, RoleApp, Guid>
             pt.Property(e => e.UpdatedAt).HasColumnType("timestamp with time zone");
             pt.Property(e => e.ArchivedAt).HasColumnType("timestamp with time zone");
             pt.HasOne(s => s.User).WithOne().HasForeignKey<ProfileTeacher>(s => s.UserId);
-
         });
 
         // ProfileStudent
@@ -318,12 +328,8 @@ public class MainContext : IdentityDbContext<UserApp, RoleApp, Guid>
         builder.Entity<Slot>(s =>
         {
             s.HasKey(e => e.Id);
-            s.Property(e => e.DateFrom)
-                .IsRequired()
-                .HasColumnType("timestamp with time zone");
-            s.Property(e => e.DateTo)
-                .IsRequired()
-                .HasColumnType("timestamp with time zone");
+            s.Property(e => e.DateFrom).IsRequired().HasColumnType("timestamp with time zone");
+            s.Property(e => e.DateTo).IsRequired().HasColumnType("timestamp with time zone");
             s.Property(e => e.CreatedAt)
                 .IsRequired()
                 .HasColumnType("timestamp with time zone")
@@ -377,8 +383,85 @@ public class MainContext : IdentityDbContext<UserApp, RoleApp, Guid>
                 .OnDelete(DeleteBehavior.Restrict);
         });
 
+        // Payment
+        builder.Entity<Payment>(p =>
+        {
+            p.HasKey(e => e.Id);
+            p.Property(e => e.Amount).IsRequired().HasColumnType("decimal(18,2)");
+            p.Property(e => e.CreatedAt)
+                .IsRequired()
+                .HasColumnType("timestamp with time zone")
+                .ValueGeneratedOnAdd()
+                .HasDefaultValueSql("CURRENT_TIMESTAMP");
+            p.Property(e => e.UpdatedAt).HasColumnType("timestamp with time zone");
+            p.Property(e => e.ArchivedAt).HasColumnType("timestamp with time zone");
+
+            p.HasOne(p => p.Order)
+                .WithOne(o => o.Payment)
+                .HasForeignKey<Payment>(p => p.OrderId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            p.HasOne(p => p.Method).WithMany().HasForeignKey(p => p.MethodId);
+        });
+
+        // paymentMethod
+        builder.Entity<PaymentMethod>(p =>
+        {
+            p.HasKey(e => e.Id);
+            p.Property(e => e.CreatedAt)
+                .IsRequired()
+                .HasColumnType("timestamp with time zone")
+                .ValueGeneratedOnAdd()
+                .HasDefaultValueSql("CURRENT_TIMESTAMP");
+            p.Property(e => e.UpdatedAt).HasColumnType("timestamp with time zone");
+            p.Property(e => e.ArchivedAt).HasColumnType("timestamp with time zone");
+        });
+
+        // TeacherWalletTransaction
+        builder.Entity<TeacherWalletTransaction>(p =>
+        {
+            p.HasKey(e => e.Id);
+            p.Property(e => e.Amount).IsRequired().HasColumnType("decimal(18,2)");
+            p.Property(e => e.CreatedAt)
+                .IsRequired()
+                .HasColumnType("timestamp with time zone")
+                .ValueGeneratedOnAdd()
+                .HasDefaultValueSql("CURRENT_TIMESTAMP");
+            p.Property(e => e.UpdatedAt).HasColumnType("timestamp with time zone");
+            p.Property(e => e.ArchivedAt).HasColumnType("timestamp with time zone");
+
+            p.HasOne(p => p.Type).WithOne().HasForeignKey<TeacherWalletTransaction>(p => p.TypeId);
+            p.HasOne(p => p.Reservation).WithMany().HasForeignKey(p => p.ReservationId);
+        });
+
+        // status transaction
+        builder.Entity<StatusTransaction>(p =>
+        {
+            p.HasKey(e => e.Id);
+            p.Property(e => e.CreatedAt)
+                .IsRequired()
+                .HasColumnType("timestamp with time zone")
+                .ValueGeneratedOnAdd()
+                .HasDefaultValueSql("CURRENT_TIMESTAMP");
+            p.Property(e => e.UpdatedAt).HasColumnType("timestamp with time zone");
+            p.Property(e => e.ArchivedAt).HasColumnType("timestamp with time zone");
+        });
+
+        // type transaction
+        builder.Entity<TypeTeacherTransaction>(p =>
+        {
+            p.HasKey(e => e.Id);
+            p.Property(e => e.CreatedAt)
+                .IsRequired()
+                .HasColumnType("timestamp with time zone")
+                .ValueGeneratedOnAdd()
+                .HasDefaultValueSql("CURRENT_TIMESTAMP");
+            p.Property(e => e.UpdatedAt).HasColumnType("timestamp with time zone");
+            p.Property(e => e.ArchivedAt).HasColumnType("timestamp with time zone");
+        });
+
         // Seed Roles
-        List <RoleApp> roles = new()
+        List<RoleApp> roles = new()
         {
             new RoleApp
             {

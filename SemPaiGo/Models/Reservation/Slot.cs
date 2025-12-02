@@ -9,7 +9,7 @@ namespace SemPaiGo.Models
         public Guid TeacherId { get; set; }
         public ProfileTeacher? Teacher { get; set; }
         public Guid TypeId { get; set; }
-        public TypeSlot Type { get; set; }
+        public TypeSlot? Type { get; set; }
         public Reservation? Reservation { get; set; }
     }
 }

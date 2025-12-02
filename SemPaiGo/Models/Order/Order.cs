@@ -14,4 +14,7 @@ public class Order : BaseModel
     public Guid TeacherId { get; set; }
     public ProfileTeacher? Teacher { get; set; }
     public ICollection<Reservation> Reservations { get; set; }
+
+    public Guid? PaymentId { get; set; }
+    public Payment? Payment { get; set; }
 }
