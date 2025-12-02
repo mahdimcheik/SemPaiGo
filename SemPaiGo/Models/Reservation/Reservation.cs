@@ -14,15 +14,15 @@ public class Reservation : BaseModel
     public StatusReservation Status { get; set; }
     public Guid StatusId { get; set; } = HardCode.RESERVATION_PENDING;
 
-    //public Guid OrderId { get; set; }
-    //public Order Order { get; set; }
+    public Guid OrderId { get; set; }
+    public Order Order { get; set; }
 
     public Guid StudentId { get; set; }
-    public UserApp Student { get; set; }
+    public ProfileStudent Student { get; set; }
     public Reservation()
     {
-
     }
+
     [SetsRequiredMembers]
     public Reservation(ReservationCreateDTO bookingCreate)
     {

@@ -35,7 +35,7 @@ public class SlotResponseDTO
     /// <summary>
     /// Informations de l'enseignant
     /// </summary>
-    public UserDetailsDTO? Teacher { get; set; }
+    public TeacherDetailsDTO? Teacher { get; set; }
 
     /// <summary>
     /// Identifiant du type de créneau
@@ -83,7 +83,7 @@ public class SlotResponseDTO
 
         if (slot.Teacher != null)
         {
-            Teacher = new UserDetailsDTO(slot.Teacher, null);
+            Teacher = new TeacherDetailsDTO(slot.Teacher, null);
         }
 
         if (slot.Type != null)
@@ -119,7 +119,7 @@ public class SlotDetailsDTO
     /// <summary>
     /// Informations de l'enseignant
     /// </summary>
-    public UserDetailsDTO? Teacher { get; set; }
+    public TeacherDetailsDTO? Teacher { get; set; }
 
     /// <summary>
     /// Identifiant du type de créneau
@@ -148,7 +148,7 @@ public class SlotDetailsDTO
 
         if (slot.Teacher != null)
         {
-            Teacher = new UserDetailsDTO(slot.Teacher, null);
+            Teacher = new TeacherDetailsDTO(slot.Teacher, null);
         }
 
         if (slot.Type != null)

@@ -12,8 +12,8 @@ using SemPaiGo.Contexts;
 namespace SemPaiGo.Migrations
 {
     [DbContext(typeof(MainContext))]
-    [Migration("20251202114009_reset")]
-    partial class reset
+    [Migration("20251202115528_relation-profil-user")]
+    partial class relationprofiluser
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -207,7 +207,7 @@ namespace SemPaiGo.Migrations
 
                     b.ToTable("Addresses", t =>
                         {
-                            t.HasCheckConstraint("CK_Address_OneOwnerOnly", "(TeacherId IS NOT NULL AND StudentId IS NULL)\r\n              OR\r\n              (TeacherId IS NULL AND StudentId IS NOT NULL)");
+                            t.HasCheckConstraint("CK_Address_OneOwnerOnly", "(\"TeacherId\" IS NOT NULL AND \"StudentId\" IS NULL)\r\n              OR\r\n              (\"TeacherId\" IS NULL AND \"StudentId\" IS NOT NULL)");
                         });
                 });
 
@@ -380,7 +380,7 @@ namespace SemPaiGo.Migrations
 
                     b.ToTable("Formations", t =>
                         {
-                            t.HasCheckConstraint("CK_Address_OneOwnerOnly", "(TeacherId IS NOT NULL AND StudentId IS NULL)\r\n              OR\r\n              (TeacherId IS NULL AND StudentId IS NOT NULL)");
+                            t.HasCheckConstraint("CK_Formation_OneOwnerOnly", "(\"TeacherId\" IS NOT NULL AND \"StudentId\" IS NULL)\r\n              OR\r\n              (\"TeacherId\" IS NULL AND \"StudentId\" IS NOT NULL)");
                         });
                 });
 
@@ -534,9 +534,15 @@ namespace SemPaiGo.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
                     b.HasKey("Id");
 
                     b.HasIndex("LanguageId");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
 
                     b.ToTable("ProfileStudents");
                 });
@@ -561,9 +567,15 @@ namespace SemPaiGo.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
                     b.HasKey("Id");
 
                     b.HasIndex("LanguageId");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
 
                     b.ToTable("ProfileTeachers");
                 });
@@ -929,6 +941,14 @@ namespace SemPaiGo.Migrations
                     b.HasOne("SemPaiGo.Models.Language", null)
                         .WithMany("Students")
                         .HasForeignKey("LanguageId");
+
+                    b.HasOne("SemPaiGo.Models.UserApp", "User")
+                        .WithOne()
+                        .HasForeignKey("SemPaiGo.Models.ProfileStudent", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("SemPaiGo.Models.ProfileTeacher", b =>
@@ -936,6 +956,14 @@ namespace SemPaiGo.Migrations
                     b.HasOne("SemPaiGo.Models.Language", null)
                         .WithMany("Teachers")
                         .HasForeignKey("LanguageId");
+
+                    b.HasOne("SemPaiGo.Models.UserApp", "User")
+                        .WithOne()
+                        .HasForeignKey("SemPaiGo.Models.ProfileTeacher", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("SemPaiGo.Models.RefreshToken", b =>

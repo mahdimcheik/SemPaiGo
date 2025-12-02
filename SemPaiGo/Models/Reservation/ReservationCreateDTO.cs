@@ -10,8 +10,8 @@ public class ReservationDetailsDTO(Reservation booking)
     public string Description => booking.Description;
     public StatusReservationDTO? Status =>
         booking.Status is not null ? new StatusReservationDTO(booking.Status) : null;
-    public UserDetailsDTO? Student =>
-        booking.Student is not null ? new UserDetailsDTO(booking.Student, null) : null;
+    public StudentDetailsDTO? Student =>
+        booking.Student is not null ? new StudentDetailsDTO(booking.Student, null) : null;
     public SlotDetailsDTO? Slot => booking.Slot is not null ? new SlotDetailsDTO(booking.Slot) : null;
 }
 

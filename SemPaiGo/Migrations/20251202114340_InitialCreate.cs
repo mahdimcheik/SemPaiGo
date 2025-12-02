@@ -9,7 +9,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace SemPaiGo.Migrations
 {
     /// <inheritdoc />
-    public partial class reset : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -332,7 +332,7 @@ namespace SemPaiGo.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Addresses", x => x.Id);
-                    table.CheckConstraint("CK_Address_OneOwnerOnly", "(TeacherId IS NOT NULL AND StudentId IS NULL)\r\n              OR\r\n              (TeacherId IS NULL AND StudentId IS NOT NULL)");
+                    table.CheckConstraint("CK_Address_OneOwnerOnly", "(\"TeacherId\" IS NOT NULL AND \"StudentId\" IS NULL)\r\n              OR\r\n              (\"TeacherId\" IS NULL AND \"StudentId\" IS NOT NULL)");
                     table.ForeignKey(
                         name: "FK_Addresses_ProfileStudents_StudentId",
                         column: x => x.StudentId,
@@ -422,7 +422,7 @@ namespace SemPaiGo.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Formations", x => x.Id);
-                    table.CheckConstraint("CK_Address_OneOwnerOnly", "(TeacherId IS NOT NULL AND StudentId IS NULL)\r\n              OR\r\n              (TeacherId IS NULL AND StudentId IS NOT NULL)");
+                    table.CheckConstraint("CK_Formation_OneOwnerOnly", "(\"TeacherId\" IS NOT NULL AND \"StudentId\" IS NULL)\r\n              OR\r\n              (\"TeacherId\" IS NULL AND \"StudentId\" IS NOT NULL)");
                     table.ForeignKey(
                         name: "FK_Formations_ProfileStudents_StudentId",
                         column: x => x.StudentId,
