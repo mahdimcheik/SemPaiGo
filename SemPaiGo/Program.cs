@@ -1,4 +1,3 @@
-using System.Text;
 using Hangfire;
 using Hangfire.PostgreSql;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -9,7 +8,9 @@ using Microsoft.OpenApi;
 using Npgsql;
 using SemPaiGo.Contexts;
 using SemPaiGo.Models;
+using SemPaiGo.Services;
 using SemPaiGo.Utilities;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -38,6 +39,9 @@ app.Run();
 static void ConfigureServices(IServiceCollection services)
 {
     // add services
+    services.AddTransient<AuthService>();
+    services.AddTransient<MailService>();
+    services.AddTransient<MinioService>();
 
     services.AddLogging(loggingBuilder =>
     {
