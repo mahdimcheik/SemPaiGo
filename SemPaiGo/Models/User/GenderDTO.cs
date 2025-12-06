@@ -1,0 +1,14 @@
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace SemPaiGo.Models;
+
+public class GenderDetailsDTO(Gender gender)
+{
+    [Required]
+    public Guid Id => gender.Id;
+    [Required]
+    public string Name => gender.Name;
+    [Required]
+    public string Color => gender.Color;
+    public string? Icon => gender.Icon;
+}

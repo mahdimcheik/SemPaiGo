@@ -197,7 +197,7 @@ public class AuthController : ControllerBase
 
         var rolesDetailed = roles
             .Where(r => userRoles.Contains(r.Name ?? string.Empty))
-            .Select(r => new RoleAppDetailsDTO(r))
+            .Select(r => new RoleDetailsDTO(r))
             .ToList();
 
         return Ok(
@@ -334,6 +334,7 @@ public class AuthController : ControllerBase
     }
 
     #endregion
+
     #region logout
     [AllowAnonymous]
     [HttpGet("logout")]

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using SempaiGo.Models;
 using SemPaiGo.Models;
 using SemPaiGo.Utilities;
 
@@ -71,6 +72,7 @@ public class MainContext : IdentityDbContext<UserApp, RoleApp, Guid>
 
             // relations
             e.HasOne(u => u.Gender).WithMany().HasForeignKey(u => u.GenderId);
+            e.HasOne(u => u.Status).WithMany().HasForeignKey(u => u.StatusId);
         });
 
         builder.Entity<RoleApp>(r =>
@@ -101,6 +103,22 @@ public class MainContext : IdentityDbContext<UserApp, RoleApp, Guid>
         });
 
         builder.Entity<Gender>(g =>
+        {
+            g.HasKey(g => g.Id);
+            g.Property(g => g.Id).IsRequired().HasMaxLength(64);
+            g.Property(g => g.Name).IsRequired().HasMaxLength(64);
+            g.Property(g => g.Color).IsRequired().HasMaxLength(16);
+            g.Property(g => g.Icon).HasMaxLength(256);
+            g.Property(g => g.CreatedAt)
+                .IsRequired()
+                .HasColumnType("timestamp with time zone")
+                .ValueGeneratedOnAdd()
+                .HasDefaultValueSql("CURRENT_TIMESTAMP");
+            g.Property(e => e.ArchivedAt).HasColumnType("timestamp with time zone");
+            g.Property(a => a.UpdatedAt).HasColumnType("timestamp with time zone");
+        });
+
+        builder.Entity<StatusAccount>(g =>
         {
             g.HasKey(g => g.Id);
             g.Property(g => g.Id).IsRequired().HasMaxLength(64);
@@ -531,6 +549,37 @@ public class MainContext : IdentityDbContext<UserApp, RoleApp, Guid>
         };
 
         builder.Entity<Gender>().HasData(genders);
+
+        // Seed Account status
+        List<StatusAccount> accountStatuses = new()
+        {
+            new StatusAccount
+            {
+                Id = HardCode.ACCOUNT_ACTIVE,
+                Name = "Active",
+                Color = "#ff69b4",
+                Icon = "",
+                CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+            },
+            new StatusAccount
+            {
+                Id = HardCode.ACCOUNT_PENDING,
+                Name = "Pending",
+                Color = "#fa69b4",
+                Icon = "",
+                CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+            },
+            new StatusAccount
+            {
+                Id = HardCode.ACCOUNT_BANNED,
+                Name = "Banned",
+                Color = "#ab69b4",
+                Icon = "",
+                CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+            },
+        };
+
+        builder.Entity<StatusAccount>().HasData(accountStatuses);
 
         // Seed Transaction Status
         List<StatusTransaction> statusTransactions = new()

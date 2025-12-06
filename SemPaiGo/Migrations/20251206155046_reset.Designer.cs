@@ -9,11 +9,11 @@ using SemPaiGo.Contexts;
 
 #nullable disable
 
-namespace SemPaiGo.Migrations
+namespace SempaiGo.Migrations
 {
     [DbContext(typeof(MainContext))]
-    [Migration("20251202115528_relation-profil-user")]
-    partial class relationprofiluser
+    [Migration("20251206155046_reset")]
+    partial class reset
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -514,6 +514,129 @@ namespace SemPaiGo.Migrations
                     b.ToTable("LevelCursuses");
                 });
 
+            modelBuilder.Entity("SemPaiGo.Models.Order", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("ArchivedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                    b.Property<DateTime>("OrderDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("OrderNumber")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid?>("PaymentId")
+                        .HasColumnType("uuid");
+
+                    b.Property<decimal>("ReductionAmount")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal>("ReductionPercentage")
+                        .HasColumnType("numeric");
+
+                    b.Property<Guid>("StudentId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("TeacherId")
+                        .HasColumnType("uuid");
+
+                    b.Property<decimal>("TotalAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("StudentId");
+
+                    b.HasIndex("TeacherId");
+
+                    b.ToTable("Orders");
+                });
+
+            modelBuilder.Entity("SemPaiGo.Models.Payment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime?>("ArchivedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                    b.Property<Guid>("MethodId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("OrderId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("TransactionRef")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MethodId");
+
+                    b.HasIndex("OrderId")
+                        .IsUnique();
+
+                    b.ToTable("Payments");
+                });
+
+            modelBuilder.Entity("SemPaiGo.Models.PaymentMethod", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("ArchivedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Color")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                    b.Property<string>("Icon")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PaymentMethods");
+                });
+
             modelBuilder.Entity("SemPaiGo.Models.ProfileStudent", b =>
                 {
                     b.Property<Guid>("Id")
@@ -561,8 +684,14 @@ namespace SemPaiGo.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
                     b.Property<Guid?>("LanguageId")
                         .HasColumnType("uuid");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("text");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -604,6 +733,57 @@ namespace SemPaiGo.Migrations
                         .IsUnique();
 
                     b.ToTable("RefreshTokens", (string)null);
+                });
+
+            modelBuilder.Entity("SemPaiGo.Models.Reservation", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("ArchivedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("OrderId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("SlotId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("StatusId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("StudentId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
+
+                    b.HasIndex("SlotId")
+                        .IsUnique();
+
+                    b.HasIndex("StatusId");
+
+                    b.HasIndex("StudentId");
+
+                    b.ToTable("Reservations");
                 });
 
             modelBuilder.Entity("SemPaiGo.Models.RoleApp", b =>
@@ -693,6 +873,327 @@ namespace SemPaiGo.Migrations
                         });
                 });
 
+            modelBuilder.Entity("SemPaiGo.Models.Slot", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("ArchivedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                    b.Property<DateTime>("DateFrom")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("DateTo")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("TeacherId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("TypeId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TeacherId");
+
+                    b.HasIndex("TypeId");
+
+                    b.ToTable("Slots");
+                });
+
+            modelBuilder.Entity("SemPaiGo.Models.StatusReservation", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("ArchivedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Color")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Icon")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("StatusReservation");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("2ec60a91-aab8-4753-a5d8-b131b9441e77"),
+                            Color = "#ff69b4",
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Icon = "",
+                            Name = "Pendind"
+                        },
+                        new
+                        {
+                            Id = new Guid("32d854b6-6d4e-445a-9209-31a492970f2d"),
+                            Color = "#fa69b4",
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Icon = "",
+                            Name = "Accepted"
+                        },
+                        new
+                        {
+                            Id = new Guid("6d281aec-d093-4071-8bf4-c8363361b5b4"),
+                            Color = "#ab69b4",
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Icon = "",
+                            Name = "Done"
+                        },
+                        new
+                        {
+                            Id = new Guid("caab85f5-d37b-4ea0-b035-5ba3ca8dd49f"),
+                            Color = "#ab69b4",
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Icon = "",
+                            Name = "Rejected"
+                        });
+                });
+
+            modelBuilder.Entity("SemPaiGo.Models.StatusTransaction", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("ArchivedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Color")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                    b.Property<string>("Icon")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("StatusTransactions");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("ead0ecc1-a58d-4436-a87f-89c2dbc665a8"),
+                            Color = "#ff69b4",
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Icon = "",
+                            Name = "Pending"
+                        },
+                        new
+                        {
+                            Id = new Guid("73f7fa42-196b-4040-b727-64a7b1e56458"),
+                            Color = "#fa69b4",
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Icon = "",
+                            Name = "Paid"
+                        },
+                        new
+                        {
+                            Id = new Guid("584f233a-bf58-4db9-a24e-90baac3f6d42"),
+                            Color = "#ab69b4",
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Icon = "",
+                            Name = "Failed"
+                        });
+                });
+
+            modelBuilder.Entity("SemPaiGo.Models.TeacherPayout", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("ArchivedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("PaidAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("StatusId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("TeacherId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("StatusId");
+
+                    b.HasIndex("TeacherId");
+
+                    b.ToTable("TeacherPayouts");
+                });
+
+            modelBuilder.Entity("SemPaiGo.Models.TeacherWalletTransaction", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime?>("ArchivedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                    b.Property<Guid?>("ReservationId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("TypeId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ReservationId");
+
+                    b.HasIndex("TypeId")
+                        .IsUnique();
+
+                    b.ToTable("TeacherWalletTransactions");
+                });
+
+            modelBuilder.Entity("SemPaiGo.Models.TypeSlot", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("ArchivedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Color")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Icon")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TypeSlot");
+                });
+
+            modelBuilder.Entity("SemPaiGo.Models.TypeTeacherTransaction", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("ArchivedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Color")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                    b.Property<string>("Icon")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TypeTransactions");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("7305a3d5-bfa9-41ce-be10-174c406cb842"),
+                            Color = "#ff69b4",
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Icon = "",
+                            Name = "Payment"
+                        },
+                        new
+                        {
+                            Id = new Guid("27aec3d1-dd41-4728-a29e-473da46779d9"),
+                            Color = "#fa69b4",
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Icon = "",
+                            Name = "Payout"
+                        },
+                        new
+                        {
+                            Id = new Guid("50412518-6c82-40c1-b6bf-b9c7aadf67d1"),
+                            Color = "#ab69b4",
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Icon = "",
+                            Name = "Refund"
+                        });
+                });
+
             modelBuilder.Entity("SemPaiGo.Models.UserApp", b =>
                 {
                     b.Property<Guid>("Id")
@@ -720,9 +1221,6 @@ namespace SemPaiGo.Migrations
 
                     b.Property<DateTime>("DateOfBirth")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("text");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256)
@@ -779,9 +1277,6 @@ namespace SemPaiGo.Migrations
                     b.Property<Guid>("StatusId")
                         .HasColumnType("uuid");
 
-                    b.Property<string>("Title")
-                        .HasColumnType("text");
-
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("boolean");
 
@@ -803,7 +1298,72 @@ namespace SemPaiGo.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex");
 
+                    b.HasIndex("StatusId");
+
                     b.ToTable("Users", (string)null);
+                });
+
+            modelBuilder.Entity("SempaiGo.Models.StatusAccount", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(64)
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("ArchivedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Color")
+                        .IsRequired()
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                    b.Property<string>("Icon")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("StatusAccount");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("12e65875-bec4-422a-aad4-c28de0e06fff"),
+                            Color = "#ff69b4",
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Icon = "",
+                            Name = "Active"
+                        },
+                        new
+                        {
+                            Id = new Guid("acc9ddb6-824b-42cb-8276-5d91b6af2003"),
+                            Color = "#fa69b4",
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Icon = "",
+                            Name = "Pending"
+                        },
+                        new
+                        {
+                            Id = new Guid("fd2621ef-85f0-46a6-acdd-c77fb111630f"),
+                            Color = "#ab69b4",
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Icon = "",
+                            Name = "Banned"
+                        });
                 });
 
             modelBuilder.Entity("CursusXCategories", b =>
@@ -936,6 +1496,44 @@ namespace SemPaiGo.Migrations
                     b.Navigation("Teacher");
                 });
 
+            modelBuilder.Entity("SemPaiGo.Models.Order", b =>
+                {
+                    b.HasOne("SemPaiGo.Models.ProfileStudent", "Student")
+                        .WithMany("Orders")
+                        .HasForeignKey("StudentId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("SemPaiGo.Models.ProfileTeacher", "Teacher")
+                        .WithMany()
+                        .HasForeignKey("TeacherId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Student");
+
+                    b.Navigation("Teacher");
+                });
+
+            modelBuilder.Entity("SemPaiGo.Models.Payment", b =>
+                {
+                    b.HasOne("SemPaiGo.Models.PaymentMethod", "Method")
+                        .WithMany()
+                        .HasForeignKey("MethodId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SemPaiGo.Models.Order", "Order")
+                        .WithOne("Payment")
+                        .HasForeignKey("SemPaiGo.Models.Payment", "OrderId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Method");
+
+                    b.Navigation("Order");
+                });
+
             modelBuilder.Entity("SemPaiGo.Models.ProfileStudent", b =>
                 {
                     b.HasOne("SemPaiGo.Models.Language", null)
@@ -975,6 +1573,96 @@ namespace SemPaiGo.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("SemPaiGo.Models.Reservation", b =>
+                {
+                    b.HasOne("SemPaiGo.Models.Order", "Order")
+                        .WithMany("Reservations")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SemPaiGo.Models.Slot", "Slot")
+                        .WithOne("Reservation")
+                        .HasForeignKey("SemPaiGo.Models.Reservation", "SlotId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SemPaiGo.Models.StatusReservation", "Status")
+                        .WithMany()
+                        .HasForeignKey("StatusId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SemPaiGo.Models.ProfileStudent", "Student")
+                        .WithMany("Reservations")
+                        .HasForeignKey("StudentId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Order");
+
+                    b.Navigation("Slot");
+
+                    b.Navigation("Status");
+
+                    b.Navigation("Student");
+                });
+
+            modelBuilder.Entity("SemPaiGo.Models.Slot", b =>
+                {
+                    b.HasOne("SemPaiGo.Models.ProfileTeacher", "Teacher")
+                        .WithMany("Slots")
+                        .HasForeignKey("TeacherId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("SemPaiGo.Models.TypeSlot", "Type")
+                        .WithMany()
+                        .HasForeignKey("TypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Teacher");
+
+                    b.Navigation("Type");
+                });
+
+            modelBuilder.Entity("SemPaiGo.Models.TeacherPayout", b =>
+                {
+                    b.HasOne("SemPaiGo.Models.StatusTransaction", "Status")
+                        .WithMany()
+                        .HasForeignKey("StatusId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SemPaiGo.Models.ProfileTeacher", "Teacher")
+                        .WithMany()
+                        .HasForeignKey("TeacherId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Status");
+
+                    b.Navigation("Teacher");
+                });
+
+            modelBuilder.Entity("SemPaiGo.Models.TeacherWalletTransaction", b =>
+                {
+                    b.HasOne("SemPaiGo.Models.Reservation", "Reservation")
+                        .WithMany()
+                        .HasForeignKey("ReservationId");
+
+                    b.HasOne("SemPaiGo.Models.TypeTeacherTransaction", "Type")
+                        .WithOne()
+                        .HasForeignKey("SemPaiGo.Models.TeacherWalletTransaction", "TypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Reservation");
+
+                    b.Navigation("Type");
+                });
+
             modelBuilder.Entity("SemPaiGo.Models.UserApp", b =>
                 {
                     b.HasOne("SemPaiGo.Models.Gender", "Gender")
@@ -983,7 +1671,15 @@ namespace SemPaiGo.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("SempaiGo.Models.StatusAccount", "Status")
+                        .WithMany()
+                        .HasForeignKey("StatusId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Gender");
+
+                    b.Navigation("Status");
                 });
 
             modelBuilder.Entity("SemPaiGo.Models.Language", b =>
@@ -993,11 +1689,22 @@ namespace SemPaiGo.Migrations
                     b.Navigation("Teachers");
                 });
 
+            modelBuilder.Entity("SemPaiGo.Models.Order", b =>
+                {
+                    b.Navigation("Payment");
+
+                    b.Navigation("Reservations");
+                });
+
             modelBuilder.Entity("SemPaiGo.Models.ProfileStudent", b =>
                 {
                     b.Navigation("Addresses");
 
                     b.Navigation("Formations");
+
+                    b.Navigation("Orders");
+
+                    b.Navigation("Reservations");
                 });
 
             modelBuilder.Entity("SemPaiGo.Models.ProfileTeacher", b =>
@@ -1009,11 +1716,18 @@ namespace SemPaiGo.Migrations
                     b.Navigation("Experiences");
 
                     b.Navigation("Formations");
+
+                    b.Navigation("Slots");
                 });
 
             modelBuilder.Entity("SemPaiGo.Models.RoleApp", b =>
                 {
                     b.Navigation("UserRoles");
+                });
+
+            modelBuilder.Entity("SemPaiGo.Models.Slot", b =>
+                {
+                    b.Navigation("Reservation");
                 });
 
             modelBuilder.Entity("SemPaiGo.Models.UserApp", b =>

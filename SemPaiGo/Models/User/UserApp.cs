@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using SempaiGo.Models;
 using SemPaiGo.Models.Interfaces;
 using SemPaiGo.Utilities;
 using System.ComponentModel.DataAnnotations;
@@ -10,11 +11,9 @@ public class UserApp : IdentityUser<Guid>, IArchivable, IUpdateable, ICreatable
     public string FirstName { get; set; }
     public string LastName { get; set; }
     public DateTimeOffset DateOfBirth { get; set; }
+    public string? ImgUrl { get; set; }
     public bool DataProcessingConsent { get; set; } = false;
     public bool PrivacyPolicyConsent { get; set; } = false;
-    public string? Title { get; set; }
-    public string? Description { get; set; }
-    public string? ImgUrl { get; set; }
     public DateTimeOffset? ArchivedAt { get; set; }
     public DateTimeOffset? UpdatedAt { get; set; } = DateTime.UtcNow;
     public DateTimeOffset CreatedAt { get; set; } = DateTime.UtcNow;
@@ -27,6 +26,7 @@ public class UserApp : IdentityUser<Guid>, IArchivable, IUpdateable, ICreatable
 
     // Status account
     public Guid StatusId { get; set; }
+    public StatusAccount Status { get; set; }
 }
 
 

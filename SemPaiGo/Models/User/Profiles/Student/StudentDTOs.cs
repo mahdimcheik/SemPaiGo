@@ -17,22 +17,20 @@ public class StudentDetailsDTO : BaseModel
     public string? PhoneNumber { get; set; }
     public string? ImgUrl { get; set; }
 
-    public GenderDTO? Gender { get; set; }
+    public GenderDetailsDTO? Gender { get; set; }
     public DateTimeOffset CreatedAt { get; set; }
 
     [Required]
-    public ICollection<RoleAppDetailsDTO> Roles { get; set; }
+    public ICollection<RoleDetailsDTO> Roles { get; set; }
 
-    public StudentDetailsDTO(ProfileStudent student, List<RoleAppDetailsDTO>? roles)
+    public StudentDetailsDTO(ProfileStudent student, List<RoleDetailsDTO>? roles)
     {
         Id = student.Id;
         FirstName = student.User.FirstName;
         LastName = student.User.LastName;
         Email = student.User.Email;
         Roles = roles;
-        Gender = student.User.Gender is null ? null : new GenderDTO(student.User.Gender);
-        Title = student.User.Title;
-        Description = student.User.Description;
+        Gender = student.User.Gender is null ? null : new GenderDetailsDTO(student.User.Gender);
         PhoneNumber = student.User.PhoneNumber;
         DateOfBirth = student.User.DateOfBirth;
         ImgUrl = student.User.ImgUrl;

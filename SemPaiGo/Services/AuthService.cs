@@ -151,7 +151,7 @@ public class AuthService
 
         var rolesDetailed = roles
             .Where(r => userRoles.Contains(r.Name ?? string.Empty))
-            .Select(r => new RoleAppDetailsDTO(r))
+            .Select(r => new RoleDetailsDTO(r))
             .ToList();
 
         if (user.ImgUrl is not null)
@@ -217,7 +217,7 @@ public class AuthService
 
             var rolesDetailed = roles
                 .Where(r => userRoles.Contains(r.Name ?? string.Empty))
-                .Select(r => new RoleAppDetailsDTO(r))
+                .Select(r => new RoleDetailsDTO(r))
                 .ToList();
             return new ResponseDTO<UserDetailsDTO>
             {
@@ -301,7 +301,7 @@ public class AuthService
 
         var rolesDetailed = roles
             .Where(r => userRoles.Contains(r.Name ?? string.Empty))
-            .Select(r => new RoleAppDetailsDTO(r))
+            .Select(r => new RoleDetailsDTO(r))
             .ToList();
         if (refreshTokenDB.User.ImgUrl is not null)
         {
@@ -473,7 +473,7 @@ public class AuthService
 
         var rolesDetailed = roles
             .Where(r => userRoles.Contains(r.Name ?? string.Empty))
-            .Select(r => new RoleAppDetailsDTO(r))
+            .Select(r => new RoleDetailsDTO(r))
             .ToList();
 
         response.Cookies.Append(

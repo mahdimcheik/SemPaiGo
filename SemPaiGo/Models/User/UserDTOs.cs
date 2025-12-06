@@ -14,27 +14,23 @@ public class UserDetailsDTO : ICreatable
     [Required]
     public string Email { get; set; } = null!;
     public DateTimeOffset DateOfBirth { get; set; }
-    public string? Title { get; set; }
-    public string? Description { get; set; }
     public string? PhoneNumber { get; set; }
     public string? ImgUrl { get; set; }
 
-    public GenderDTO? Gender { get; set; }
+    public GenderDetailsDTO? Gender { get; set; }
     public DateTimeOffset CreatedAt { get; set; }
 
     [Required]
-    public ICollection<RoleAppDetailsDTO> Roles { get; set; }
+    public ICollection<RoleDetailsDTO> Roles { get; set; }
 
-    public UserDetailsDTO(UserApp user, List<RoleAppDetailsDTO>? roles)
+    public UserDetailsDTO(UserApp user, List<RoleDetailsDTO>? roles)
     {
         Id = user.Id;
         FirstName = user.FirstName;
         LastName = user.LastName;
         Email = user.Email;
         Roles = roles;
-        Gender = user.Gender is null ? null : new GenderDTO(user.Gender);
-        Title = user.Title;
-        Description = user.Description;
+        Gender = user.Gender is null ? null : new GenderDetailsDTO(user.Gender);
         PhoneNumber = user.PhoneNumber;
         DateOfBirth = user.DateOfBirth;
         ImgUrl = user.ImgUrl;
@@ -90,8 +86,7 @@ public class UserCreateDTO
     public bool DataProcessingConsent { get; set; } = false;
     [Required]
     public bool PrivacyPolicyConsent { get; set; } = false;
-    public string? Title { get; set; }
-    public string? Description { get; set; }
+
     public string? PhoneNumber { get; set; }
 
     public DateTimeOffset DateOfBirth { get; set; }
@@ -107,10 +102,9 @@ public class UserCreateDTO
             FirstName = FirstName,
             LastName = LastName,
             DateOfBirth = DateOfBirth,
-            Title = Title,
             GenderId = GenderId,
-            Description = Description,
             PhoneNumber = PhoneNumber,
+            StatusId = HardCode.ACCOUNT_PENDING,
 
             DataProcessingConsent = DataProcessingConsent,
             PrivacyPolicyConsent = PrivacyPolicyConsent
@@ -196,8 +190,6 @@ public class UserUpdateDTO
         user.FirstName = FirstName;
         user.LastName = LastName;
         user.DateOfBirth = DateOfBirth;
-        user.Title = Title;
-        user.Description = Description;
         user.PhoneNumber = PhoneNumber;
     }
 }

@@ -300,6 +300,7 @@ static void SeedUsers(IServiceProvider serviceProvider)
             EmailConfirmed = true,
             DateOfBirth = new DateTime(1986, 04, 21),
             GenderId = HardCode.GENDER_OTHER,
+            StatusId = HardCode.ACCOUNT_ACTIVE
         };
         var superAdminPassword = EnvironmentVariables.SUPER_ADMIN_PASSWORD;
         if (userManager.FindByEmailAsync(superAdminEmail.Email).Result == null)

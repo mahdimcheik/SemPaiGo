@@ -4,6 +4,8 @@ namespace SemPaiGo.Models;
 
 public class ProfileTeacher : BaseModel
 {
+    public string? Title { get; set; }
+    public string? Description { get; set; }
     public Guid UserId { get; set; }
     public UserApp? User { get; set; }
     public ICollection<Address> Addresses { get; set; }

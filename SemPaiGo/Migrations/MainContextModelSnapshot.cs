@@ -8,7 +8,7 @@ using SemPaiGo.Contexts;
 
 #nullable disable
 
-namespace SemPaiGo.Migrations
+namespace SempaiGo.Migrations
 {
     [DbContext(typeof(MainContext))]
     partial class MainContextModelSnapshot : ModelSnapshot
@@ -681,8 +681,14 @@ namespace SemPaiGo.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
                     b.Property<Guid?>("LanguageId")
                         .HasColumnType("uuid");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("text");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -1213,9 +1219,6 @@ namespace SemPaiGo.Migrations
                     b.Property<DateTime>("DateOfBirth")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("Description")
-                        .HasColumnType("text");
-
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
@@ -1271,9 +1274,6 @@ namespace SemPaiGo.Migrations
                     b.Property<Guid>("StatusId")
                         .HasColumnType("uuid");
 
-                    b.Property<string>("Title")
-                        .HasColumnType("text");
-
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("boolean");
 
@@ -1295,7 +1295,72 @@ namespace SemPaiGo.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex");
 
+                    b.HasIndex("StatusId");
+
                     b.ToTable("Users", (string)null);
+                });
+
+            modelBuilder.Entity("SempaiGo.Models.StatusAccount", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(64)
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("ArchivedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Color")
+                        .IsRequired()
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                    b.Property<string>("Icon")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("StatusAccount");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("12e65875-bec4-422a-aad4-c28de0e06fff"),
+                            Color = "#ff69b4",
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Icon = "",
+                            Name = "Active"
+                        },
+                        new
+                        {
+                            Id = new Guid("acc9ddb6-824b-42cb-8276-5d91b6af2003"),
+                            Color = "#fa69b4",
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Icon = "",
+                            Name = "Pending"
+                        },
+                        new
+                        {
+                            Id = new Guid("fd2621ef-85f0-46a6-acdd-c77fb111630f"),
+                            Color = "#ab69b4",
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Icon = "",
+                            Name = "Banned"
+                        });
                 });
 
             modelBuilder.Entity("CursusXCategories", b =>
@@ -1603,7 +1668,15 @@ namespace SemPaiGo.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("SempaiGo.Models.StatusAccount", "Status")
+                        .WithMany()
+                        .HasForeignKey("StatusId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Gender");
+
+                    b.Navigation("Status");
                 });
 
             modelBuilder.Entity("SemPaiGo.Models.Language", b =>
