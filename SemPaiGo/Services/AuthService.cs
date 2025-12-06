@@ -47,12 +47,12 @@ public class AuthService
     /// </summary>
     /// <param name="newUserDTO">Données de création de l'utilisateur</param>
     /// <returns>Réponse contenant les informations de l'utilisateur créé</returns>
-    public async Task<ResponseDTO<UserDetailsDTO>> Register(UserCreateDTO newUserDTO)
+    public async Task<Response<UserDetailsDTO>> Register(UserCreateDTO newUserDTO)
     {
         // Vérifier le consentement
         if (!newUserDTO.DataProcessingConsent || !newUserDTO.PrivacyPolicyConsent)
         {
-            return new ResponseDTO<UserDetailsDTO>
+            return new Response<UserDetailsDTO>
             {
                 Status = 400,
                 Message =
@@ -65,14 +65,14 @@ public class AuthService
         if (isEmailAlreadyUsed)
         {
             // Si l'adresse e-mail est déjà utilisée, mettre à jour la réponse et sauter vers l'étiquette UserAlreadyExisted
-            return new ResponseDTO<UserDetailsDTO>
+            return new Response<UserDetailsDTO>
             {
                 Status = 400,
                 Message = "\"L'email est déjà utilisé\"",
             };
         }
         // Créer un nouvel utilisateur en utilisant les données du modèle et la base de données contextuelle
-        UserApp newUser = newUserDTO.ToUser();
+        UserApp newUser = new UserApp(newUserDTO);
         newUser.CreatedAt = DateTime.Now;
 
         // Obtenir la date actuelle
@@ -98,7 +98,7 @@ public class AuthService
             }
 
             // Retourner une réponse BadRequest avec le modèle d'état contenant les erreurs
-            return new ResponseDTO<UserDetailsDTO>
+            return new Response<UserDetailsDTO>
             {
                 Message = "Création échouée",
                 Status = 401,
@@ -115,7 +115,7 @@ public class AuthService
             await mailService.SendConfirmAccount(newUser, confirmationLink ?? "");
 
             // Retourne une réponse avec le statut déterminé, l'identifiant de l'utilisateur, le message de réponse et le statut complet
-            return new ResponseDTO<UserDetailsDTO>
+            return new Response<UserDetailsDTO>
             {
                 Message = "Profil créé",
                 Status = 201,
@@ -126,7 +126,7 @@ public class AuthService
         {
             // En cas d'exception, afficher la trace et retourner une réponse avec le statut approprié
             Console.WriteLine(e);
-            return new ResponseDTO<UserDetailsDTO>
+            return new Response<UserDetailsDTO>
             {
                 Status = 40,
                 Message = "Le compte n'est pas créé!!!",
@@ -134,12 +134,12 @@ public class AuthService
         }
     }
 
-    public async Task<ResponseDTO<UserDetailsDTO>> GetPublicInformations(Guid userId)
+    public async Task<Response<UserDetailsDTO>> GetPublicInformations(Guid userId)
     {
         var user = await context.Users.FirstOrDefaultAsync(u => u.Id == userId);
         if (user is null)
         {
-            return new ResponseDTO<UserDetailsDTO>
+            return new Response<UserDetailsDTO>
             {
                 Message = "Demande acceptée",
                 Status = 400,
@@ -159,7 +159,7 @@ public class AuthService
             user.ImgUrl = await minioService.GetFileUrlAsync(user.ImgUrl);
         }
 
-        return new ResponseDTO<UserDetailsDTO>
+        return new Response<UserDetailsDTO>
         {
             Message = "Demande acceptée",
             Status = 200,
@@ -174,7 +174,7 @@ public class AuthService
     /// <param name="model">Données de mise à jour</param>
     /// <param name="UserPrincipal">Principal de l'utilisateur connecté</param>
     /// <returns>Réponse contenant les informations mises à jour</returns>
-    public async Task<ResponseDTO<UserDetailsDTO>> Update(
+    public async Task<Response<UserDetailsDTO>> Update(
         UserUpdateDTO model,
         ClaimsPrincipal UserPrincipal
     )
@@ -182,7 +182,7 @@ public class AuthService
         var user = CheckUser.GetUserFromClaim(UserPrincipal, context);
         if (user is null)
         {
-            return new ResponseDTO<UserDetailsDTO>
+            return new Response<UserDetailsDTO>
             {
                 Status = 40,
                 Message = "Le compte n'existe pas ou ne correspond pas",
@@ -199,7 +199,7 @@ public class AuthService
 
             if (userWithLanguages == null)
             {
-                return new ResponseDTO<UserDetailsDTO>
+                return new Response<UserDetailsDTO>
                 {
                     Status = 404,
                     Message = "Utilisateur non trouvé",
@@ -219,7 +219,7 @@ public class AuthService
                 .Where(r => userRoles.Contains(r.Name ?? string.Empty))
                 .Select(r => new RoleDetailsDTO(r))
                 .ToList();
-            return new ResponseDTO<UserDetailsDTO>
+            return new Response<UserDetailsDTO>
             {
                 Message = "Profil mis à jour",
                 Status = 200,
@@ -229,7 +229,7 @@ public class AuthService
         catch (Exception ex)
         {
             await transaction.RollbackAsync();
-            return new ResponseDTO<UserDetailsDTO> { Status = 500, Message = ex.Message };
+            return new Response<UserDetailsDTO> { Status = 500, Message = ex.Message };
         }
     }
 
@@ -239,7 +239,7 @@ public class AuthService
     /// <param name="userId">ID de l'utilisateur</param>
     /// <param name="confirmationToken">Token de confirmation</param>
     /// <returns>Réponse indiquant le succès ou l'échec de la confirmation</returns>
-    public async Task<ResponseDTO<string?>> EmailConfirmation(
+    public async Task<Response<string?>> EmailConfirmation(
         string userId,
         string confirmationToken
     )
@@ -247,14 +247,14 @@ public class AuthService
         UserApp user = await userManager.FindByIdAsync(userId);
         if (user is null)
         {
-            return new ResponseDTO<string?> { Message = "Validation échouée", Status = 400 };
+            return new Response<string?> { Message = "Validation échouée", Status = 400 };
         }
 
         IdentityResult result = await userManager.ConfirmEmailAsync(user, confirmationToken);
 
         if (result.Succeeded)
         {
-            return new ResponseDTO<string?>
+            return new Response<string?>
             {
                 Message =
                     $"{EnvironmentVariables.API_FRONT_URL}/auth/email-confirmation-success",
@@ -262,7 +262,7 @@ public class AuthService
             };
         }
 
-        return new ResponseDTO<string?> { Message = "Validation échouée", Status = 400 };
+        return new Response<string?> { Message = "Validation échouée", Status = 400 };
     }
 
     /// <summary>
@@ -271,7 +271,7 @@ public class AuthService
     /// <param name="refreshToken">Token de rafraîchissement</param>
     /// <param name="httpContext">Contexte HTTP</param>
     /// <returns>Réponse contenant les nouvelles informations de connexion</returns>
-    public async Task<ResponseDTO<LoginOutputDTO>> UpdateRefreshToken(
+    public async Task<Response<LoginOutputDTO>> UpdateRefreshToken(
         string refreshToken,
         HttpContext httpContext
     )
@@ -284,7 +284,7 @@ public class AuthService
 
         if (refreshTokenDB is null || refreshTokenDB.User is null)
         {
-            return new ResponseDTO<LoginOutputDTO>
+            return new Response<LoginOutputDTO>
             {
                 Message = "Token expiré ou non valide",
                 Status = 401,
@@ -310,7 +310,7 @@ public class AuthService
             );
         }
 
-        return new ResponseDTO<LoginOutputDTO>
+        return new Response<LoginOutputDTO>
         {
             Message = "Autorisation renouvelée",
             Data = new LoginOutputDTO
@@ -328,7 +328,7 @@ public class AuthService
     /// </summary>
     /// <param name="model">Données de récupération</param>
     /// <returns>Réponse contenant les informations de récupération</returns>
-    public async Task<ResponseDTO<PasswordResetResponseDTO>> ForgotPassword(
+    public async Task<Response<PasswordResetResponseDTO>> ForgotPassword(
         ForgotPasswordInput model
     )
     {
@@ -358,7 +358,7 @@ public class AuthService
                 //    resetLink
                 //);
 
-                return new ResponseDTO<PasswordResetResponseDTO>
+                return new Response<PasswordResetResponseDTO>
                 {
                     Message =
                         "Un email de réinitialisation vient d'être envoyé à cette adresse "
@@ -374,7 +374,7 @@ public class AuthService
             }
             catch
             {
-                return new ResponseDTO<PasswordResetResponseDTO>
+                return new Response<PasswordResetResponseDTO>
                 {
                     Message = "Erreur de réinitialisation, réessayez plus tard ",
                     Status = 400,
@@ -382,7 +382,7 @@ public class AuthService
             }
         }
 
-        return new ResponseDTO<PasswordResetResponseDTO>
+        return new Response<PasswordResetResponseDTO>
         {
             Message = "Erreur de réinitialisation, réessayez plus tard ",
             Status = 400,
@@ -394,12 +394,12 @@ public class AuthService
     /// </summary>
     /// <param name="model">Données de récupération de mot de passe</param>
     /// <returns>Réponse indiquant le succès ou l'échec du changement</returns>
-    public async Task<ResponseDTO<string?>> ChangePassword(PasswordRecoveryInput model)
+    public async Task<Response<string?>> ChangePassword(PasswordRecoveryInput model)
     {
         UserApp? user = await userManager.FindByIdAsync(model.UserId);
         if (user is null)
         {
-            return new ResponseDTO<string?>
+            return new Response<string?>
             {
                 Message = "L'utilisateur n'existe pas",
                 Status = 404,
@@ -416,14 +416,14 @@ public class AuthService
 
         if (result.Succeeded)
         {
-            return new ResponseDTO<string?>
+            return new Response<string?>
             {
                 Message = "Mot de passe vient d'être modifié",
                 Status = 201,
             };
         }
 
-        return new ResponseDTO<string?>
+        return new Response<string?>
         {
             Message = "Problème de validation, votre token est valid ?",
             Status = 404,
@@ -436,7 +436,7 @@ public class AuthService
     /// <param name="model">Données de connexion</param>
     /// <param name="response">Réponse HTTP</param>
     /// <returns>Réponse contenant les informations de connexion</returns>
-    public async Task<ResponseDTO<LoginOutputDTO>> Login(
+    public async Task<Response<LoginOutputDTO>> Login(
         UserLoginDTO model,
         HttpResponse response
     )
@@ -445,7 +445,7 @@ public class AuthService
 
         if (user == null)
         {
-            return new ResponseDTO<LoginOutputDTO>
+            return new Response<LoginOutputDTO>
             {
                 Message = "L'utilisateur n'existe pas ",
                 Status = 404,
@@ -455,7 +455,7 @@ public class AuthService
         var result = await userManager.CheckPasswordAsync(user: user, password: model.Password);
         if (!userManager.CheckPasswordAsync(user: user, password: model.Password).Result)
         {
-            return new ResponseDTO<LoginOutputDTO>
+            return new Response<LoginOutputDTO>
             {
                 Message = "Connexion échouée",
                 Status = 401,
@@ -494,7 +494,7 @@ public class AuthService
             user.ImgUrl = await minioService.GetFileUrlAsync(user.ImgUrl);
         }
 
-        return new ResponseDTO<LoginOutputDTO>
+        return new Response<LoginOutputDTO>
         {
             Message = "Connexion réussite",
             Status = 200,
@@ -635,7 +635,7 @@ public class AuthService
         return existingUser != null;
     }
 
-    public async Task<ResponseDTO<FileUrl>> UploadAvatar(
+    public async Task<Response<FileUrl>> UploadAvatar(
         IFormFile file,
         ClaimsPrincipal UserPrincipal,
         HttpRequest request
@@ -643,7 +643,7 @@ public class AuthService
     {
         if (file == null)
         {
-            return new ResponseDTO<FileUrl>
+            return new Response<FileUrl>
             {
                 Message = "Aucun fichier téléversé",
                 Status = 400,
@@ -652,7 +652,7 @@ public class AuthService
         var user = CheckUser.GetUserFromClaim(UserPrincipal, context);
         if (user is null)
         {
-            return new ResponseDTO<FileUrl> { Status = 40, Message = "Demande refusée" };
+            return new Response<FileUrl> { Status = 40, Message = "Demande refusée" };
         }
 
         //verifier si le type est image
@@ -672,7 +672,7 @@ public class AuthService
             || !allowedExtensions.Contains(fileExtension)
         )
         {
-            return new ResponseDTO<FileUrl>
+            return new Response<FileUrl>
             {
                 Status = 40,
                 Message = "le type du ficheir n'est pas autorisé'",
@@ -706,7 +706,7 @@ public class AuthService
 
         var imgUrl = await minioService.GetFileUrlAsync(user.ImgUrl);
 
-        return new ResponseDTO<FileUrl>
+        return new Response<FileUrl>
         {
             Message = "Avatar téléversé",
             Status = 200,

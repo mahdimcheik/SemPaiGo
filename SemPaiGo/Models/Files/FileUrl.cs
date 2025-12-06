@@ -7,7 +7,7 @@ public class FileUrl
 
 public class FileInfoResponse
 {
-    public string Name { get; set; }
-    public string Url { get; set; }
+    public required string Name { get; set; }
+    public required string Url { get; set; }
     public DateTimeOffset? UploadDate { get; set; }
 }

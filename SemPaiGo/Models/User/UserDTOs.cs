@@ -11,11 +11,11 @@ public class UserDetailsDTO : ICreatable
     public string FirstName { get; set; }
     [Required]
     public string LastName { get; set; }
+    public string? ImgUrl { get; set; }
     [Required]
     public string Email { get; set; } = null!;
     public DateTimeOffset DateOfBirth { get; set; }
     public string? PhoneNumber { get; set; }
-    public string? ImgUrl { get; set; }
 
     public GenderDetailsDTO? Gender { get; set; }
     public DateTimeOffset CreatedAt { get; set; }
@@ -70,46 +70,28 @@ public class UserCreateDTO
 {
     [Required]
     [EmailAddress]
-    public string Email { get; set; }
+    public required string Email { get; set; }
 
     [Required]
     [DataType(DataType.Password)]
-    public string Password { get; set; }
+    public required string Password { get; set; }
 
     [Required]
-    public string FirstName { get; set; }
+    public required string FirstName { get; set; }
 
     [Required]
-    public string LastName { get; set; }
+    public required string LastName { get; set; }
 
     [Required]
-    public bool DataProcessingConsent { get; set; } = false;
+    public required bool DataProcessingConsent { get; set; } = false;
     [Required]
-    public bool PrivacyPolicyConsent { get; set; } = false;
+    public required bool PrivacyPolicyConsent { get; set; } = false;
 
     public string? PhoneNumber { get; set; }
 
-    public DateTimeOffset DateOfBirth { get; set; }
-    public Guid? RoleId { get; set; }
+    public required DateTimeOffset DateOfBirth { get; set; }
+    public Guid RoleId { get; set; } = HardCode.ROLE_STUDENT;
     public Guid GenderId { get; set; } = HardCode.GENDER_OTHER;
-
-    public UserApp ToUser()
-    {
-        return new UserApp
-        {
-            UserName = Email,
-            Email = Email,
-            FirstName = FirstName,
-            LastName = LastName,
-            DateOfBirth = DateOfBirth,
-            GenderId = GenderId,
-            PhoneNumber = PhoneNumber,
-            StatusId = HardCode.ACCOUNT_PENDING,
-
-            DataProcessingConsent = DataProcessingConsent,
-            PrivacyPolicyConsent = PrivacyPolicyConsent
-        };
-    }
 }
 
 public class PasswordResetResponseDTO

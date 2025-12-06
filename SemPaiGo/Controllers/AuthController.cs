@@ -63,14 +63,14 @@ public class AuthController : ControllerBase
     [AllowAnonymous]
     [EnableCors]
     [HttpPost("register")]
-    public async Task<ActionResult<ResponseDTO<UserDetailsDTO>>> Register(
+    public async Task<ActionResult<Response<UserDetailsDTO>>> Register(
         [FromBody] UserCreateDTO model
     )
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(
-                new ResponseDTO<object> { Status = 404, Message = "Problème de validation" }
+                new Response<object> { Status = 404, Message = "Problème de validation" }
             );
         }
 
@@ -91,7 +91,7 @@ public class AuthController : ControllerBase
     [EnableCors]
     [Route("update")]
     [HttpPatch]
-    public async Task<ActionResult<ResponseDTO<UserDetailsDTO>>> Update(
+    public async Task<ActionResult<Response<UserDetailsDTO>>> Update(
         [FromBody] UserUpdateDTO model
     )
     {
@@ -121,13 +121,13 @@ public class AuthController : ControllerBase
     [AllowAnonymous]
     [Route("login")]
     [HttpPost]
-    public async Task<ActionResult<ResponseDTO<LoginOutputDTO>>> Login(
+    public async Task<ActionResult<Response<LoginOutputDTO>>> Login(
         [FromBody] UserLoginDTO model
     )
     {
         if (!ModelState.IsValid)
             return BadRequest(
-                new ResponseDTO<object>
+                new Response<object>
                 {
                     Message = "Connexion échouée",
                     Status = 401,
@@ -156,7 +156,7 @@ public class AuthController : ControllerBase
     [AllowAnonymous]
     [Route("email-confirmation")]
     [HttpGet]
-    public async Task<ActionResult<ResponseDTO<string>>> EmailConfirmation(
+    public async Task<ActionResult<Response<string>>> EmailConfirmation(
         [FromQuery] string userId,
         [FromQuery] string confirmationToken
     )
@@ -179,13 +179,13 @@ public class AuthController : ControllerBase
     /// </summary>
     /// <returns>Informations de l'utilisateur.</returns>
     [HttpGet("my-informations")]
-    public async Task<ActionResult<ResponseDTO<UserInfosWithtoken>>> GetMyInformations()
+    public async Task<ActionResult<Response<UserInfosWithtoken>>> GetMyInformations()
     {
         var user = CheckUser.GetUserFromClaim(HttpContext.User, _context);
 
         if (user == null)
             return BadRequest(
-                new ResponseDTO<UserInfosWithtoken>
+                new Response<UserInfosWithtoken>
                 {
                     Message = "Vous n'êtes pas connecté",
                     Status = 401,
@@ -201,7 +201,7 @@ public class AuthController : ControllerBase
             .ToList();
 
         return Ok(
-            new ResponseDTO<UserInfosWithtoken>
+            new Response<UserInfosWithtoken>
             {
                 Message = "Demande acceptée",
                 Status = 200,
@@ -219,7 +219,7 @@ public class AuthController : ControllerBase
     /// </summary>
     /// <returns>Informations de l'utilisateur.</returns>
     [HttpGet("public-informations")]
-    public async Task<ActionResult<ResponseDTO<UserDetailsDTO>>> GetPublicInformations(
+    public async Task<ActionResult<Response<UserDetailsDTO>>> GetPublicInformations(
         Guid userId
     )
     {
@@ -244,14 +244,14 @@ public class AuthController : ControllerBase
     [AllowAnonymous]
     [Route("forgot-password")]
     [HttpPost]
-    public async Task<ActionResult<ResponseDTO<PasswordResetResponseDTO?>>> ForgotPassword(
+    public async Task<ActionResult<Response<PasswordResetResponseDTO?>>> ForgotPassword(
         [FromBody] ForgotPasswordInput model
     )
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(
-                new ResponseDTO<PasswordResetResponseDTO?>
+                new Response<PasswordResetResponseDTO?>
                 {
                     Message = "Demande refusée",
                     Status = 400,
@@ -280,14 +280,14 @@ public class AuthController : ControllerBase
     [AllowAnonymous]
     [Route("reset-password")]
     [HttpPost]
-    public async Task<ActionResult<ResponseDTO<string?>>> ChangePassword(
+    public async Task<ActionResult<Response<string?>>> ChangePassword(
         [FromBody] PasswordRecoveryInput model
     )
     {
         if (!ModelState.IsValid || model.Password != model.PasswordConfirmation)
         {
             return BadRequest(
-                new ResponseDTO<string?> { Message = "Demande refusée", Status = 400 }
+                new Response<string?> { Message = "Demande refusée", Status = 400 }
             );
         }
 
@@ -311,12 +311,12 @@ public class AuthController : ControllerBase
     [Route("refresh-token")]
     [AllowAnonymous]
     [HttpGet]
-    public async Task<ActionResult<ResponseDTO<LoginOutputDTO?>>> UpdateRefreshToken()
+    public async Task<ActionResult<Response<LoginOutputDTO?>>> UpdateRefreshToken()
     {
         if (!Request.Cookies.TryGetValue("refreshToken", out var refreshToken))
         {
             return Unauthorized(
-                new ResponseDTO<LoginOutputDTO?>
+                new Response<LoginOutputDTO?>
                 {
                     Message = "Refresh token non-existant",
                     Status = 401,
@@ -338,7 +338,7 @@ public class AuthController : ControllerBase
     #region logout
     [AllowAnonymous]
     [HttpGet("logout")]
-    public async Task<ActionResult<ResponseDTO<object?>>> Logout()
+    public async Task<ActionResult<Response<object?>>> Logout()
     {
         // Récupération de l'email/nom d'utilisateur actuel pour nettoyer les connexions
         var userEmail =
@@ -348,7 +348,7 @@ public class AuthController : ControllerBase
 
         Response.Cookies.Delete("refreshToken");
 
-        return Ok(new ResponseDTO<object> { Message = "Vous êtes déconnecté", Status = 200 });
+        return Ok(new Response<object> { Message = "Vous êtes déconnecté", Status = 200 });
     }
     #endregion
 
@@ -361,7 +361,7 @@ public class AuthController : ControllerBase
     [HttpPost("upload-avatar")]
     [Consumes("multipart/form-data")]
     [Produces("application/json")]
-    public async Task<ActionResult<ResponseDTO<FileUrl>?>> OnPostUploadAsync(IFormFile file)
+    public async Task<ActionResult<Response<FileUrl>?>> OnPostUploadAsync(IFormFile file)
     {
         var result = await authService.UploadAvatar(
             file,

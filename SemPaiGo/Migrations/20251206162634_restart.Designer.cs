@@ -12,8 +12,8 @@ using SemPaiGo.Contexts;
 namespace SempaiGo.Migrations
 {
     [DbContext(typeof(MainContext))]
-    [Migration("20251206155046_reset")]
-    partial class reset
+    [Migration("20251206162634_restart")]
+    partial class restart
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -808,11 +808,6 @@ namespace SempaiGo.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
-                    b.Property<string>("DisplayName")
-                        .IsRequired()
-                        .HasMaxLength(128)
-                        .HasColumnType("character varying(128)");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(64)
@@ -840,7 +835,6 @@ namespace SempaiGo.Migrations
                             Id = new Guid("bde5556b-562d-431f-9ff9-d31a5f5cb8c5"),
                             ConcurrencyStamp = "SUPERADMIN-STAMP-2025",
                             CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            DisplayName = "Super Administrateur",
                             Name = "SuperAdmin",
                             NormalizedName = "SUPERADMIN"
                         },
@@ -849,7 +843,6 @@ namespace SempaiGo.Migrations
                             Id = new Guid("4a5eaf2f-0496-4035-a4b7-9210da39501c"),
                             ConcurrencyStamp = "SUPERADMIN-STAMP-2025",
                             CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            DisplayName = "Administrateur",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
@@ -858,7 +851,6 @@ namespace SempaiGo.Migrations
                             Id = new Guid("87a0a5ed-c7bb-4394-a163-7ed7560b3703"),
                             ConcurrencyStamp = "SUPERADMIN-STAMP-2025",
                             CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            DisplayName = "Professeur",
                             Name = "Teacher",
                             NormalizedName = "TEACHER"
                         },
@@ -867,7 +859,6 @@ namespace SempaiGo.Migrations
                             Id = new Guid("87a0a5ed-c7bb-4394-a163-7ed7560b4a01"),
                             ConcurrencyStamp = "SUPERADMIN-STAMP-2025",
                             CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            DisplayName = "Elève",
                             Name = "Student",
                             NormalizedName = "STUDENT"
                         });

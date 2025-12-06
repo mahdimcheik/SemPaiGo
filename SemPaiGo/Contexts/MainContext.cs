@@ -81,7 +81,6 @@ public class MainContext : IdentityDbContext<UserApp, RoleApp, Guid>
             r.Property(r => r.Id).IsRequired().HasMaxLength(64);
             r.Property(r => r.Name).IsRequired().HasMaxLength(64);
             r.Property(r => r.NormalizedName).IsRequired().HasMaxLength(64);
-            r.Property(r => r.DisplayName).IsRequired().HasMaxLength(128);
             r.Property(e => e.ArchivedAt).HasColumnType("timestamp with time zone");
             r.Property(a => a.UpdatedAt).HasColumnType("timestamp with time zone");
 
@@ -486,7 +485,6 @@ public class MainContext : IdentityDbContext<UserApp, RoleApp, Guid>
                 Id = HardCode.ROLE_SUPER_ADMIN,
                 Name = "SuperAdmin",
                 NormalizedName = "SUPERADMIN",
-                DisplayName = "Super Administrateur",
                 CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc),
                 ConcurrencyStamp = "SUPERADMIN-STAMP-2025",
             },
@@ -495,7 +493,6 @@ public class MainContext : IdentityDbContext<UserApp, RoleApp, Guid>
                 Id = HardCode.ROLE_ADMIN,
                 Name = "Admin",
                 NormalizedName = "ADMIN",
-                DisplayName = "Administrateur",
                 CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc),
                 ConcurrencyStamp = "SUPERADMIN-STAMP-2025",
             },
@@ -504,7 +501,6 @@ public class MainContext : IdentityDbContext<UserApp, RoleApp, Guid>
                 Id = HardCode.ROLE_TEACHER,
                 Name = "Teacher",
                 NormalizedName = "TEACHER",
-                DisplayName = "Professeur",
                 CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc),
                 ConcurrencyStamp = "SUPERADMIN-STAMP-2025",
             },
@@ -513,7 +509,6 @@ public class MainContext : IdentityDbContext<UserApp, RoleApp, Guid>
                 Id = HardCode.ROLE_STUDENT,
                 Name = "Student",
                 NormalizedName = "STUDENT",
-                DisplayName = "Elève",
                 CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc),
                 ConcurrencyStamp = "SUPERADMIN-STAMP-2025",
             },

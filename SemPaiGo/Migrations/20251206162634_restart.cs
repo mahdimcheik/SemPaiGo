@@ -9,7 +9,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace SempaiGo.Migrations
 {
     /// <inheritdoc />
-    public partial class reset : Migration
+    public partial class restart : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -108,7 +108,6 @@ namespace SempaiGo.Migrations
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     Color = table.Column<string>(type: "text", nullable: true),
-                    DisplayName = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
                     Name = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false),
                     NormalizedName = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false),
                     ConcurrencyStamp = table.Column<string>(type: "text", nullable: true)
@@ -790,13 +789,13 @@ namespace SempaiGo.Migrations
 
             migrationBuilder.InsertData(
                 table: "Roles",
-                columns: new[] { "Id", "ArchivedAt", "Color", "ConcurrencyStamp", "CreatedAt", "DisplayName", "Name", "NormalizedName", "UpdatedAt" },
+                columns: new[] { "Id", "ArchivedAt", "Color", "ConcurrencyStamp", "CreatedAt", "Name", "NormalizedName", "UpdatedAt" },
                 values: new object[,]
                 {
-                    { new Guid("4a5eaf2f-0496-4035-a4b7-9210da39501c"), null, null, "SUPERADMIN-STAMP-2025", new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "Administrateur", "Admin", "ADMIN", null },
-                    { new Guid("87a0a5ed-c7bb-4394-a163-7ed7560b3703"), null, null, "SUPERADMIN-STAMP-2025", new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "Professeur", "Teacher", "TEACHER", null },
-                    { new Guid("87a0a5ed-c7bb-4394-a163-7ed7560b4a01"), null, null, "SUPERADMIN-STAMP-2025", new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "Elève", "Student", "STUDENT", null },
-                    { new Guid("bde5556b-562d-431f-9ff9-d31a5f5cb8c5"), null, null, "SUPERADMIN-STAMP-2025", new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "Super Administrateur", "SuperAdmin", "SUPERADMIN", null }
+                    { new Guid("4a5eaf2f-0496-4035-a4b7-9210da39501c"), null, null, "SUPERADMIN-STAMP-2025", new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "Admin", "ADMIN", null },
+                    { new Guid("87a0a5ed-c7bb-4394-a163-7ed7560b3703"), null, null, "SUPERADMIN-STAMP-2025", new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "Teacher", "TEACHER", null },
+                    { new Guid("87a0a5ed-c7bb-4394-a163-7ed7560b4a01"), null, null, "SUPERADMIN-STAMP-2025", new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "Student", "STUDENT", null },
+                    { new Guid("bde5556b-562d-431f-9ff9-d31a5f5cb8c5"), null, null, "SUPERADMIN-STAMP-2025", new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "SuperAdmin", "SUPERADMIN", null }
                 });
 
             migrationBuilder.InsertData(

@@ -24,8 +24,8 @@ public class Address : BaseModel
     public float? Longitude { get; set; }
     public float? Latitude { get; set; }
     public Guid? TeacherId { get; set; }
-    public ProfileTeacher Teacher { get; set; }
+    public ProfileTeacher? Teacher { get; set; }
 
     public Guid? StudentId { get; set; }
-    public ProfileStudent Student { get; set; }
+    public ProfileStudent? Student { get; set; }
 }

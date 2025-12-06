@@ -2,7 +2,7 @@
 
 namespace SemPaiGo.Models;
 
-public class ResponseDTO<T>
+public class Response<T>
 {
     [Required]
     public string Message { get; set; }

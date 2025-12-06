@@ -10,5 +10,5 @@ public class Cursus : BaseModel
     public LevelCursus? Level { get; set; }
     public Guid TeacherId { get; set; }
     public ProfileTeacher? Teacher { get; set; }
-    public ICollection<CategoryCursus> Categories { get; set; }
+    public ICollection<CategoryCursus> Categories { get; set; } = new List<CategoryCursus>();
 }
