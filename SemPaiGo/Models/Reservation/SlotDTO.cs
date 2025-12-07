@@ -35,7 +35,7 @@ public class SlotResponseDTO
     /// <summary>
     /// Informations de l'enseignant
     /// </summary>
-    public TeacherDetailsDTO? Teacher { get; set; }
+    public TeacherDetails? Teacher { get; set; }
 
     /// <summary>
     /// Identifiant du type de créneau
@@ -47,7 +47,7 @@ public class SlotResponseDTO
     /// <summary>
     /// Informations du type de créneau
     /// </summary>
-    public TypeSlotDetailsDTO? Type { get; set; }
+    public TypeSlotDetails? Type { get; set; }
 
     /// <summary>
     /// Date de création de l'enregistrement
@@ -83,12 +83,12 @@ public class SlotResponseDTO
 
         if (slot.Teacher != null)
         {
-            Teacher = new TeacherDetailsDTO(slot.Teacher, null);
+            Teacher = new TeacherDetails(slot.Teacher, null);
         }
 
         if (slot.Type != null)
         {
-            Type = new TypeSlotDetailsDTO(slot.Type);
+            Type = new TypeSlotDetails(slot.Type);
         }
     }
 }
@@ -119,7 +119,7 @@ public class SlotDetailsDTO
     /// <summary>
     /// Informations de l'enseignant
     /// </summary>
-    public TeacherDetailsDTO? Teacher { get; set; }
+    public TeacherDetails? Teacher { get; set; }
 
     /// <summary>
     /// Identifiant du type de créneau
@@ -131,7 +131,7 @@ public class SlotDetailsDTO
     /// <summary>
     /// Informations du type de créneau
     /// </summary>
-    public TypeSlotDetailsDTO? Type { get; set; }
+    public TypeSlotDetails? Type { get; set; }
 
     /// <summary>
     /// Indique si le créneau est disponible (non réservé)
@@ -148,12 +148,12 @@ public class SlotDetailsDTO
 
         if (slot.Teacher != null)
         {
-            Teacher = new TeacherDetailsDTO(slot.Teacher, null);
+            Teacher = new TeacherDetails(slot.Teacher, null);
         }
 
         if (slot.Type != null)
         {
-            Type = new TypeSlotDetailsDTO(slot.Type);
+            Type = new TypeSlotDetails(slot.Type);
         }
     }
 }

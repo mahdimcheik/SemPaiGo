@@ -2,7 +2,7 @@
 
 namespace SemPaiGo.Models;
 
-public class GenderDetailsDTO(Gender gender)
+public class GenderDetails(Gender gender)
 {
     public Guid Id => gender.Id;
     public string Name => gender.Name;

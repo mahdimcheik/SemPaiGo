@@ -3,7 +3,7 @@ using SemPaiGo.Models.Interfaces;
 using SemPaiGo.Utilities;
 using System.ComponentModel.DataAnnotations;
 
-public class UserDetailsDTO : ICreatable
+public class UserDetails : ICreatable
 {
     [Required]
     public Guid Id { get; set; }
@@ -17,20 +17,20 @@ public class UserDetailsDTO : ICreatable
     public DateTimeOffset DateOfBirth { get; set; }
     public string? PhoneNumber { get; set; }
 
-    public GenderDetailsDTO? Gender { get; set; }
+    public GenderDetails? Gender { get; set; }
     public DateTimeOffset CreatedAt { get; set; }
 
     [Required]
-    public ICollection<RoleDetailsDTO> Roles { get; set; }
+    public ICollection<RoleDetails> Roles { get; set; }
 
-    public UserDetailsDTO(UserApp user, List<RoleDetailsDTO>? roles)
+    public UserDetails(UserApp user, List<RoleDetails>? roles)
     {
         Id = user.Id;
         FirstName = user.FirstName;
         LastName = user.LastName;
         Email = user.Email;
         Roles = roles;
-        Gender = user.Gender is null ? null : new GenderDetailsDTO(user.Gender);
+        Gender = user.Gender is null ? null : new GenderDetails(user.Gender);
         PhoneNumber = user.PhoneNumber;
         DateOfBirth = user.DateOfBirth;
         ImgUrl = user.ImgUrl;
@@ -41,7 +41,7 @@ public class UserDetailsDTO : ICreatable
 /// <summary>
 /// Modèle de données pour la connexion utilisateur
 /// </summary>
-public class UserLoginDTO
+public class UserLogin
 {
     /// <summary>
     /// Adresse email de l'utilisateur (format email valide requis)
@@ -66,7 +66,7 @@ public class ConfirmAccountInput
     public string ConfirmationToken { get; set; }
 }
 
-public class UserCreateDTO
+public class UserCreate
 {
     [Required]
     [EmailAddress]
@@ -94,7 +94,7 @@ public class UserCreateDTO
     public Guid GenderId { get; set; } = HardCode.GENDER_OTHER;
 }
 
-public class PasswordResetResponseDTO
+public class PasswordResetOutput
 {
     [Required]
     public required string ResetToken { get; set; } = string.Empty;
@@ -140,7 +140,7 @@ public class PasswordRecoveryInput
     public required string PasswordConfirmation { get; set; }
 }
 
-public class LoginOutputDTO
+public class LoginOutput
 {
     [Required]
     public required string Token { get; set; } = null!;
@@ -149,10 +149,10 @@ public class LoginOutputDTO
     public required string RefreshToken { get; set; } = null!;
 
     [Required]
-    public required UserDetailsDTO User { get; set; } = null!;
+    public required UserDetails User { get; set; } = null!;
 }
 
-public class UserUpdateDTO
+public class UserUpdateInput
 {
     [Required]
     public required string FirstName { get; set; }
@@ -182,7 +182,7 @@ public class UserInfosWithtoken
     public required string Token { get; set; }
 
     [Required]
-    public required UserDetailsDTO User { get; set; }
+    public required UserDetails User { get; set; }
 }
 
 public class UserPublicReport

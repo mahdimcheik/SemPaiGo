@@ -5,7 +5,7 @@ namespace SemPaiGo.Models;
 /// <summary>
 /// DTO pour la création d'un nouveau type de créneau
 /// </summary>
-public class TypeSlotCreateDTO
+public class TypeSlotCreate
 {
     /// <summary>
     /// Nom du type de créneau
@@ -35,7 +35,7 @@ public class TypeSlotCreateDTO
 /// <summary>
 /// DTO pour la mise à jour d'un type de créneau existant
 /// </summary>
-public class TypeSlotUpdateDTO
+public class TypeSlotUpdate
 {
     /// <summary>
     /// Nom du type de créneau
@@ -70,7 +70,7 @@ public class TypeSlotUpdateDTO
     }
 }
 
-public class TypeSlotDetailsDTO
+public class TypeSlotDetails
 {
     /// <summary>
     /// Identifiant unique du type de créneau
@@ -112,9 +112,9 @@ public class TypeSlotDetailsDTO
     /// <example>2023-01-20T14:45:00Z</example>
     public DateTimeOffset? UpdatedAt { get; set; }
 
-    public TypeSlotDetailsDTO() { }
+    public TypeSlotDetails() { }
 
-    public TypeSlotDetailsDTO(TypeSlot typeSlot)
+    public TypeSlotDetails(TypeSlot typeSlot)
     {
         Id = typeSlot.Id;
         Name = typeSlot.Name;

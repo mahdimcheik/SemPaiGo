@@ -2,7 +2,7 @@
 
 namespace SemPaiGo.Models;
 
-public class StatusReservationDTO(StatusReservation status)
+public class StatusReservationOutput(StatusReservation status)
 {
     /// <summary>
     /// Identifiant unique du statut
@@ -28,7 +28,7 @@ public class StatusReservationDTO(StatusReservation status)
     public string? Icon => status.Icon;
 }
 
-public class StatusReservationCreateDTO
+public class StatusReservationCreate
 {
     /// <summary>
     /// Nom du type de créneau
@@ -64,7 +64,7 @@ public class StatusReservationCreateDTO
 /// <summary>
 /// DTO pour la mise à jour d'un type de créneau existant
 /// </summary>
-public class StatusReservationUpdateDTO
+public class StatusReservationUpdate
 {
     /// <summary>
     /// Nom du type de créneau

@@ -36,7 +36,7 @@ public class UserApp : IdentityUser<Guid>, IArchivable, IUpdateable, ICreatable
     }
 
     [SetsRequiredMembers]
-    public UserApp(UserCreateDTO newUser)
+    public UserApp(UserCreate newUser)
     {
         UserName = newUser.Email;
         Email = newUser.Email;

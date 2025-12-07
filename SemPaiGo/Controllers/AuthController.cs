@@ -63,8 +63,8 @@ public class AuthController : ControllerBase
     [AllowAnonymous]
     [EnableCors]
     [HttpPost("register")]
-    public async Task<ActionResult<Response<UserDetailsDTO>>> Register(
-        [FromBody] UserCreateDTO model
+    public async Task<ActionResult<Response<UserDetails>>> Register(
+        [FromBody] UserCreate model
     )
     {
         if (!ModelState.IsValid)
@@ -91,8 +91,8 @@ public class AuthController : ControllerBase
     [EnableCors]
     [Route("update")]
     [HttpPatch]
-    public async Task<ActionResult<Response<UserDetailsDTO>>> Update(
-        [FromBody] UserUpdateDTO model
+    public async Task<ActionResult<Response<UserDetails>>> Update(
+        [FromBody] UserUpdateInput model
     )
     {
         if (!ModelState.IsValid)
@@ -121,8 +121,8 @@ public class AuthController : ControllerBase
     [AllowAnonymous]
     [Route("login")]
     [HttpPost]
-    public async Task<ActionResult<Response<LoginOutputDTO>>> Login(
-        [FromBody] UserLoginDTO model
+    public async Task<ActionResult<Response<LoginOutput>>> Login(
+        [FromBody] UserLogin model
     )
     {
         if (!ModelState.IsValid)
@@ -197,7 +197,7 @@ public class AuthController : ControllerBase
 
         var rolesDetailed = roles
             .Where(r => userRoles.Contains(r.Name ?? string.Empty))
-            .Select(r => new RoleDetailsDTO(r))
+            .Select(r => new RoleDetails(r))
             .ToList();
 
         return Ok(
@@ -208,7 +208,7 @@ public class AuthController : ControllerBase
                 Data = new UserInfosWithtoken
                 {
                     Token = await authService.GenerateAccessTokenAsync(user),
-                    User = new UserDetailsDTO(user, rolesDetailed),
+                    User = new UserDetails(user, rolesDetailed),
                 },
             }
         );
@@ -219,7 +219,7 @@ public class AuthController : ControllerBase
     /// </summary>
     /// <returns>Informations de l'utilisateur.</returns>
     [HttpGet("public-informations")]
-    public async Task<ActionResult<Response<UserDetailsDTO>>> GetPublicInformations(
+    public async Task<ActionResult<Response<UserDetails>>> GetPublicInformations(
         Guid userId
     )
     {
@@ -244,14 +244,14 @@ public class AuthController : ControllerBase
     [AllowAnonymous]
     [Route("forgot-password")]
     [HttpPost]
-    public async Task<ActionResult<Response<PasswordResetResponseDTO?>>> ForgotPassword(
+    public async Task<ActionResult<Response<PasswordResetOutput?>>> ForgotPassword(
         [FromBody] ForgotPasswordInput model
     )
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(
-                new Response<PasswordResetResponseDTO?>
+                new Response<PasswordResetOutput?>
                 {
                     Message = "Demande refusée",
                     Status = 400,
@@ -311,12 +311,12 @@ public class AuthController : ControllerBase
     [Route("refresh-token")]
     [AllowAnonymous]
     [HttpGet]
-    public async Task<ActionResult<Response<LoginOutputDTO?>>> UpdateRefreshToken()
+    public async Task<ActionResult<Response<LoginOutput?>>> UpdateRefreshToken()
     {
         if (!Request.Cookies.TryGetValue("refreshToken", out var refreshToken))
         {
             return Unauthorized(
-                new Response<LoginOutputDTO?>
+                new Response<LoginOutput?>
                 {
                     Message = "Refresh token non-existant",
                     Status = 401,

@@ -8,10 +8,10 @@ public class ReservationDetailsDTO(Reservation booking)
     public Guid Id => booking.Id;
     public string Title => booking.Title;
     public string Description => booking.Description;
-    public StatusReservationDTO? Status =>
-        booking.Status is not null ? new StatusReservationDTO(booking.Status) : null;
-    public StudentDetailsDTO? Student =>
-        booking.Student is not null ? new StudentDetailsDTO(booking.Student, null) : null;
+    public StatusReservationOutput? Status =>
+        booking.Status is not null ? new StatusReservationOutput(booking.Status) : null;
+    public StudentDetails? Student =>
+        booking.Student is not null ? new StudentDetails(booking.Student, null) : null;
     public SlotDetailsDTO? Slot => booking.Slot is not null ? new SlotDetailsDTO(booking.Slot) : null;
 }
 
@@ -19,7 +19,7 @@ public class ReservationCreateDTO
 {
     public string Title { get; set; }
     public string Description { get; set; }
-    public UserDetailsDTO? Student { get; set; }
+    public UserDetails? Student { get; set; }
     public Guid SlotId { get; set; }
     public Guid StudentId { get; set; }
 }

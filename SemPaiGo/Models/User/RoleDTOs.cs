@@ -6,7 +6,7 @@ namespace SemPaiGo.Models;
 /// <summary>
 /// DTO pour l'affichage détaillé d'un rôle
 /// </summary>
-public class RoleDetailsDTO
+public class RoleDetails
 {
     public Guid Id { get; set; }
     public required string Name { get; set; }
@@ -14,11 +14,11 @@ public class RoleDetailsDTO
     public DateTimeOffset CreatedAt { get; set; }
     public DateTimeOffset? UpdatedAt { get; set; }
     [SetsRequiredMembers]
-    public RoleDetailsDTO() { }
+    public RoleDetails() { }
 
 
     [SetsRequiredMembers]   
-    public RoleDetailsDTO(RoleApp role)
+    public RoleDetails(RoleApp role)
     {
         Id = role.Id;
         Name = role.Name ?? string.Empty;
@@ -27,7 +27,7 @@ public class RoleDetailsDTO
         Color = role.Color;
     }
 }
-public class RoleAppCreateDTO
+public class RoleAppCreate
 {
     [Required(ErrorMessage = "Le nom du rôle est requis")]
     [StringLength(64, ErrorMessage = "Le nom ne peut pas dépasser 64 caractères")]
@@ -35,7 +35,7 @@ public class RoleAppCreateDTO
     public string? color { get; set; }
 }
 
-public class RoleAppUpdateDTO
+public class RoleAppUpdate
 {  
     [Required(ErrorMessage = "Le nom du rôle est requis")]
     [StringLength(64, ErrorMessage = "Le nom ne peut pas dépasser 64 caractères")]
