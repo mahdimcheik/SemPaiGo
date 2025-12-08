@@ -1,6 +1,8 @@
-﻿using SemPaiGo.Models.Interfaces;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.CodeAnalysis;
+using SemPaiGo.Models.Interfaces;
+using SemPaiGo.Utilities;
 
 namespace SemPaiGo.Models;
 
@@ -28,4 +30,40 @@ public class Address : BaseModel
 
     public Guid? StudentId { get; set; }
     public ProfileStudent? Student { get; set; }
+    public Guid TypeId { get; set; } = HardCode.TYPE_ADDRESS_HOME;
+    public TypeAddress? Type { get; set; }
+    public Address()
+    {        
+    }
+
+    [SetsRequiredMembers]
+    public Address(AddressCreate addressDto)
+    {
+        Id = Guid.NewGuid();
+        Street = addressDto.Street;
+        City = addressDto.City;
+        State = addressDto.State;
+        Country = addressDto.Country;
+        ZipCode = addressDto.ZipCode;
+        AdditionalInfo = addressDto.AdditionalInfo;
+        Longitude = addressDto.Longitude;
+        Latitude = addressDto.Latitude;
+        StudentId = addressDto.StudentId;
+        TeacherId = addressDto.TeacherId;
+        TypeId = addressDto.TypeId;
+        CreatedAt = DateTimeOffset.UtcNow;
+    }
+    public void UpdateAddress(AddressUpdate addressDto)
+    {
+        Street = addressDto.Street;
+        City = addressDto.City;
+        State = addressDto.State;
+        Country = addressDto.Country;
+        ZipCode = addressDto.ZipCode;
+        AdditionalInfo = addressDto.AdditionalInfo;
+        Longitude = addressDto.Longitude;
+        Latitude = addressDto.Latitude;
+        UpdatedAt = DateTimeOffset.UtcNow;
+        TypeId = addressDto.TypeId;
+    }
 }

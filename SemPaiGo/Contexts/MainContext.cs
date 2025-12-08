@@ -19,6 +19,7 @@ public class MainContext : IdentityDbContext<UserApp, RoleApp, Guid>
 
     // Related entities
     public DbSet<Address> Addresses { get; set; }
+    public DbSet<TypeAddress> TypeAddresses { get; set; }
     public DbSet<Cursus> Cursuses { get; set; }
     public DbSet<Experience> Experiences { get; set; }
     public DbSet<Formation> Formations { get; set; }
@@ -192,6 +193,26 @@ public class MainContext : IdentityDbContext<UserApp, RoleApp, Guid>
               (""TeacherId"" IS NULL AND ""StudentId"" IS NOT NULL)"
                 )
             );
+
+            // type addresse
+            entity
+               .HasOne(a => a.Type)
+               .WithMany()
+               .HasForeignKey(a => a.TypeId)
+               .OnDelete(DeleteBehavior.Restrict);
+        });
+
+         //type addresse
+        builder.Entity<TypeAddress>(p =>
+        {
+            p.HasKey(e => e.Id);
+            p.Property(e => e.CreatedAt)
+                .IsRequired()
+                .HasColumnType("timestamp with time zone")
+                .ValueGeneratedOnAdd()
+                .HasDefaultValueSql("CURRENT_TIMESTAMP");
+            p.Property(e => e.UpdatedAt).HasColumnType("timestamp with time zone");
+            p.Property(e => e.ArchivedAt).HasColumnType("timestamp with time zone");
         });
 
         //  cursus
@@ -573,6 +594,30 @@ public class MainContext : IdentityDbContext<UserApp, RoleApp, Guid>
                 CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc),
             },
         };
+
+        // Seed type address
+        List<TypeAddress> typeAddresses = new()
+        {
+            new TypeAddress
+            {
+                Id = HardCode.TYPE_ADDRESS_HOME,
+                Name = "Home",
+                Color = "#ff69b4",
+                Icon = "",
+                CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+            },
+            new TypeAddress
+            {
+                Id = HardCode.TYPE_ADDRESS_BILLING,
+                Name = "Billing",
+                Color = "#fa69b4",
+                Icon = "",
+                CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+            },
+        };
+
+        builder.Entity<TypeAddress>().HasData(typeAddresses);
+
 
         builder.Entity<StatusAccount>().HasData(accountStatuses);
 

@@ -42,6 +42,7 @@ static void ConfigureServices(IServiceCollection services)
     services.AddTransient<AuthService>();
     services.AddTransient<MailService>();
     services.AddTransient<MinioService>();
+    services.AddTransient<AddressesService>();
 
     services.AddLogging(loggingBuilder =>
     {
