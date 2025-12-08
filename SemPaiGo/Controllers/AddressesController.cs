@@ -92,7 +92,7 @@ namespace SemPaiGo.Controllers
         /// <response code="400">Données invalides</response>
         /// <response code="404">Utilisateur non trouvé</response>
         /// <response code="500">Erreur interne du serveur</response>
-        [HttpPost("create")]
+        [HttpPost]
         [ProducesResponseType(typeof(Response<AddressDetails>), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(Response<object>), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(Response<object>), StatusCodes.Status404NotFound)]
@@ -125,7 +125,7 @@ namespace SemPaiGo.Controllers
         /// <response code="400">Données invalides</response>
         /// <response code="404">Adresse ou utilisateur non trouvé</response>
         /// <response code="500">Erreur interne du serveur</response>
-        [HttpPut("update/{id:guid}")]
+        [HttpPut("{id:guid}")]
         [ProducesResponseType(typeof(Response<AddressDetails>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(Response<object>), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(Response<object>), StatusCodes.Status404NotFound)]
@@ -157,7 +157,7 @@ namespace SemPaiGo.Controllers
         /// <response code="200">Adresse supprimée avec succès</response>
         /// <response code="404">Adresse non trouvée</response>
         /// <response code="500">Erreur interne du serveur</response>
-        [HttpDelete("delete/{id:guid}")]
+        [HttpDelete("{id:guid}")]
         [ProducesResponseType(typeof(Response<object>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(Response<object>), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(Response<object>), StatusCodes.Status500InternalServerError)]

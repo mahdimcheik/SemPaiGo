@@ -173,6 +173,9 @@ namespace SempaiGo.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("real");
 
+                    b.Property<Guid?>("ProfileStudentId")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("State")
                         .IsRequired()
                         .HasColumnType("text");
@@ -182,17 +185,14 @@ namespace SempaiGo.Migrations
                         .HasMaxLength(250)
                         .HasColumnType("character varying(250)");
 
-                    b.Property<Guid?>("StudentId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("TeacherId")
-                        .HasColumnType("uuid");
-
                     b.Property<Guid>("TypeId")
                         .HasColumnType("uuid");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("ZipCode")
                         .IsRequired()
@@ -201,16 +201,13 @@ namespace SempaiGo.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("StudentId");
-
-                    b.HasIndex("TeacherId");
+                    b.HasIndex("ProfileStudentId");
 
                     b.HasIndex("TypeId");
 
-                    b.ToTable("Addresses", t =>
-                        {
-                            t.HasCheckConstraint("CK_Address_OneOwnerOnly", "(\"TeacherId\" IS NOT NULL AND \"StudentId\" IS NULL)\r\n              OR\r\n              (\"TeacherId\" IS NULL AND \"StudentId\" IS NOT NULL)");
-                        });
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Addresses");
                 });
 
             modelBuilder.Entity("SemPaiGo.Models.CategoryCursus", b =>
@@ -360,7 +357,7 @@ namespace SempaiGo.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)");
 
-                    b.Property<Guid?>("StudentId")
+                    b.Property<Guid?>("ProfileStudentId")
                         .HasColumnType("uuid");
 
                     b.Property<Guid?>("TeacherId")
@@ -376,14 +373,11 @@ namespace SempaiGo.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("StudentId");
+                    b.HasIndex("ProfileStudentId");
 
                     b.HasIndex("TeacherId");
 
-                    b.ToTable("Formations", t =>
-                        {
-                            t.HasCheckConstraint("CK_Formation_OneOwnerOnly", "(\"TeacherId\" IS NOT NULL AND \"StudentId\" IS NULL)\r\n              OR\r\n              (\"TeacherId\" IS NULL AND \"StudentId\" IS NOT NULL)");
-                        });
+                    b.ToTable("Formations");
                 });
 
             modelBuilder.Entity("SemPaiGo.Models.Gender", b =>
@@ -1478,15 +1472,9 @@ namespace SempaiGo.Migrations
 
             modelBuilder.Entity("SemPaiGo.Models.Address", b =>
                 {
-                    b.HasOne("SemPaiGo.Models.ProfileStudent", "Student")
+                    b.HasOne("SemPaiGo.Models.ProfileStudent", null)
                         .WithMany("Addresses")
-                        .HasForeignKey("StudentId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("SemPaiGo.Models.ProfileTeacher", "Teacher")
-                        .WithMany("Addresses")
-                        .HasForeignKey("TeacherId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("ProfileStudentId");
 
                     b.HasOne("SemPaiGo.Models.TypeAddress", "Type")
                         .WithMany()
@@ -1494,11 +1482,15 @@ namespace SempaiGo.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("Student");
-
-                    b.Navigation("Teacher");
+                    b.HasOne("SemPaiGo.Models.UserApp", "User")
+                        .WithMany("Addresses")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.Navigation("Type");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("SemPaiGo.Models.Cursus", b =>
@@ -1533,17 +1525,14 @@ namespace SempaiGo.Migrations
 
             modelBuilder.Entity("SemPaiGo.Models.Formation", b =>
                 {
-                    b.HasOne("SemPaiGo.Models.ProfileStudent", "Student")
+                    b.HasOne("SemPaiGo.Models.ProfileStudent", null)
                         .WithMany("Formations")
-                        .HasForeignKey("StudentId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("ProfileStudentId");
 
                     b.HasOne("SemPaiGo.Models.ProfileTeacher", "Teacher")
                         .WithMany("Formations")
                         .HasForeignKey("TeacherId")
                         .OnDelete(DeleteBehavior.Restrict);
-
-                    b.Navigation("Student");
 
                     b.Navigation("Teacher");
                 });
@@ -1761,8 +1750,6 @@ namespace SempaiGo.Migrations
 
             modelBuilder.Entity("SemPaiGo.Models.ProfileTeacher", b =>
                 {
-                    b.Navigation("Addresses");
-
                     b.Navigation("Cursuses");
 
                     b.Navigation("Experiences");
@@ -1784,6 +1771,8 @@ namespace SempaiGo.Migrations
 
             modelBuilder.Entity("SemPaiGo.Models.UserApp", b =>
                 {
+                    b.Navigation("Addresses");
+
                     b.Navigation("UserRoles");
                 });
 #pragma warning restore 612, 618

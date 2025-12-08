@@ -25,11 +25,8 @@ public class Address : BaseModel
     public string? AdditionalInfo { get; set; }
     public float? Longitude { get; set; }
     public float? Latitude { get; set; }
-    public Guid? TeacherId { get; set; }
-    public ProfileTeacher? Teacher { get; set; }
-
-    public Guid? StudentId { get; set; }
-    public ProfileStudent? Student { get; set; }
+    public Guid UserId { get; set; }
+    public UserApp? User { get; set; }
     public Guid TypeId { get; set; } = HardCode.TYPE_ADDRESS_HOME;
     public TypeAddress? Type { get; set; }
     public Address()
@@ -48,8 +45,7 @@ public class Address : BaseModel
         AdditionalInfo = addressDto.AdditionalInfo;
         Longitude = addressDto.Longitude;
         Latitude = addressDto.Latitude;
-        StudentId = addressDto.StudentId;
-        TeacherId = addressDto.TeacherId;
+        UserId = addressDto.UserId;
         TypeId = addressDto.TypeId;
         CreatedAt = DateTimeOffset.UtcNow;
     }

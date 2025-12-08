@@ -169,30 +169,14 @@ public class MainContext : IdentityDbContext<UserApp, RoleApp, Guid>
             entity.Property(a => a.ZipCode).HasMaxLength(255);
             entity.Property(a => a.Longitude).HasMaxLength(50);
             entity.Property(a => a.Latitude).HasMaxLength(50);
+            entity.Property(a => a.UserId).IsRequired();
 
-            // Relation avec TeacherProfile (optionnelle)
+            // Relation avec utilisateur
             entity
-                .HasOne(a => a.Teacher)
+                .HasOne(a => a.User)
                 .WithMany(t => t.Addresses)
-                .HasForeignKey(a => a.TeacherId)
+                .HasForeignKey(a => a.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
-
-            // Relation avec StudentProfile (optionnelle)
-            entity
-                .HasOne(a => a.Student)
-                .WithMany(s => s.Addresses)
-                .HasForeignKey(a => a.StudentId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            // Contrainte : une adresse doit avoir EXACTEMENT un propriétaire (with quoted column names for PostgreSQL)
-            entity.ToTable(t =>
-                t.HasCheckConstraint(
-                    "CK_Address_OneOwnerOnly",
-                    @"(""TeacherId"" IS NOT NULL AND ""StudentId"" IS NULL)
-              OR
-              (""TeacherId"" IS NULL AND ""StudentId"" IS NOT NULL)"
-                )
-            );
 
             // type addresse
             entity
@@ -299,22 +283,6 @@ public class MainContext : IdentityDbContext<UserApp, RoleApp, Guid>
                 .WithMany(t => t.Formations)
                 .HasForeignKey(a => a.TeacherId)
                 .OnDelete(DeleteBehavior.Restrict);
-
-            // Relation avec StudentProfile (optionnelle)
-            f.HasOne(a => a.Student)
-                .WithMany(s => s.Formations)
-                .HasForeignKey(a => a.StudentId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            // Contrainte : une formation doit avoir EXACTEMENT un propriétaire (with quoted column names for PostgreSQL)
-            f.ToTable(t =>
-                t.HasCheckConstraint(
-                    "CK_Formation_OneOwnerOnly",
-                    @"(""TeacherId"" IS NOT NULL AND ""StudentId"" IS NULL)
-              OR
-              (""TeacherId"" IS NULL AND ""StudentId"" IS NOT NULL)"
-                )
-            );
         });
 
         //languages

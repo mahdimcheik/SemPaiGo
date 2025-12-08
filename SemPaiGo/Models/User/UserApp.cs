@@ -20,6 +20,7 @@ public class UserApp : IdentityUser<Guid>, IArchivable, IUpdateable, ICreatable
     public DateTimeOffset CreatedAt { get; set; } = DateTime.UtcNow;
     // roles
     public ICollection<IdentityUserRole<Guid>> UserRoles { get; set; } =new List<IdentityUserRole<Guid>>();
+    public ICollection<Address> Addresses { get; set; } = new List<Address>();
 
     //gender
     public Guid GenderId { get; set; }

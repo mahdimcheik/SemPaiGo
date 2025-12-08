@@ -169,6 +169,23 @@ namespace SempaiGo.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "TypeAddresses",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    ArchivedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Color = table.Column<string>(type: "text", nullable: false),
+                    Icon = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TypeAddresses", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "TypeSlot",
                 columns: table => new
                 {
@@ -444,8 +461,9 @@ namespace SempaiGo.Migrations
                     AdditionalInfo = table.Column<string>(type: "text", nullable: true),
                     Longitude = table.Column<float>(type: "real", maxLength: 50, nullable: true),
                     Latitude = table.Column<float>(type: "real", maxLength: 50, nullable: true),
-                    TeacherId = table.Column<Guid>(type: "uuid", nullable: true),
-                    StudentId = table.Column<Guid>(type: "uuid", nullable: true),
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    TypeId = table.Column<Guid>(type: "uuid", nullable: false),
+                    ProfileStudentId = table.Column<Guid>(type: "uuid", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     ArchivedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
@@ -453,17 +471,21 @@ namespace SempaiGo.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Addresses", x => x.Id);
-                    table.CheckConstraint("CK_Address_OneOwnerOnly", "(\"TeacherId\" IS NOT NULL AND \"StudentId\" IS NULL)\r\n              OR\r\n              (\"TeacherId\" IS NULL AND \"StudentId\" IS NOT NULL)");
                     table.ForeignKey(
-                        name: "FK_Addresses_ProfileStudents_StudentId",
-                        column: x => x.StudentId,
+                        name: "FK_Addresses_ProfileStudents_ProfileStudentId",
+                        column: x => x.ProfileStudentId,
                         principalTable: "ProfileStudents",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Addresses_TypeAddresses_TypeId",
+                        column: x => x.TypeId,
+                        principalTable: "TypeAddresses",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Addresses_ProfileTeachers_TeacherId",
-                        column: x => x.TeacherId,
-                        principalTable: "ProfileTeachers",
+                        name: "FK_Addresses_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -535,7 +557,7 @@ namespace SempaiGo.Migrations
                     DateFrom = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     DateTo = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     TeacherId = table.Column<Guid>(type: "uuid", nullable: true),
-                    StudentId = table.Column<Guid>(type: "uuid", nullable: true),
+                    ProfileStudentId = table.Column<Guid>(type: "uuid", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     ArchivedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
@@ -543,13 +565,11 @@ namespace SempaiGo.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Formations", x => x.Id);
-                    table.CheckConstraint("CK_Formation_OneOwnerOnly", "(\"TeacherId\" IS NOT NULL AND \"StudentId\" IS NULL)\r\n              OR\r\n              (\"TeacherId\" IS NULL AND \"StudentId\" IS NOT NULL)");
                     table.ForeignKey(
-                        name: "FK_Formations_ProfileStudents_StudentId",
-                        column: x => x.StudentId,
+                        name: "FK_Formations_ProfileStudents_ProfileStudentId",
+                        column: x => x.ProfileStudentId,
                         principalTable: "ProfileStudents",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Formations_ProfileTeachers_TeacherId",
                         column: x => x.TeacherId,
@@ -830,6 +850,15 @@ namespace SempaiGo.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "TypeAddresses",
+                columns: new[] { "Id", "ArchivedAt", "Color", "CreatedAt", "Icon", "Name", "UpdatedAt" },
+                values: new object[,]
+                {
+                    { new Guid("b8b8a8fc-ca60-440b-815f-1e44b89c9803"), null, "#fa69b4", new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "", "Billing", null },
+                    { new Guid("e1fee3ea-6190-48c3-8e40-c1f053fea79d"), null, "#ff69b4", new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "", "Home", null }
+                });
+
+            migrationBuilder.InsertData(
                 table: "TypeTransactions",
                 columns: new[] { "Id", "ArchivedAt", "Color", "CreatedAt", "Icon", "Name", "UpdatedAt" },
                 values: new object[,]
@@ -840,14 +869,19 @@ namespace SempaiGo.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Addresses_StudentId",
+                name: "IX_Addresses_ProfileStudentId",
                 table: "Addresses",
-                column: "StudentId");
+                column: "ProfileStudentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Addresses_TeacherId",
+                name: "IX_Addresses_TypeId",
                 table: "Addresses",
-                column: "TeacherId");
+                column: "TypeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Addresses_UserId",
+                table: "Addresses",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -890,9 +924,9 @@ namespace SempaiGo.Migrations
                 column: "TeacherId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Formations_StudentId",
+                name: "IX_Formations_ProfileStudentId",
                 table: "Formations",
-                column: "StudentId");
+                column: "ProfileStudentId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Formations_TeacherId",
@@ -1069,6 +1103,9 @@ namespace SempaiGo.Migrations
 
             migrationBuilder.DropTable(
                 name: "TeacherWalletTransactions");
+
+            migrationBuilder.DropTable(
+                name: "TypeAddresses");
 
             migrationBuilder.DropTable(
                 name: "Roles");

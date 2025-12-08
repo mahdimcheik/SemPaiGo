@@ -70,8 +70,7 @@ public class AddressDetails
     /// <summary>
     /// user , prof ou eleve
     /// </summary>
-    public Guid? TeacherId { get; set; }
-    public Guid? StudentId { get; set; }
+    public Guid UserId { get; set; }
 
     /// <summary>
     /// Date de création de l'enregistrement
@@ -99,8 +98,7 @@ public class AddressDetails
         AdditionalInfo = address.AdditionalInfo;
         Longitude = address.Longitude;
         Latitude = address.Latitude;
-        TeacherId = address.TeacherId;
-        StudentId = address.StudentId;
+        UserId = address.UserId;
         CreatedAt = address.CreatedAt;
         UpdatedAt = address.UpdatedAt;
     }
@@ -172,8 +170,7 @@ public class AddressCreate
     [Range(-90, 90, ErrorMessage = "La latitude doit être comprise entre -90 et 90")]
     public float? Latitude { get; set; }
 
-    public Guid? TeacherId { get; set; }
-    public Guid? StudentId { get; set; }
+    public Guid UserId { get; set; }
     public Guid TypeId { get; set; }
 }
 
@@ -248,7 +245,6 @@ public class AddressUpdate
     /// </summary>
     /// <example>550e8400-e29b-41d4-a716-446655440001</example>
     [Required(ErrorMessage = "L'identifiant utilisateur est requis")]
-    public Guid? TeacherId { get; set; }
-    public Guid? StudentId { get; set; }
+    public Guid UserId { get; set; }
     public Guid TypeId { get; set; }
 }

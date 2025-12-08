@@ -95,7 +95,7 @@ public class AddressesService(MainContext context)
         {
             var addresses = await context.Addresses
                 .AsNoTracking()
-                .Where(a => (a.StudentId == userId || a.TeacherId == userId) && a.ArchivedAt == null)
+                .Where(a => a.UserId == userId && a.ArchivedAt == null)
                 .OrderByDescending(a => a.CreatedAt)
                 .Select(a => new AddressDetails(a))
                 .ToListAsync();
@@ -129,7 +129,7 @@ public class AddressesService(MainContext context)
         try
         {
             // Vérifier que l'utilisateur existe
-            var userExists = await context.Users.AnyAsync(u => u.Id == addressDto.TeacherId || u.Id == addressDto.StudentId);
+            var userExists = await context.Users.AnyAsync(u => u.Id == addressDto.UserId );
             if (!userExists)
             {
                 return new Response<AddressDetails>
@@ -188,7 +188,7 @@ public class AddressesService(MainContext context)
             }
 
             // Vérifier que l'utilisateur existe
-            var userExists = await context.Users.AnyAsync(u => (u.Id == addressDto.TeacherId || u.Id == addressDto.StudentId ));
+            var userExists = await context.Users.AnyAsync(u => u.Id == addressDto.UserId);
             if (!userExists)
             {
                 return new Response<AddressDetails>
