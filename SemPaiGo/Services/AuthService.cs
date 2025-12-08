@@ -49,55 +49,100 @@ public class AuthService
     /// <returns>Réponse contenant les informations de l'utilisateur créé</returns>
     public async Task<Response<UserDetails>> Register(UserCreate newUserDTO)
     {
-        // Vérifier le consentement
-        if (!newUserDTO.DataProcessingConsent || !newUserDTO.PrivacyPolicyConsent)
+        var transaction = context.Database.BeginTransaction();
+        try
         {
-            return new Response<UserDetails>
+            // Vérifier le consentement
+            if (!newUserDTO.DataProcessingConsent || !newUserDTO.PrivacyPolicyConsent)
             {
-                Status = 400,
-                Message =
-                    "\"Le consentement est obligatoire pour acceder aux fonctionnalités de cette application\"",
-            };
-        }
-
-        bool isEmailAlreadyUsed = await IsEmailAlreadyUsedAsync(newUserDTO.Email);
-        // Vérifier si l'adresse e-mail est déjà utilisée
-        if (isEmailAlreadyUsed)
-        {
-            // Si l'adresse e-mail est déjà utilisée, mettre à jour la réponse et sauter vers l'étiquette UserAlreadyExisted
-            return new Response<UserDetails>
-            {
-                Status = 400,
-                Message = "\"L'email est déjà utilisé\"",
-            };
-        }
-        // Créer un nouvel utilisateur en utilisant les données du modèle et la base de données contextuelle
-        UserApp newUser = new UserApp(newUserDTO);
-        newUser.CreatedAt = DateTime.Now;
-
-        // Obtenir la date actuelle
-        DateTimeOffset date = DateTimeOffset.UtcNow;
-
-        // Tenter de créer un nouvel utilisateur avec le gestionnaire d'utilisateurs
-        IdentityResult result = await userManager.CreateAsync(newUser, newUserDTO.Password);
-
-        // Tenter d'ajouter l'utilisateur aux rôles spécifiés dans le modèle
-        IdentityResult roleResult = await userManager.AddToRolesAsync(
-            user: newUser,
-            roles: newUserDTO.RoleId == HardCode.ROLE_TEACHER ? ["Teacher"] : ["Student"]
-        );
-
-        // Vérifier si la création de l'utilisateur a échoué
-        if (!result.Succeeded)
-        {
-            // Si la création a échoué, ajouter les erreurs au modèle d'état pour retourner une réponse BadRequest
-            var errors = Enumerable.Empty<string>();
-            foreach (var error in result.Errors)
-            {
-                errors.Append(error.Description);
+                return new Response<UserDetails>
+                {
+                    Status = 400,
+                    Message =
+                        "\"Le consentement est obligatoire pour acceder aux fonctionnalités de cette application\"",
+                };
             }
 
-            // Retourner une réponse BadRequest avec le modèle d'état contenant les erreurs
+            bool isEmailAlreadyUsed = await IsEmailAlreadyUsedAsync(newUserDTO.Email);
+            // Vérifier si l'adresse e-mail est déjà utilisée
+            if (isEmailAlreadyUsed)
+            {
+                // Si l'adresse e-mail est déjà utilisée, mettre à jour la réponse et sauter vers l'étiquette UserAlreadyExisted
+                return new Response<UserDetails>
+                {
+                    Status = 400,
+                    Message = "\"L'email est déjà utilisé\"",
+                };
+            }
+            // Créer un nouvel utilisateur en utilisant les données du modèle et la base de données contextuelle
+            UserApp newUser = new UserApp(newUserDTO);
+            newUser.CreatedAt = DateTime.Now;
+
+            // Obtenir la date actuelle
+            DateTimeOffset date = DateTimeOffset.UtcNow;
+
+            // Tenter de créer un nouvel utilisateur avec le gestionnaire d'utilisateurs
+            IdentityResult result = await userManager.CreateAsync(newUser, newUserDTO.Password);
+
+            // Tenter d'ajouter l'utilisateur aux rôles spécifiés dans le modèle
+            IdentityResult roleResult = await userManager.AddToRolesAsync(
+                user: newUser,
+                roles: newUserDTO.RoleId == HardCode.ROLE_TEACHER ? ["Teacher"] : ["Student"]
+            );
+
+            // Vérifier si la création de l'utilisateur a échoué
+            if (!result.Succeeded)
+            {
+                // Si la création a échoué, ajouter les erreurs au modèle d'état pour retourner une réponse BadRequest
+                var errors = Enumerable.Empty<string>();
+                foreach (var error in result.Errors)
+                {
+                    errors.Append(error.Description);
+                }
+
+                // Retourner une réponse BadRequest avec le modèle d'état contenant les erreurs
+                return new Response<UserDetails>
+                {
+                    Message = "Création échouée",
+                    Status = 401,
+                    Data = null,
+                };
+            }
+
+            // Si tout s'est bien déroulé, enregistrer les changements dans le contexte de base de données
+            await context.SaveChangesAsync();
+
+            // creer les profiles
+            await CreateProfile(newUser, newUserDTO);
+            await transaction.CommitAsync();
+
+            try
+            {
+                var confirmationLink = await GenerateAccountConfirmationLink(newUser);
+                await mailService.SendConfirmAccount(newUser, confirmationLink ?? "");
+
+                // Retourne une réponse avec le statut déterminé, l'identifiant de l'utilisateur, le message de réponse et le statut complet
+                return new Response<UserDetails>
+                {
+                    Message = "Profil créé",
+                    Status = 201,
+                    Data = new UserDetails(newUser, null),
+                };
+            }
+            catch (Exception e)
+            {
+                // En cas d'exception, afficher la trace et retourner une réponse avec le statut approprié
+                Console.WriteLine(e);
+                return new Response<UserDetails>
+                {
+                    Status = 200,
+                    Message = "Le compte est créé mais  pas d'email de validation!!!",
+                };
+            }
+        }
+        catch
+        {
+            await transaction.RollbackAsync();
             return new Response<UserDetails>
             {
                 Message = "Création échouée",
@@ -105,33 +150,43 @@ public class AuthService
                 Data = null,
             };
         }
+       
 
-        // Si tout s'est bien déroulé, enregistrer les changements dans le contexte de base de données
-        await context.SaveChangesAsync();
+        
+    }
 
+    private async Task CreateProfile(UserApp newUser, UserCreate userCreate)
+    {
         try
         {
-            var confirmationLink = await GenerateAccountConfirmationLink(newUser);
-            await mailService.SendConfirmAccount(newUser, confirmationLink ?? "");
-
-            // Retourne une réponse avec le statut déterminé, l'identifiant de l'utilisateur, le message de réponse et le statut complet
-            return new Response<UserDetails>
+            if (userCreate.RoleId == HardCode.ROLE_TEACHER)
             {
-                Message = "Profil créé",
-                Status = 201,
-                Data = new UserDetails(newUser, null),
-            };
+                ProfileTeacher newTeacher = new ProfileTeacher
+                {
+                    Id = newUser.Id,
+                    UserId = newUser.Id,
+                    Title = userCreate.Title,
+                    Description = userCreate.Description
+                };
+                await context.ProfileTeachers.AddAsync(newTeacher);
+                await context.SaveChangesAsync();
+            }
+            else
+            {
+                ProfileStudent newStudent = new ProfileStudent
+                {
+                    Id = newUser.Id,
+                    UserId = newUser.Id,
+                };
+                await context.ProfileStudents.AddAsync(newStudent);
+                await context.SaveChangesAsync();
+            }
         }
-        catch (Exception e)
+        catch
         {
-            // En cas d'exception, afficher la trace et retourner une réponse avec le statut approprié
-            Console.WriteLine(e);
-            return new Response<UserDetails>
-            {
-                Status = 40,
-                Message = "Le compte n'est pas créé!!!",
-            };
+            throw;
         }
+       
     }
 
     public async Task<Response<UserDetails>> GetPublicInformations(Guid userId)

@@ -12,6 +12,7 @@ public class UserDetails : ICreatable
     [Required]
     public string LastName { get; set; }
     public string? ImgUrl { get; set; }
+
     [Required]
     public string Email { get; set; } = null!;
     public DateTimeOffset DateOfBirth { get; set; }
@@ -86,11 +87,15 @@ public class UserCreate
     public required bool DataProcessingConsent { get; set; } = false;
     [Required]
     public required bool PrivacyPolicyConsent { get; set; } = false;
+    [Required]
+    public required DateTimeOffset DateOfBirth { get; set; }
 
     public string? PhoneNumber { get; set; }
-
-    public required DateTimeOffset DateOfBirth { get; set; }
+    public string? Title { get; set; }
+    public string? Description { get; set; }
+    [Required]
     public Guid RoleId { get; set; } = HardCode.ROLE_STUDENT;
+    [Required]
     public Guid GenderId { get; set; } = HardCode.GENDER_OTHER;
 }
 
