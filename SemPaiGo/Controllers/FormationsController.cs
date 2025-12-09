@@ -107,7 +107,7 @@ public class FormationsController(FormationsService formationsService) : Control
             });
         }
 
-        var response = await formationsService.CreateFormationAsync(formationDto);
+        var response = await formationsService.CreateFormationAsync(formationDto, User);
 
         return StatusCode(response.Status, response);
     }
@@ -122,13 +122,12 @@ public class FormationsController(FormationsService formationsService) : Control
     /// <response code="400">Données invalides</response>
     /// <response code="404">Formation ou utilisateur non trouvé</response>
     /// <response code="500">Erreur interne du serveur</response>
-    [HttpPut("{id:guid}")]
+    [HttpPut]
     [ProducesResponseType(typeof(Response<FormationDetails>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(Response<FormationDetails>), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(Response<FormationDetails>), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(Response<FormationDetails>), StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<Response<FormationDetails>>> UpdateFormation(
-        [FromRoute] Guid id,
         [FromBody] FormationUpdate formationDto)
     {
         if (!ModelState.IsValid)
@@ -141,7 +140,7 @@ public class FormationsController(FormationsService formationsService) : Control
             });
         }
 
-        var response = await formationsService.UpdateFormationAsync(id, formationDto);
+        var response = await formationsService.UpdateFormationAsync( formationDto, User);
 
         return StatusCode(response.Status, response);
     }

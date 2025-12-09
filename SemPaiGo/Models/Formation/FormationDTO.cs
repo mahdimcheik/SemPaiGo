@@ -135,6 +135,8 @@ public class FormationCreate
 /// </summary>
 public class FormationUpdate
 {
+    [Required(ErrorMessage = "L'identifiant est requis")]
+    public Guid Id { get; set; }
     /// <summary>
     /// Titre de la formation
     /// </summary>

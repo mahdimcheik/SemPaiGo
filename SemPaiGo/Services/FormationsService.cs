@@ -1,6 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Net.NetworkInformation;
+using System.Security.Claims;
+using Microsoft.EntityFrameworkCore;
 using SemPaiGo.Contexts;
 using SemPaiGo.Models;
+using SemPaiGo.Utilities;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SemPaiGo.Services;
 
@@ -17,8 +21,8 @@ public class FormationsService(MainContext context)
     {
         try
         {
-            var formations = await context.Formations
-                .AsNoTracking()
+            var formations = await context
+                .Formations.AsNoTracking()
                 .Where(f => f.ArchivedAt == null)
                 .OrderByDescending(f => f.CreatedAt)
                 .Select(f => new FormationDetails(f))
@@ -29,7 +33,7 @@ public class FormationsService(MainContext context)
                 Status = 200,
                 Message = "Formations récupérées avec succès",
                 Data = formations,
-                Count = formations.Count
+                Count = formations.Count,
             };
         }
         catch (Exception ex)
@@ -38,7 +42,7 @@ public class FormationsService(MainContext context)
             {
                 Status = 500,
                 Message = $"Erreur lors de la récupération des formations: {ex.Message}",
-                Data = null
+                Data = null,
             };
         }
     }
@@ -52,8 +56,8 @@ public class FormationsService(MainContext context)
     {
         try
         {
-            var formation = await context.Formations
-                .AsNoTracking()
+            var formation = await context
+                .Formations.AsNoTracking()
                 .FirstOrDefaultAsync(f => f.Id == id && f.ArchivedAt == null);
 
             if (formation == null)
@@ -62,7 +66,7 @@ public class FormationsService(MainContext context)
                 {
                     Status = 404,
                     Message = "Formation non trouvée",
-                    Data = null
+                    Data = null,
                 };
             }
 
@@ -70,7 +74,7 @@ public class FormationsService(MainContext context)
             {
                 Status = 200,
                 Message = "Formation récupérée avec succès",
-                Data = new FormationDetails(formation)
+                Data = new FormationDetails(formation),
             };
         }
         catch (Exception ex)
@@ -79,7 +83,7 @@ public class FormationsService(MainContext context)
             {
                 Status = 500,
                 Message = $"Erreur lors de la récupération de la formation: {ex.Message}",
-                Data = null
+                Data = null,
             };
         }
     }
@@ -93,9 +97,9 @@ public class FormationsService(MainContext context)
     {
         try
         {
-            var formations = await context.Formations
-                .AsNoTracking()
-                .Where(f => f.TeacherId == userId  && f.ArchivedAt == null)
+            var formations = await context
+                .Formations.AsNoTracking()
+                .Where(f => f.TeacherId == userId && f.ArchivedAt == null)
                 .OrderByDescending(f => f.DateFrom)
                 .Select(f => new FormationDetails(f))
                 .ToListAsync();
@@ -105,7 +109,7 @@ public class FormationsService(MainContext context)
                 Status = 200,
                 Message = "Formations de l'utilisateur récupérées avec succès",
                 Data = formations,
-                Count = formations.Count
+                Count = formations.Count,
             };
         }
         catch (Exception ex)
@@ -113,8 +117,9 @@ public class FormationsService(MainContext context)
             return new Response<List<FormationDetails>>
             {
                 Status = 500,
-                Message = $"Erreur lors de la récupération des formations de l'utilisateur: {ex.Message}",
-                Data = null
+                Message =
+                    $"Erreur lors de la récupération des formations de l'utilisateur: {ex.Message}",
+                Data = null,
             };
         }
     }
@@ -124,19 +129,25 @@ public class FormationsService(MainContext context)
     /// </summary>
     /// <param name="formationDto">Données de la formation à créer</param>
     /// <returns>Formation créée</returns>
-    public async Task<Response<FormationDetails>> CreateFormationAsync(FormationCreate formationDto)
+    public async Task<Response<FormationDetails>> CreateFormationAsync(
+        FormationCreate formationDto,
+        ClaimsPrincipal User
+    )
     {
         try
         {
-            // Vérifier que l'utilisateur existe
-            var userExists = await context.Users.AnyAsync(u => u.Id == formationDto.TeacherId );
-            if (!userExists)
+            var teacher = CheckUser.GetUserFromClaim(User, context);
+            if (teacher is not null)
+            {
+                formationDto.TeacherId = teacher.Id;
+            }
+            else
             {
                 return new Response<FormationDetails>
                 {
                     Status = 404,
                     Message = "Utilisateur non trouvé",
-                    Data = null
+                    Data = null,
                 };
             }
 
@@ -147,11 +158,11 @@ public class FormationsService(MainContext context)
                 {
                     Status = 400,
                     Message = "La date de fin doit être postérieure à la date de début",
-                    Data = null
+                    Data = null,
                 };
             }
 
-           var formation = new Formation(formationDto);
+            var formation = new Formation(formationDto);
 
             context.Formations.Add(formation);
             await context.SaveChangesAsync();
@@ -160,7 +171,7 @@ public class FormationsService(MainContext context)
             {
                 Status = 201,
                 Message = "Formation créée avec succès",
-                Data = new FormationDetails(formation)
+                Data = new FormationDetails(formation),
             };
         }
         catch (Exception ex)
@@ -169,7 +180,7 @@ public class FormationsService(MainContext context)
             {
                 Status = 500,
                 Message = $"Erreur lors de la création de la formation: {ex.Message}",
-                Data = null
+                Data = null,
             };
         }
     }
@@ -180,12 +191,13 @@ public class FormationsService(MainContext context)
     /// <param name="id">Identifiant de la formation</param>
     /// <param name="formationDto">Nouvelles données de la formation</param>
     /// <returns>Formation mise à jour</returns>
-    public async Task<Response<FormationDetails>> UpdateFormationAsync(Guid id, FormationUpdate formationDto)
+    public async Task<Response<FormationDetails>> UpdateFormationAsync(FormationUpdate formationDto, ClaimsPrincipal User)
     {
         try
         {
-            var formation = await context.Formations
-                .FirstOrDefaultAsync(f => f.Id == id && f.ArchivedAt == null);
+            var formation = await context.Formations.FirstOrDefaultAsync(f =>
+                f.Id == formationDto.Id && f.ArchivedAt == null
+            );
 
             if (formation == null)
             {
@@ -193,19 +205,21 @@ public class FormationsService(MainContext context)
                 {
                     Status = 404,
                     Message = "Formation non trouvée",
-                    Data = null
+                    Data = null,
                 };
             }
-
-            // Vérifier que l'utilisateur existe
-            var userExists = await context.Users.AnyAsync(u => u.Id == formationDto.TeacherId);
-            if (!userExists)
+            var teacher = CheckUser.GetUserFromClaim(User, context);
+            if (teacher is not null)
+            {
+                formationDto.TeacherId = teacher.Id;
+            }
+            else
             {
                 return new Response<FormationDetails>
                 {
                     Status = 404,
                     Message = "Utilisateur non trouvé",
-                    Data = null
+                    Data = null,
                 };
             }
 
@@ -216,7 +230,7 @@ public class FormationsService(MainContext context)
                 {
                     Status = 400,
                     Message = "La date de fin doit être postérieure à la date de début",
-                    Data = null
+                    Data = null,
                 };
             }
 
@@ -228,7 +242,7 @@ public class FormationsService(MainContext context)
             {
                 Status = 200,
                 Message = "Formation mise à jour avec succès",
-                Data = new FormationDetails(formation)
+                Data = new FormationDetails(formation),
             };
         }
         catch (Exception ex)
@@ -237,7 +251,7 @@ public class FormationsService(MainContext context)
             {
                 Status = 500,
                 Message = $"Erreur lors de la mise à jour de la formation: {ex.Message}",
-                Data = null
+                Data = null,
             };
         }
     }
@@ -251,8 +265,9 @@ public class FormationsService(MainContext context)
     {
         try
         {
-            var formation = await context.Formations
-                .FirstOrDefaultAsync(f => f.Id == id && f.ArchivedAt == null);
+            var formation = await context.Formations.FirstOrDefaultAsync(f =>
+                f.Id == id && f.ArchivedAt == null
+            );
 
             if (formation == null)
             {
@@ -260,7 +275,7 @@ public class FormationsService(MainContext context)
                 {
                     Status = 404,
                     Message = "Formation non trouvée",
-                    Data = false
+                    Data = false,
                 };
             }
 
@@ -273,7 +288,7 @@ public class FormationsService(MainContext context)
             {
                 Status = 200,
                 Message = "Formation supprimée avec succès",
-                Data = true
+                Data = true,
             };
         }
         catch (Exception ex)
@@ -282,7 +297,7 @@ public class FormationsService(MainContext context)
             {
                 Status = 500,
                 Message = $"Erreur lors de la suppression de la formation: {ex.Message}",
-                Data = true
+                Data = true,
             };
         }
     }
