@@ -1,9 +1,10 @@
-using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SemPaiGo.Contexts;
 using SemPaiGo.Models;
 using SemPaiGo.Utilities;
+using System;
+using System.Security.Claims;
 
 namespace SemPaiGo.Services;
 
@@ -152,11 +153,13 @@ public class TeacherProfileService
         ClaimsPrincipal userPrincipal
     )
     {
+        using var transaction = await _context.Database.BeginTransactionAsync();
         try
         {
             var profile = await _context
                 .ProfileTeachers.Include(p => p.User)
                 .ThenInclude(u => u.Gender)
+                .Include(u => u.Languages)
                 .FirstOrDefaultAsync(p => p.Id == profileDto.Id);
 
             if (profile == null)
@@ -170,8 +173,22 @@ public class TeacherProfileService
 
             // Update profile
             profileDto.UpdateProfile(profile);
-            await _context.SaveChangesAsync();
+            profile.Languages.Clear();
+            // Add new languages
+            if (profileDto.LanguagesIds?.Any() == true)
+            {
+                var newLanguages = await _context
+                    .Languages.Where(l => profileDto.LanguagesIds.Contains(l.Id))
+                    .ToListAsync();
 
+                foreach (var language in newLanguages)
+                {
+                    profile.Languages.Add(language);
+                }
+            }
+
+            await _context.SaveChangesAsync();
+            await transaction.CommitAsync();
             return new Response<TeacherDetails>
             {
                 Status = 200,
@@ -182,6 +199,7 @@ public class TeacherProfileService
         }
         catch (Exception ex)
         {
+            await transaction.RollbackAsync();
             return new Response<TeacherDetails>
             {
                 Status = 500,

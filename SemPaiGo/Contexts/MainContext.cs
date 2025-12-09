@@ -180,13 +180,13 @@ public class MainContext : IdentityDbContext<UserApp, RoleApp, Guid>
 
             // type addresse
             entity
-               .HasOne(a => a.Type)
-               .WithMany()
-               .HasForeignKey(a => a.TypeId)
-               .OnDelete(DeleteBehavior.Restrict);
+                .HasOne(a => a.Type)
+                .WithMany()
+                .HasForeignKey(a => a.TypeId)
+                .OnDelete(DeleteBehavior.Restrict);
         });
 
-         //type addresse
+        //type addresse
         builder.Entity<TypeAddress>(p =>
         {
             p.HasKey(e => e.Id);
@@ -314,6 +314,21 @@ public class MainContext : IdentityDbContext<UserApp, RoleApp, Guid>
             pt.Property(e => e.ArchivedAt).HasColumnType("timestamp with time zone");
             pt.HasOne(s => s.User).WithOne().HasForeignKey<ProfileTeacher>(s => s.UserId);
             pt.HasMany(s => s.Formations).WithOne(f => f.Teacher).HasForeignKey(f => f.TeacherId);
+            pt.HasMany(c => c.Languages)
+                .WithMany(cat => cat.Teachers)
+                .UsingEntity<Dictionary<string, object>>(
+                    "TeachersXLanguages",
+                    j =>
+                        j.HasOne<Language>()
+                            .WithMany()
+                            .HasForeignKey("LanguageId")
+                            .OnDelete(DeleteBehavior.Restrict),
+                    j =>
+                        j.HasOne<ProfileTeacher>()
+                            .WithMany()
+                            .HasForeignKey("TeacherId")
+                            .OnDelete(DeleteBehavior.Restrict)
+                );
         });
 
         // ProfileStudent
@@ -587,7 +602,6 @@ public class MainContext : IdentityDbContext<UserApp, RoleApp, Guid>
 
         builder.Entity<TypeAddress>().HasData(typeAddresses);
 
-
         builder.Entity<StatusAccount>().HasData(accountStatuses);
 
         // Seed Transaction Status
@@ -688,8 +702,38 @@ public class MainContext : IdentityDbContext<UserApp, RoleApp, Guid>
                 CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc),
             },
         };
-
         builder.Entity<StatusReservation>().HasData(statusReservations);
+
+        // seed languages
+        List<Language> languages = new()
+        {
+            new Language
+            {
+                Id = HardCode.LANGUAGE_ARAB,
+                Name = "Arabe",
+                Color = "#ff69b4",
+                Icon = "",
+                CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+            },
+            new Language
+            {
+                Id = HardCode.LANGUAGE_FRENCH,
+                Name = "Francais",
+                Color = "#fa69b4",
+                Icon = "",
+                CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+            },
+            new Language
+            {
+                Id = HardCode.LANGUAGE_ENGLISH,
+                Name = "Anglais",
+                Color = "#ab69b4",
+                Icon = "",
+                CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+            },
+        };
+
+        builder.Entity<Language>().HasData(languages);
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder builder)

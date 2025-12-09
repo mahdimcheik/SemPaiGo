@@ -83,7 +83,7 @@ public class SlotResponseDTO
 
         if (slot.Teacher != null)
         {
-            Teacher = new TeacherDetails(slot.Teacher, null);
+            Teacher = new TeacherDetails(slot.Teacher);
         }
 
         if (slot.Type != null)
@@ -148,7 +148,7 @@ public class SlotDetailsDTO
 
         if (slot.Teacher != null)
         {
-            Teacher = new TeacherDetails(slot.Teacher, null);
+            Teacher = new TeacherDetails(slot.Teacher);
         }
 
         if (slot.Type != null)

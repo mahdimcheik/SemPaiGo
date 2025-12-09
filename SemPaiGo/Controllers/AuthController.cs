@@ -245,7 +245,7 @@ public class AuthController : ControllerBase
     [Route("forgot-password")]
     [HttpPost]
     public async Task<ActionResult<Response<PasswordResetOutput?>>> ForgotPassword(
-        [FromBody] ForgotPasswordInput model
+        [FromBody] ForgotPassword model
     )
     {
         if (!ModelState.IsValid)
@@ -281,7 +281,7 @@ public class AuthController : ControllerBase
     [Route("reset-password")]
     [HttpPost]
     public async Task<ActionResult<Response<string?>>> ChangePassword(
-        [FromBody] PasswordRecoveryInput model
+        [FromBody] PasswordRecovery model
     )
     {
         if (!ModelState.IsValid || model.Password != model.PasswordConfirmation)

@@ -384,7 +384,7 @@ public class AuthService
     /// <param name="model">Données de récupération</param>
     /// <returns>Réponse contenant les informations de récupération</returns>
     public async Task<Response<PasswordResetOutput>> ForgotPassword(
-        ForgotPasswordInput model
+        ForgotPassword model
     )
     {
         var user = await userManager.FindByEmailAsync(model.Email);
@@ -449,7 +449,7 @@ public class AuthService
     /// </summary>
     /// <param name="model">Données de récupération de mot de passe</param>
     /// <returns>Réponse indiquant le succès ou l'échec du changement</returns>
-    public async Task<Response<string?>> ChangePassword(PasswordRecoveryInput model)
+    public async Task<Response<string?>> ChangePassword(PasswordRecovery model)
     {
         UserApp? user = await userManager.FindByIdAsync(model.UserId);
         if (user is null)

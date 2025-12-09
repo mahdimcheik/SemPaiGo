@@ -57,6 +57,7 @@ public class TeacherDetails
     /// Date de dernière mise à jour du profil
     /// </summary>
     public DateTimeOffset? UpdatedAt { get; set; }
+    public List<LanguageDetails> Languages { get; set; }
 
     public TeacherDetails() { }
     public TeacherDetails(ProfileTeacher profile)
@@ -70,20 +71,9 @@ public class TeacherDetails
         Formations = profile.Formations.Select(f => new FormationDetails(f)).ToList();
         CreatedAt = profile.CreatedAt;
         UpdatedAt = profile.UpdatedAt;
+        Languages = profile.Languages?.Select(l => new LanguageDetails(l)).ToList() ?? [];
     }
 
-    public TeacherDetails(ProfileTeacher profile, UserDetails userDetails, List<AddressDetails>? addresses = null, List<FormationDetails>? formations = null)
-    {
-        Id = profile.Id;
-        Title = profile.Title;
-        Description = profile.Description;
-        UserId = profile.UserId;
-        User = userDetails;
-        Addresses = addresses ?? new List<AddressDetails>();
-        Formations = formations ?? new List<FormationDetails>();
-        CreatedAt = profile.CreatedAt;
-        UpdatedAt = profile.UpdatedAt;
-    }
 }
 
 /// <summary>
@@ -138,6 +128,8 @@ public class TeacherProfileUpdate
     /// <example>Enseignant passionné avec 10 ans d'expérience</example>
     [StringLength(1000, ErrorMessage = "La description ne peut pas dépasser 1000 caractères")]
     public string? Description { get; set; }
+
+    public List<Guid> LanguagesIds { get; set; }
 
     public void UpdateProfile(ProfileTeacher profile)
     {

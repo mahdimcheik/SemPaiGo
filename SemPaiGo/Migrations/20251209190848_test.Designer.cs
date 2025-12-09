@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SemPaiGo.Contexts;
@@ -11,9 +12,11 @@ using SemPaiGo.Contexts;
 namespace SempaiGo.Migrations
 {
     [DbContext(typeof(MainContext))]
-    partial class MainContextModelSnapshot : ModelSnapshot
+    [Migration("20251209190848_test")]
+    partial class test
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -466,6 +469,9 @@ namespace SempaiGo.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)");
 
+                    b.Property<int>("MyProperty")
+                        .HasColumnType("integer");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(200)
@@ -477,32 +483,6 @@ namespace SempaiGo.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Languages");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("ff34f5ba-6201-45bf-9217-dcda019976a3"),
-                            Color = "#ff69b4",
-                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Icon = "",
-                            Name = "Arabe"
-                        },
-                        new
-                        {
-                            Id = new Guid("52b54b82-1f37-4a66-a263-708b53cd685d"),
-                            Color = "#fa69b4",
-                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Icon = "",
-                            Name = "Francais"
-                        },
-                        new
-                        {
-                            Id = new Guid("3aa916ed-53d2-4f93-80e9-b49171a7ebe1"),
-                            Color = "#ab69b4",
-                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Icon = "",
-                            Name = "Anglais"
-                        });
                 });
 
             modelBuilder.Entity("SemPaiGo.Models.LevelCursus", b =>
@@ -673,6 +653,9 @@ namespace SempaiGo.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
+                    b.Property<Guid?>("LanguageId")
+                        .HasColumnType("uuid");
+
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -680,6 +663,8 @@ namespace SempaiGo.Migrations
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("LanguageId");
 
                     b.HasIndex("UserId")
                         .IsUnique();
@@ -704,6 +689,9 @@ namespace SempaiGo.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("text");
 
+                    b.Property<Guid?>("LanguageId")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("Title")
                         .HasColumnType("text");
 
@@ -714,6 +702,8 @@ namespace SempaiGo.Migrations
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("LanguageId");
 
                     b.HasIndex("UserId")
                         .IsUnique();
@@ -1420,21 +1410,6 @@ namespace SempaiGo.Migrations
                         });
                 });
 
-            modelBuilder.Entity("TeachersXLanguages", b =>
-                {
-                    b.Property<Guid>("LanguageId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("TeacherId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("LanguageId", "TeacherId");
-
-                    b.HasIndex("TeacherId");
-
-                    b.ToTable("TeachersXLanguages");
-                });
-
             modelBuilder.Entity("CursusXCategories", b =>
                 {
                     b.HasOne("SemPaiGo.Models.CategoryCursus", null)
@@ -1609,6 +1584,10 @@ namespace SempaiGo.Migrations
 
             modelBuilder.Entity("SemPaiGo.Models.ProfileStudent", b =>
                 {
+                    b.HasOne("SemPaiGo.Models.Language", null)
+                        .WithMany("Students")
+                        .HasForeignKey("LanguageId");
+
                     b.HasOne("SemPaiGo.Models.UserApp", "User")
                         .WithOne()
                         .HasForeignKey("SemPaiGo.Models.ProfileStudent", "UserId")
@@ -1620,6 +1599,10 @@ namespace SempaiGo.Migrations
 
             modelBuilder.Entity("SemPaiGo.Models.ProfileTeacher", b =>
                 {
+                    b.HasOne("SemPaiGo.Models.Language", null)
+                        .WithMany("Teachers")
+                        .HasForeignKey("LanguageId");
+
                     b.HasOne("SemPaiGo.Models.UserApp", "User")
                         .WithOne()
                         .HasForeignKey("SemPaiGo.Models.ProfileTeacher", "UserId")
@@ -1747,19 +1730,11 @@ namespace SempaiGo.Migrations
                     b.Navigation("Status");
                 });
 
-            modelBuilder.Entity("TeachersXLanguages", b =>
+            modelBuilder.Entity("SemPaiGo.Models.Language", b =>
                 {
-                    b.HasOne("SemPaiGo.Models.Language", null)
-                        .WithMany()
-                        .HasForeignKey("LanguageId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                    b.Navigation("Students");
 
-                    b.HasOne("SemPaiGo.Models.ProfileTeacher", null)
-                        .WithMany()
-                        .HasForeignKey("TeacherId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                    b.Navigation("Teachers");
                 });
 
             modelBuilder.Entity("SemPaiGo.Models.Order", b =>

@@ -50,4 +50,10 @@ public static class HardCode
     public static Guid TYPE_ADDRESS_HOME => Guid.Parse("e1fee3ea-6190-48c3-8e40-c1f053fea79d");
     public static Guid TYPE_ADDRESS_BILLING => Guid.Parse("b8b8a8fc-ca60-440b-815f-1e44b89c9803");
 
+    // langues
+    public static Guid LANGUAGE_FRENCH => Guid.Parse("52b54b82-1f37-4a66-a263-708b53cd685d");
+    public static Guid LANGUAGE_ENGLISH => Guid.Parse("3aa916ed-53d2-4f93-80e9-b49171a7ebe1");
+    public static Guid LANGUAGE_ARAB => Guid.Parse("ff34f5ba-6201-45bf-9217-dcda019976a3");
+
+
 }

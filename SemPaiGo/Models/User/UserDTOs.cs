@@ -61,7 +61,7 @@ public class UserLogin
     public string Password { get; set; }
 }
 
-public class ConfirmAccountInput
+public class ConfirmAccount
 {
     public string UserId { get; set; }
     public string ConfirmationToken { get; set; }
@@ -111,14 +111,14 @@ public class PasswordResetOutput
     public required Guid Id { get; set; }
 }
 
-public class ForgotPasswordInput
+public class ForgotPassword
 {
     [Required(ErrorMessage = "Email required")]
     [DataType(DataType.EmailAddress)]
     public required string Email { get; set; }
 }
 
-public class ChangePasswordInput
+public class ChangePassword
 {
     [Required]
     public required string OldPassword { get; set; }
@@ -130,7 +130,7 @@ public class ChangePasswordInput
     public required string NewPasswordConfirmation { get; set; }
 }
 
-public class PasswordRecoveryInput
+public class PasswordRecovery
 {
     [Required(ErrorMessage = "UserId required")]
     public required string UserId { get; set; }
