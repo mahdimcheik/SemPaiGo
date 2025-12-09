@@ -11,8 +11,8 @@ public class Formation : BaseModel
     public required DateTimeOffset DateFrom { get; set; }
     public DateTimeOffset? DateTo { get; set; }
 
-    public Guid? TeacherId { get; set; }
-    public ProfileTeacher Teacher { get; set; }
+    public Guid TeacherId { get; set; }
+    public ProfileTeacher? Teacher { get; set; }
 
     public Formation() { }
 

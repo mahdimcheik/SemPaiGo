@@ -127,7 +127,7 @@ public class FormationCreate
     /// <summary>
     /// id du professeur ou de l'étudiant associé
     /// </summary>
-    public Guid? TeacherId { get; set; }
+    public Guid TeacherId { get; set; }
 }
 
 /// <summary>
