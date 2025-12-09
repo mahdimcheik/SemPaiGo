@@ -130,6 +130,8 @@ public class TeacherProfileUpdate
     [StringLength(200, ErrorMessage = "Le titre ne peut pas dépasser 200 caractères")]
     public string? Title { get; set; }
 
+    public UserUpdateInput? User { get; set; }
+
     /// <summary>
     /// Description du profil de l'enseignant
     /// </summary>
@@ -142,5 +144,10 @@ public class TeacherProfileUpdate
         profile.Title = Title;
         profile.Description = Description;
         profile.UpdatedAt = DateTimeOffset.UtcNow;
+
+        if(User is not null && profile.User is not null)
+        {
+            User.UpdateUser(profile.User);
+        }
     }
 }

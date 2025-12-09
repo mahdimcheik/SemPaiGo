@@ -87,39 +87,7 @@ public class TeacherProfileController : ControllerBase
 
         return StatusCode(response.Status, response);
     }
-
-    /// <summary>
-    /// Crée un nouveau profil enseignant
-    /// </summary>
-    /// <param name="profileDto">Données du profil à créer</param>
-    /// <returns>Profil créé</returns>
-    /// <response code="201">Profil créé avec succès</response>
-    /// <response code="400">Données invalides ou profil déjà existant</response>
-    /// <response code="404">Utilisateur non trouvé</response>
-    /// <response code="500">Erreur interne du serveur</response>
-    [HttpPost]
-    [Authorize]
-    [ProducesResponseType(typeof(Response<TeacherDetails>), StatusCodes.Status201Created)]
-    [ProducesResponseType(typeof(Response<object>), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(Response<object>), StatusCodes.Status404NotFound)]
-    [ProducesResponseType(typeof(Response<object>), StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<Response<TeacherDetails>>> CreateTeacherProfile(
-        [FromBody] TeacherProfileCreate profileDto)
-    {
-        if (!ModelState.IsValid)
-        {
-            return BadRequest(new Response<object>
-            {
-                Status = 400,
-                Message = "Données de validation invalides",
-                Data = ModelState
-            });
-        }
-
-        var response = await _teacherProfileService.CreateTeacherProfileAsync(profileDto, User);
-        return StatusCode(response.Status, response);
-    }
-
+    
     /// <summary>
     /// Met à jour un profil enseignant existant
     /// </summary>

@@ -313,6 +313,7 @@ public class MainContext : IdentityDbContext<UserApp, RoleApp, Guid>
             pt.Property(e => e.UpdatedAt).HasColumnType("timestamp with time zone");
             pt.Property(e => e.ArchivedAt).HasColumnType("timestamp with time zone");
             pt.HasOne(s => s.User).WithOne().HasForeignKey<ProfileTeacher>(s => s.UserId);
+            pt.HasMany(s => s.Formations).WithOne(f => f.Teacher).HasForeignKey(f => f.TeacherId);
         });
 
         // ProfileStudent

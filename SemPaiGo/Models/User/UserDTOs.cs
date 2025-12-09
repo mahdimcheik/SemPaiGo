@@ -165,12 +165,7 @@ public class UserUpdateInput
     public required string LastName { get; set; }
     [Required]
     public required DateTimeOffset DateOfBirth { get; set; }
-    public string? Title { get; set; }
-    public string? Description { get; set; }
     public string? PhoneNumber { get; set; }
-
-    public List<Guid> LanguagesIds { get; set; } = new();
-    public List<Guid> ProgrammingLanguagesIds { get; set; } = new();
 
     public void UpdateUser(UserApp user)
     {
