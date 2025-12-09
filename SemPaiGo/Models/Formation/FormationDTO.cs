@@ -61,11 +61,6 @@ public class FormationDetails
     /// <example>2023-01-20T14:45:00Z</example>
     public DateTimeOffset? UpdatedAt { get; set; }
 
-    /// <summary>
-    /// professeur ou étudiant associé
-    /// </summary>
-    public ProfileTeacher Teacher { get; set; }
-
     public FormationDetails() { }
 
     public FormationDetails(Formation formation)
@@ -76,7 +71,6 @@ public class FormationDetails
         Institute = formation.Institute;
         DateFrom = formation.DateFrom;
         DateTo = formation.DateTo;
-        Teacher = formation.Teacher;
         CreatedAt = formation.CreatedAt;
         UpdatedAt = formation.UpdatedAt;
     }
