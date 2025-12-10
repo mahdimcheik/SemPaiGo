@@ -179,6 +179,8 @@ public class AddressCreate
 /// </summary>
 public class AddressUpdate
 {
+    [Required]
+    public Guid Id { get; set; }
     /// <summary>
     /// Rue de l'adresse
     /// </summary>

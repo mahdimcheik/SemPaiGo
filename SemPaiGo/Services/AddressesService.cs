@@ -170,12 +170,12 @@ public class AddressesService(MainContext context)
     /// <param name="id">Identifiant de l'adresse</param>
     /// <param name="addressDto">Nouvelles données de l'adresse</param>
     /// <returns>Adresse mise à jour</returns>
-    public async Task<Response<AddressDetails>> UpdateAddressAsync(Guid id, AddressUpdate addressDto)
+    public async Task<Response<AddressDetails>> UpdateAddressAsync(AddressUpdate addressDto)
     {
         try
         {
             var address = await context.Addresses
-                .FirstOrDefaultAsync(a => a.Id == id && a.ArchivedAt == null);
+                .FirstOrDefaultAsync(a => a.Id == addressDto.Id && a.ArchivedAt == null);
 
             if (address == null)
             {

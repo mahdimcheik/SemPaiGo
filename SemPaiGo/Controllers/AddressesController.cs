@@ -63,17 +63,17 @@ namespace SemPaiGo.Controllers
         /// <summary>
         /// Récupère toutes les adresses d'un utilisateur
         /// </summary>
-        /// <param name="userId">Identifiant de l'utilisateur</param>
+        /// <param name="id">Identifiant de l'utilisateur</param>
         /// <returns>Liste des adresses de l'utilisateur</returns>
         /// <response code="200">Adresses de l'utilisateur récupérées avec succès</response>
         /// <response code="500">Erreur interne du serveur</response>
-        [HttpGet("user/{userId:guid}")]
+        [HttpGet("user/{id:guid}")]
         [ProducesResponseType(typeof(Response<List<AddressDetails>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(Response<object>), StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<Response<List<AddressDetails>>>> GetAddressesByUserId(
-            [FromRoute] Guid userId)
+            [FromRoute] Guid id)
         {
-            var response = await addressesService.GetAddressesByUserIdAsync(userId);
+            var response = await addressesService.GetAddressesByUserIdAsync(id);
 
             if (response.Status == 200)
             {
@@ -125,13 +125,12 @@ namespace SemPaiGo.Controllers
         /// <response code="400">Données invalides</response>
         /// <response code="404">Adresse ou utilisateur non trouvé</response>
         /// <response code="500">Erreur interne du serveur</response>
-        [HttpPut("{id:guid}")]
+        [HttpPut]
         [ProducesResponseType(typeof(Response<AddressDetails>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(Response<object>), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(Response<object>), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(Response<object>), StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<Response<AddressDetails>>> UpdateAddress(
-            [FromRoute] Guid id,
             [FromBody] AddressUpdate addressDto)
         {
             if (!ModelState.IsValid)
@@ -144,7 +143,7 @@ namespace SemPaiGo.Controllers
                 });
             }
 
-            var response = await addressesService.UpdateAddressAsync(id, addressDto);
+            var response = await addressesService.UpdateAddressAsync(addressDto);
 
             return StatusCode(response.Status, response);
         }
