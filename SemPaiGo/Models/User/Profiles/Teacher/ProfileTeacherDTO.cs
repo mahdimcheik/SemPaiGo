@@ -58,6 +58,10 @@ public class TeacherDetails
     /// </summary>
     public DateTimeOffset? UpdatedAt { get; set; }
     public List<LanguageDetails> Languages { get; set; }
+    public string? LinkedIn { get; set; }
+    public string? FaceBook { get; set; }
+    public string? GitHub { get; set; }
+    public string? Twitter { get; set; }
 
     public TeacherDetails() { }
     public TeacherDetails(ProfileTeacher profile)
@@ -72,6 +76,10 @@ public class TeacherDetails
         CreatedAt = profile.CreatedAt;
         UpdatedAt = profile.UpdatedAt;
         Languages = profile.Languages?.Select(l => new LanguageDetails(l)).ToList() ?? [];
+        LinkedIn = profile.LinkedIn;
+        FaceBook = profile.FaceBook;
+        GitHub = profile.GitHub;
+        Twitter = profile.Twitter;
     }
 
 }
@@ -100,6 +108,10 @@ public class TeacherProfileCreate
     /// </summary>
     [Required(ErrorMessage = "L'identifiant utilisateur est requis")]
     public Guid UserId { get; set; }
+    public string? LinkedIn { get; set; }
+    public string? FaceBook { get; set; }
+    public string? GitHub { get; set; }
+    public string? Twitter { get; set; }
 }
 
 /// <summary>
@@ -130,14 +142,22 @@ public class TeacherProfileUpdate
     public string? Description { get; set; }
 
     public List<Guid> LanguagesIds { get; set; }
+    public string? LinkedIn { get; set; }
+    public string? FaceBook { get; set; }
+    public string? GitHub { get; set; }
+    public string? Twitter { get; set; }
 
     public void UpdateProfile(ProfileTeacher profile)
     {
         profile.Title = Title;
         profile.Description = Description;
         profile.UpdatedAt = DateTimeOffset.UtcNow;
+        profile.LinkedIn = LinkedIn;
+        profile.FaceBook = FaceBook;
+        profile.GitHub = GitHub;
+        profile.Twitter = Twitter;
 
-        if(User is not null && profile.User is not null)
+        if (User is not null && profile.User is not null)
         {
             User.UpdateUser(profile.User);
         }

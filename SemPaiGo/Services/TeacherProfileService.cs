@@ -75,6 +75,7 @@ public class TeacherProfileService
                 .ThenInclude(u => u.Gender)
                 .Include(p => p.User)
                 .ThenInclude(u => u.Addresses)
+                .Include(u => u.Languages)
                 .Include(p => p.Formations)
                 .FirstOrDefaultAsync(p => p.Id == user.Id);
 

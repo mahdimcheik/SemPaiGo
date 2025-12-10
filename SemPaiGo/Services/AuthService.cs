@@ -166,7 +166,11 @@ public class AuthService
                     Id = newUser.Id,
                     UserId = newUser.Id,
                     Title = userCreate.Title,
-                    Description = userCreate.Description
+                    Description = userCreate.Description,
+                    LinkedIn = null,
+                    FaceBook = null,
+                    GitHub = null,
+                    Twitter = null,
                 };
                 await context.ProfileTeachers.AddAsync(newTeacher);
                 await context.SaveChangesAsync();
