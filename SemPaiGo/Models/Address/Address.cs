@@ -14,8 +14,7 @@ public class Address : BaseModel
     [Required]
     public required string City { get; set; }
 
-    [Required]
-    public required string State { get; set; }
+
 
     [Required]
     public required string Country { get; set; }
@@ -39,21 +38,19 @@ public class Address : BaseModel
         Id = Guid.NewGuid();
         Street = addressDto.Street;
         City = addressDto.City;
-        State = addressDto.State;
         Country = addressDto.Country;
         ZipCode = addressDto.ZipCode;
         AdditionalInfo = addressDto.AdditionalInfo;
         Longitude = addressDto.Longitude;
         Latitude = addressDto.Latitude;
         UserId = addressDto.UserId;
-        TypeId = addressDto.TypeId;
+        TypeId =  HardCode.TYPE_ADDRESS_HOME;//addressDto.TypeId;
         CreatedAt = DateTimeOffset.UtcNow;
     }
     public void UpdateAddress(AddressUpdate addressDto)
     {
         Street = addressDto.Street;
         City = addressDto.City;
-        State = addressDto.State;
         Country = addressDto.Country;
         ZipCode = addressDto.ZipCode;
         AdditionalInfo = addressDto.AdditionalInfo;

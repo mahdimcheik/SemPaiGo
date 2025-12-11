@@ -110,7 +110,7 @@ namespace SemPaiGo.Controllers
                 });
             }
 
-            var response = await addressesService.CreateAddressAsync(addressDto);
+            var response = await addressesService.CreateAddressAsync(addressDto, User);
 
             return StatusCode(response.Status, response);
         }

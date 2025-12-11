@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using SemPaiGo.Utilities;
+using System.ComponentModel.DataAnnotations;
 
 namespace SemPaiGo.Models;
 
@@ -28,12 +29,6 @@ public class AddressDetails
     [Required]
     public string City { get; set; }
 
-    /// <summary>
-    /// État/Province
-    /// </summary>
-    /// <example>Île-de-France</example>
-    [Required]
-    public string State { get; set; }
 
     /// <summary>
     /// Pays
@@ -71,6 +66,10 @@ public class AddressDetails
     /// user , prof ou eleve
     /// </summary>
     public Guid UserId { get; set; }
+    [Required(ErrorMessage = "Le type est requis")]
+    public Guid TypeId { get; set; }
+
+
 
     /// <summary>
     /// Date de création de l'enregistrement
@@ -92,13 +91,13 @@ public class AddressDetails
         Id = address.Id;
         Street = address.Street;
         City = address.City;
-        State = address.State;
         Country = address.Country;
         ZipCode = address.ZipCode;
         AdditionalInfo = address.AdditionalInfo;
         Longitude = address.Longitude;
         Latitude = address.Latitude;
         UserId = address.UserId;
+        TypeId = address.TypeId;
         CreatedAt = address.CreatedAt;
         UpdatedAt = address.UpdatedAt;
     }
@@ -125,13 +124,6 @@ public class AddressCreate
     [StringLength(64, ErrorMessage = "La ville ne peut pas dépasser 64 caractères")]
     public string City { get; set; }
 
-    /// <summary>
-    /// État/Province
-    /// </summary>
-    /// <example>Île-de-France</example>
-    [Required(ErrorMessage = "L'état est requis")]
-    [StringLength(64, ErrorMessage = "L'état ne peut pas dépasser 64 caractères")]
-    public string State { get; set; }
 
     /// <summary>
     /// Pays
@@ -170,8 +162,10 @@ public class AddressCreate
     [Range(-90, 90, ErrorMessage = "La latitude doit être comprise entre -90 et 90")]
     public float? Latitude { get; set; }
 
+    [Required(ErrorMessage = "L'identifiant utilisateur est requis")]
     public Guid UserId { get; set; }
-    public Guid TypeId { get; set; }
+    [Required(ErrorMessage = "Le type est requis")]
+    public Guid TypeId { get; set; }  
 }
 
 /// <summary>
@@ -248,5 +242,6 @@ public class AddressUpdate
     /// <example>550e8400-e29b-41d4-a716-446655440001</example>
     [Required(ErrorMessage = "L'identifiant utilisateur est requis")]
     public Guid UserId { get; set; }
+    [Required(ErrorMessage = "Le type est requis")]
     public Guid TypeId { get; set; }
 }

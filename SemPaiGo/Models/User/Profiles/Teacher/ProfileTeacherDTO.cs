@@ -38,11 +38,6 @@ public class TeacherDetails
     public UserDetails User { get; set; }
 
     /// <summary>
-    /// Liste des adresses de l'enseignant
-    /// </summary>
-    public List<AddressDetails> Addresses { get; set; } = new();
-
-    /// <summary>
     /// Liste des formations de l'enseignant
     /// </summary>
     public List<FormationDetails> Formations { get; set; } = new();
@@ -71,7 +66,6 @@ public class TeacherDetails
         Description = profile.Description;
         UserId = profile.UserId;
         User = new UserDetails(profile.User, null);
-        Addresses = profile.User.Addresses.Select(a => new AddressDetails(a)).ToList();
         Formations = profile.Formations.Select(f => new FormationDetails(f)).ToList();
         CreatedAt = profile.CreatedAt;
         UpdatedAt = profile.UpdatedAt;

@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SemPaiGo.Contexts;
 using SemPaiGo.Models;
+using SemPaiGo.Utilities;
+using System.Security.Claims;
 
 namespace SemPaiGo.Services;
 
@@ -42,6 +44,7 @@ public class AddressesService(MainContext context)
             };
         }
     }
+    
 
     /// <summary>
     /// Récupère une adresse par son identifiant
@@ -124,13 +127,13 @@ public class AddressesService(MainContext context)
     /// </summary>
     /// <param name="addressDto">Données de l'adresse à créer</param>
     /// <returns>Adresse créée</returns>
-    public async Task<Response<AddressDetails>> CreateAddressAsync(AddressCreate addressDto)
+    public async Task<Response<AddressDetails>> CreateAddressAsync(AddressCreate addressDto, ClaimsPrincipal User)
     {
         try
         {
             // Vérifier que l'utilisateur existe
-            var userExists = await context.Users.AnyAsync(u => u.Id == addressDto.UserId );
-            if (!userExists)
+            var userExists = CheckUser.GetUserFromClaim(User, context);
+            if (userExists is null)
             {
                 return new Response<AddressDetails>
                 {
@@ -140,8 +143,8 @@ public class AddressesService(MainContext context)
                 };
             }
 
-            var address = new Address(addressDto);
-           
+            addressDto.UserId = userExists.Id;
+            var address = new Address(addressDto);           
 
             context.Addresses.Add(address);
             await context.SaveChangesAsync();
@@ -163,6 +166,8 @@ public class AddressesService(MainContext context)
             };
         }
     }
+
+
 
     /// <summary>
     /// Met à jour une adresse existante
