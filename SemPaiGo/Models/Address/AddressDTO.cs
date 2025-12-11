@@ -192,14 +192,6 @@ public class AddressUpdate
     public string City { get; set; }
 
     /// <summary>
-    /// État/Province
-    /// </summary>
-    /// <example>Île-de-France</example>
-    [Required(ErrorMessage = "L'état est requis")]
-    [StringLength(64, ErrorMessage = "L'état ne peut pas dépasser 64 caractères")]
-    public string State { get; set; }
-
-    /// <summary>
     /// Pays
     /// </summary>
     /// <example>France</example>
