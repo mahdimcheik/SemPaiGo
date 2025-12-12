@@ -175,7 +175,7 @@ public class AddressesService(MainContext context)
     /// <param name="id">Identifiant de l'adresse</param>
     /// <param name="addressDto">Nouvelles données de l'adresse</param>
     /// <returns>Adresse mise à jour</returns>
-    public async Task<Response<AddressDetails>> UpdateAddressAsync(AddressUpdate addressDto)
+    public async Task<Response<AddressDetails>> UpdateAddressAsync(AddressUpdate addressDto, ClaimsPrincipal User)
     {
         try
         {
@@ -193,8 +193,8 @@ public class AddressesService(MainContext context)
             }
 
             // Vérifier que l'utilisateur existe
-            var userExists = await context.Users.AnyAsync(u => u.Id == addressDto.UserId);
-            if (!userExists)
+            var user = CheckUser.GetUserFromClaim(User,context);
+            if (user is null)
             {
                 return new Response<AddressDetails>
                 {
@@ -203,6 +203,7 @@ public class AddressesService(MainContext context)
                     Data = null
                 };
             }
+            addressDto.UserId = user.Id;
             address.UpdateAddress(addressDto);
 
             await context.SaveChangesAsync();

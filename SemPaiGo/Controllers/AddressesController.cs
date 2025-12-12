@@ -143,7 +143,7 @@ namespace SemPaiGo.Controllers
                 });
             }
 
-            var response = await addressesService.UpdateAddressAsync(addressDto);
+            var response = await addressesService.UpdateAddressAsync(addressDto, User);
 
             return StatusCode(response.Status, response);
         }
