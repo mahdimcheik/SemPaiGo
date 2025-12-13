@@ -74,9 +74,9 @@ public class TeacherProfileService
                 .ProfileTeachers.Include(p => p.User)
                 .ThenInclude(u => u.Gender)
                 .Include(p => p.User)
-                .ThenInclude(u => u.Addresses)
+                .ThenInclude(u => u.Addresses.Where(a =>a.ArchivedAt == null))
                 .Include(u => u.Languages)
-                .Include(p => p.Formations)
+                .Include(p => p.Formations.Where(a => a.ArchivedAt == null))
                 .FirstOrDefaultAsync(p => p.Id == user.Id);
 
             if (profile == null)
@@ -86,6 +86,15 @@ public class TeacherProfileService
                     Status = 404,
                     Message = "Profil enseignant non trouvé",
                 };
+            }
+
+            if(profile.User?.Addresses is not null)
+            {
+                var workAddress = profile.User?.Addresses.FirstOrDefault(a => a.TypeId == HardCode.TYPE_ADDRESS_BILLING);
+                if(workAddress is not null)
+                {
+                    profile.User.Addresses = [workAddress];
+                }
             }
 
             return new Response<TeacherDetails>

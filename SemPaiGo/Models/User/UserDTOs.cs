@@ -27,7 +27,7 @@ public class UserDetails : ICreatable
     [Required]
     public ICollection<AddressDetails> Addresses { get; set; }
 
-    public UserDetails(UserApp user, List<RoleDetails>? roles)
+    public UserDetails(UserApp user, List<RoleDetails>? roles,bool minimal = false)
     {
         Id = user.Id;
         FirstName = user.FirstName;
@@ -35,7 +35,7 @@ public class UserDetails : ICreatable
         Email = user.Email;
         Roles = roles;
         Gender = user.Gender is null ? null : new GenderDetails(user.Gender);
-        Addresses =  user.Addresses.Select(a => new AddressDetails(a)).ToList();
+        Addresses =  user.Addresses.Select(a => new AddressDetails(a, minimal)).ToList();
         PhoneNumber = user.PhoneNumber;
         DateOfBirth = user.DateOfBirth;
         ImgUrl = user.ImgUrl;

@@ -57,6 +57,7 @@ public class TeacherDetails
     public string? FaceBook { get; set; }
     public string? GitHub { get; set; }
     public string? Twitter { get; set; }
+    public decimal PriceIndicative { get; set; }
 
     public TeacherDetails() { }
     public TeacherDetails(ProfileTeacher profile)
@@ -65,7 +66,7 @@ public class TeacherDetails
         Title = profile.Title;
         Description = profile.Description;
         UserId = profile.UserId;
-        User = new UserDetails(profile.User, null);
+        User = new UserDetails(profile.User, null, true);
         Formations = profile.Formations.Select(f => new FormationDetails(f)).ToList();
         CreatedAt = profile.CreatedAt;
         UpdatedAt = profile.UpdatedAt;
@@ -74,6 +75,7 @@ public class TeacherDetails
         FaceBook = profile.FaceBook;
         GitHub = profile.GitHub;
         Twitter = profile.Twitter;
+        PriceIndicative = profile.PriceIndicative;
     }
 
 }
@@ -106,6 +108,7 @@ public class TeacherProfileCreate
     public string? FaceBook { get; set; }
     public string? GitHub { get; set; }
     public string? Twitter { get; set; }
+    public decimal PriceIndicative { get; set; }
 }
 
 /// <summary>
@@ -140,6 +143,8 @@ public class TeacherProfileUpdate
     public string? FaceBook { get; set; }
     public string? GitHub { get; set; }
     public string? Twitter { get; set; }
+    public decimal PriceIndicative { get; set; }
+
 
     public void UpdateProfile(ProfileTeacher profile)
     {
@@ -150,6 +155,7 @@ public class TeacherProfileUpdate
         profile.FaceBook = FaceBook;
         profile.GitHub = GitHub;
         profile.Twitter = Twitter;
+        profile.PriceIndicative = PriceIndicative;
 
         if (User is not null && profile.User is not null)
         {

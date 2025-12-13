@@ -12,7 +12,7 @@ public class ProfileTeacher : BaseModel
     public string? FaceBook { get; set; }
     public string? GitHub { get; set; }
     public string? Twitter { get; set; }
-    //public decimal PriceIndicative { get; set; }
+    public decimal PriceIndicative { get; set; }
 
     public ICollection<Cursus> Cursuses { get; set; } = new List<Cursus>();
     public ICollection<Experience> Experiences { get; set; } = new List<Experience>();

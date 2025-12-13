@@ -143,6 +143,18 @@ public class AddressesService(MainContext context)
                 };
             }
 
+            var addressesCount = await context.Addresses.CountAsync(a => a.UserId == userExists.Id && a.ArchivedAt == null);
+
+            if(addressesCount >= 2)
+            {
+                return new Response<AddressDetails>
+                {
+                    Status = 401,
+                    Message = "Le nombre d'addresses autorisé est depassé",
+                    Data = null
+                };
+            }
+
             addressDto.UserId = userExists.Id;
             var address = new Address(addressDto);           
 

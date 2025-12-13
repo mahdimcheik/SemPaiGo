@@ -101,6 +101,22 @@ public class AddressDetails
         CreatedAt = address.CreatedAt;
         UpdatedAt = address.UpdatedAt;
     }
+
+    public AddressDetails(Address address, bool minimal)
+    {
+        Id = address.Id;
+        Street = minimal ? "" :address.Street;
+        City = address.City;
+        Country = address.Country;
+        ZipCode = address.ZipCode;
+        AdditionalInfo = minimal ? "" : address.AdditionalInfo;
+        Longitude = address.Longitude;
+        Latitude = address.Latitude;
+        UserId = address.UserId;
+        TypeId = address.TypeId;
+        CreatedAt = address.CreatedAt;
+        UpdatedAt = address.UpdatedAt;
+    }
 }
 
 /// <summary>
