@@ -205,7 +205,19 @@ public class MainContext : IdentityDbContext<UserApp, RoleApp, Guid>
             entity.HasKey(a => a.Id);
 
             entity.Property(a => a.Description).HasMaxLength(255);
-            entity.Property(a => a.ImgUrl).HasMaxLength(255);
+            entity.Property(a => a.Name).IsRequired().HasMaxLength(64);
+            entity.Property(a => a.Color).IsRequired().HasMaxLength(16);
+            entity.Property(a => a.Icon).HasMaxLength(256);
+            entity.Property(a => a.LevelId).IsRequired();
+            entity.Property(a => a.TeacherId).IsRequired();
+            entity.Property(a => a.CreatedAt)
+                .IsRequired()
+                .HasColumnType("timestamp with time zone")
+                .ValueGeneratedOnAdd()
+                .HasDefaultValueSql("CURRENT_TIMESTAMP");
+            entity.Property(a => a.UpdatedAt).HasColumnType("timestamp with time zone");
+            entity.Property(a => a.ArchivedAt).HasColumnType("timestamp with time zone");
+
 
             // Relation avec Teacher
             entity

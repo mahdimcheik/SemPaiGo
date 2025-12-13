@@ -6,10 +6,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
 
-namespace SempaiGo.Migrations
+namespace SemPaiGo.Migrations
 {
     /// <inheritdoc />
-    public partial class restart : Migration
+    public partial class init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -379,7 +379,6 @@ namespace SempaiGo.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     UserId = table.Column<Guid>(type: "uuid", nullable: false),
-                    LanguageId = table.Column<Guid>(type: "uuid", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     ArchivedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
@@ -387,11 +386,6 @@ namespace SempaiGo.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ProfileStudents", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_ProfileStudents_Languages_LanguageId",
-                        column: x => x.LanguageId,
-                        principalTable: "Languages",
-                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_ProfileStudents_Users_UserId",
                         column: x => x.UserId,
@@ -408,7 +402,11 @@ namespace SempaiGo.Migrations
                     Title = table.Column<string>(type: "text", nullable: true),
                     Description = table.Column<string>(type: "text", nullable: true),
                     UserId = table.Column<Guid>(type: "uuid", nullable: false),
-                    LanguageId = table.Column<Guid>(type: "uuid", nullable: true),
+                    LinkedIn = table.Column<string>(type: "text", nullable: true),
+                    FaceBook = table.Column<string>(type: "text", nullable: true),
+                    GitHub = table.Column<string>(type: "text", nullable: true),
+                    Twitter = table.Column<string>(type: "text", nullable: true),
+                    PriceIndicative = table.Column<decimal>(type: "numeric", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     ArchivedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
@@ -416,11 +414,6 @@ namespace SempaiGo.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ProfileTeachers", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_ProfileTeachers_Languages_LanguageId",
-                        column: x => x.LanguageId,
-                        principalTable: "Languages",
-                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_ProfileTeachers_Users_UserId",
                         column: x => x.UserId,
@@ -455,7 +448,6 @@ namespace SempaiGo.Migrations
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Street = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: false),
                     City = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
-                    State = table.Column<string>(type: "text", nullable: false),
                     Country = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
                     ZipCode = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
                     AdditionalInfo = table.Column<string>(type: "text", nullable: true),
@@ -496,12 +488,14 @@ namespace SempaiGo.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Description = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
-                    ImgUrl = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
                     LevelId = table.Column<Guid>(type: "uuid", nullable: false),
                     TeacherId = table.Column<Guid>(type: "uuid", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    ArchivedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    ArchivedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    Name = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false),
+                    Color = table.Column<string>(type: "character varying(16)", maxLength: 16, nullable: false),
+                    Icon = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -556,7 +550,7 @@ namespace SempaiGo.Migrations
                     Description = table.Column<string>(type: "character varying(1000)", maxLength: 1000, nullable: false),
                     DateFrom = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     DateTo = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    TeacherId = table.Column<Guid>(type: "uuid", nullable: true),
+                    TeacherId = table.Column<Guid>(type: "uuid", nullable: false),
                     ProfileStudentId = table.Column<Guid>(type: "uuid", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
@@ -669,6 +663,30 @@ namespace SempaiGo.Migrations
                         principalTable: "StatusTransactions",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "TeachersXLanguages",
+                columns: table => new
+                {
+                    LanguageId = table.Column<Guid>(type: "uuid", nullable: false),
+                    TeacherId = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TeachersXLanguages", x => new { x.LanguageId, x.TeacherId });
+                    table.ForeignKey(
+                        name: "FK_TeachersXLanguages_Languages_LanguageId",
+                        column: x => x.LanguageId,
+                        principalTable: "Languages",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_TeachersXLanguages_ProfileTeachers_TeacherId",
+                        column: x => x.TeacherId,
+                        principalTable: "ProfileTeachers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -805,6 +823,16 @@ namespace SempaiGo.Migrations
                     { new Guid("b07b2445-f39c-4b26-8ffe-e40fe561d8bc"), null, "#ab69b4", new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "", "Other", null },
                     { new Guid("b68c151b-db34-462d-a65c-90989cc96e5e"), null, "#ff69b4", new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "", "Female", null },
                     { new Guid("dcb8b01b-205a-4ea2-a281-004a7b1bb972"), null, "#fa69b4", new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "", "Male", null }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Languages",
+                columns: new[] { "Id", "ArchivedAt", "Color", "CreatedAt", "Icon", "Name", "UpdatedAt" },
+                values: new object[,]
+                {
+                    { new Guid("3aa916ed-53d2-4f93-80e9-b49171a7ebe1"), null, "#ab69b4", new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "", "Anglais", null },
+                    { new Guid("52b54b82-1f37-4a66-a263-708b53cd685d"), null, "#fa69b4", new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "", "Francais", null },
+                    { new Guid("ff34f5ba-6201-45bf-9217-dcda019976a3"), null, "#ff69b4", new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "", "Arabe", null }
                 });
 
             migrationBuilder.InsertData(
@@ -955,20 +983,10 @@ namespace SempaiGo.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProfileStudents_LanguageId",
-                table: "ProfileStudents",
-                column: "LanguageId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_ProfileStudents_UserId",
                 table: "ProfileStudents",
                 column: "UserId",
                 unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ProfileTeachers_LanguageId",
-                table: "ProfileTeachers",
-                column: "LanguageId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ProfileTeachers_UserId",
@@ -1027,6 +1045,11 @@ namespace SempaiGo.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_TeacherPayouts_TeacherId",
                 table: "TeacherPayouts",
+                column: "TeacherId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TeachersXLanguages_TeacherId",
+                table: "TeachersXLanguages",
                 column: "TeacherId");
 
             migrationBuilder.CreateIndex(
@@ -1102,6 +1125,9 @@ namespace SempaiGo.Migrations
                 name: "TeacherPayouts");
 
             migrationBuilder.DropTable(
+                name: "TeachersXLanguages");
+
+            migrationBuilder.DropTable(
                 name: "TeacherWalletTransactions");
 
             migrationBuilder.DropTable(
@@ -1121,6 +1147,9 @@ namespace SempaiGo.Migrations
 
             migrationBuilder.DropTable(
                 name: "StatusTransactions");
+
+            migrationBuilder.DropTable(
+                name: "Languages");
 
             migrationBuilder.DropTable(
                 name: "Reservations");
@@ -1148,9 +1177,6 @@ namespace SempaiGo.Migrations
 
             migrationBuilder.DropTable(
                 name: "TypeSlot");
-
-            migrationBuilder.DropTable(
-                name: "Languages");
 
             migrationBuilder.DropTable(
                 name: "Users");

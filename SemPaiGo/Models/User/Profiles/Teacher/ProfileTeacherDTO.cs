@@ -53,6 +53,7 @@ public class TeacherDetails
     /// </summary>
     public DateTimeOffset? UpdatedAt { get; set; }
     public List<LanguageDetails> Languages { get; set; }
+    public List<CursusDetails> Cursuses { get; set; }
     public string? LinkedIn { get; set; }
     public string? FaceBook { get; set; }
     public string? GitHub { get; set; }
@@ -67,10 +68,11 @@ public class TeacherDetails
         Description = profile.Description;
         UserId = profile.UserId;
         User = new UserDetails(profile.User, null, true);
-        Formations = profile.Formations.Select(f => new FormationDetails(f)).ToList();
         CreatedAt = profile.CreatedAt;
         UpdatedAt = profile.UpdatedAt;
+        Formations = profile.Formations.Select(f => new FormationDetails(f)).ToList();
         Languages = profile.Languages?.Select(l => new LanguageDetails(l)).ToList() ?? [];
+        Cursuses = profile.Cursuses?.Select(l => new CursusDetails(l)).ToList() ?? [];
         LinkedIn = profile.LinkedIn;
         FaceBook = profile.FaceBook;
         GitHub = profile.GitHub;
