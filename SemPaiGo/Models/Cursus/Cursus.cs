@@ -13,14 +13,14 @@ public class Cursus : BaseModelOption
 
     public Cursus() { }
 
-    public Cursus(CursusCreate newCursus, List<CategoryCursus> categories)
+    public Cursus(CursusCreate newCursus, Guid teacherId,List<CategoryCursus> categories)
     {
         Name = newCursus.Name;
         Color = newCursus.Color;
         Icon = newCursus.Icon;
         Description = newCursus.Description;
         LevelId = newCursus.LevelId;
-        TeacherId = newCursus.TeacherId;
+        TeacherId = teacherId;
         CreatedAt = DateTimeOffset.UtcNow;
         Categories = categories ?? [];
         UpdatedAt = null;

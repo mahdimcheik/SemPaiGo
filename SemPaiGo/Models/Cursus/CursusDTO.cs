@@ -145,13 +145,6 @@ public class CursusCreate
     public Guid LevelId { get; set; }
 
     /// <summary>
-    /// Identifiant de l'enseignant du cursus
-    /// </summary>
-    /// <example>550e8400-e29b-41d4-a716-446655440002</example>
-    [Required(ErrorMessage = "L'enseignant est requis")]
-    public Guid TeacherId { get; set; }
-
-    /// <summary>
     /// Liste des identifiants des catégories à associer au cursus
     /// </summary>
     public List<Guid> CategoryIds { get; set; } = new();
@@ -206,12 +199,6 @@ public class CursusUpdate
     [Required(ErrorMessage = "Le niveau est requis")]
     public Guid LevelId { get; set; }
 
-    /// <summary>
-    /// Identifiant de l'enseignant du cursus
-    /// </summary>
-    /// <example>550e8400-e29b-41d4-a716-446655440002</example>
-    [Required(ErrorMessage = "L'enseignant est requis")]
-    public Guid TeacherId { get; set; }
 
     /// <summary>
     /// Liste des identifiants des catégories à associer au cursus
@@ -225,7 +212,6 @@ public class CursusUpdate
         cursus.Icon = Icon;
         cursus.Description = Description;
         cursus.LevelId = LevelId;
-        cursus.TeacherId = TeacherId;
         cursus.UpdatedAt = DateTimeOffset.UtcNow;
         categories = categories ?? [];
     }

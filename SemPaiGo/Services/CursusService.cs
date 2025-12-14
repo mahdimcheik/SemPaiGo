@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SemPaiGo.Contexts;
 using SemPaiGo.Models;
+using SemPaiGo.Utilities;
+using System.Security.Claims;
 
 namespace SemPaiGo.Services;
 
@@ -171,7 +173,7 @@ public class CursusService(MainContext context)
     /// </summary>
     /// <param name="cursusDto">Données du cursus à créer</param>
     /// <returns>Cursus créé</returns>
-    public async Task<Response<CursusDetails>> CreateCursusAsync(CursusCreate cursusDto)
+    public async Task<Response<CursusDetails>> CreateCursusAsync(CursusCreate cursusDto, ClaimsPrincipal User)
     {
         try
         {
@@ -188,8 +190,8 @@ public class CursusService(MainContext context)
             }
 
             // Vérifier que l'enseignant existe
-            var teacherExists = await context.Users.AnyAsync(u => u.Id == cursusDto.TeacherId);
-            if (!teacherExists)
+            var teacher = CheckUser.GetUserFromClaim(User, context);
+            if (teacher is null)
             {
                 return new Response<CursusDetails>
                 {
@@ -218,7 +220,7 @@ public class CursusService(MainContext context)
                 }
             }
 
-            var cursus = new Cursus(cursusDto, categories);
+            var cursus = new Cursus(cursusDto,teacher.Id, categories);
 
             context.Cursuses.Add(cursus);
             await context.SaveChangesAsync();
@@ -254,7 +256,7 @@ public class CursusService(MainContext context)
     /// <param name="id">Identifiant du cursus</param>
     /// <param name="cursusDto">Nouvelles données du cursus</param>
     /// <returns>Cursus mis à jour</returns>
-    public async Task<Response<CursusDetails>> UpdateCursusAsync(CursusUpdate cursusDto)
+    public async Task<Response<CursusDetails>> UpdateCursusAsync(CursusUpdate cursusDto, ClaimsPrincipal User)
     {
         try
         {
@@ -285,13 +287,13 @@ public class CursusService(MainContext context)
             }
 
             // Vérifier que l'enseignant existe
-            var teacherExists = await context.Users.AnyAsync(u => u.Id == cursusDto.TeacherId);
-            if (!teacherExists)
+            var teacher = CheckUser.GetUserFromClaim(User, context);
+            if (teacher is null || teacher.Id != cursus.TeacherId)
             {
                 return new Response<CursusDetails>
                 {
                     Status = 404,
-                    Message = "Enseignant non trouvé",
+                    Message = "Enseignant non trouvé, ou pas le propriétaire",
                     Data = null
                 };
             }

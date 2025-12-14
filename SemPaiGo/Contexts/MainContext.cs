@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using System.Reflection.Emit;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using SempaiGo.Models;
 using SemPaiGo.Models;
@@ -210,14 +211,14 @@ public class MainContext : IdentityDbContext<UserApp, RoleApp, Guid>
             entity.Property(a => a.Icon).HasMaxLength(256);
             entity.Property(a => a.LevelId).IsRequired();
             entity.Property(a => a.TeacherId).IsRequired();
-            entity.Property(a => a.CreatedAt)
+            entity
+                .Property(a => a.CreatedAt)
                 .IsRequired()
                 .HasColumnType("timestamp with time zone")
                 .ValueGeneratedOnAdd()
                 .HasDefaultValueSql("CURRENT_TIMESTAMP");
             entity.Property(a => a.UpdatedAt).HasColumnType("timestamp with time zone");
             entity.Property(a => a.ArchivedAt).HasColumnType("timestamp with time zone");
-
 
             // Relation avec Teacher
             entity
@@ -748,7 +749,7 @@ public class MainContext : IdentityDbContext<UserApp, RoleApp, Guid>
         builder.Entity<Language>().HasData(languages);
 
         // courses type + category + level seeding can be added here similarly
-   
+
         List<LevelCursus> levelCursuses = new()
         {
             new LevelCursus
@@ -774,7 +775,8 @@ public class MainContext : IdentityDbContext<UserApp, RoleApp, Guid>
                 Color = "#ab69b4",
                 Icon = "",
                 CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc),
-            },  new LevelCursus
+            },
+            new LevelCursus
             {
                 Id = HardCode.LEVEL_ADVANCED,
                 Name = "Avancé",
@@ -811,7 +813,8 @@ public class MainContext : IdentityDbContext<UserApp, RoleApp, Guid>
                 Color = "#ab69b4",
                 Icon = "",
                 CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc),
-            },  new CategoryCursus
+            },
+            new CategoryCursus
             {
                 Id = HardCode.CATEGORY_SOFT,
                 Name = "Software",
@@ -822,6 +825,11 @@ public class MainContext : IdentityDbContext<UserApp, RoleApp, Guid>
         };
 
         builder.Entity<CategoryCursus>().HasData(categoryCursuses);
+
+        // global filtrer
+        builder.Entity<Cursus>().HasQueryFilter(d => d.ArchivedAt == null);
+        builder.Entity<Formation>().HasQueryFilter(d => d.ArchivedAt == null);
+        builder.Entity<Address>().HasQueryFilter(d => d.ArchivedAt == null);
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder builder)

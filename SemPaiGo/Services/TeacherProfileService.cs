@@ -77,6 +77,7 @@ public class TeacherProfileService
                 .ThenInclude(u => u.Addresses.Where(a =>a.ArchivedAt == null))
                 .Include(u => u.Languages)
                 .Include(p => p.Formations.Where(a => a.ArchivedAt == null))
+                .Include(t => t.Cursuses)
                 .FirstOrDefaultAsync(p => p.Id == user.Id);
 
             if (profile == null)

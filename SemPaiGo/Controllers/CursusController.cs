@@ -131,7 +131,7 @@ public class CursusController(CursusService cursusService, MainContext context) 
             });
         }
 
-        var response = await cursusService.CreateCursusAsync(cursusDto);
+        var response = await cursusService.CreateCursusAsync(cursusDto, User);
 
         return StatusCode(response.Status, response);
     }
@@ -146,13 +146,12 @@ public class CursusController(CursusService cursusService, MainContext context) 
     /// <response code="400">Données invalides ou nom de cursus déjà utilisé</response>
     /// <response code="404">Cursus, niveau, enseignant ou catégorie non trouvé</response>
     /// <response code="500">Erreur interne du serveur</response>
-    [HttpPut("update/{id:guid}")]
+    [HttpPut]
     [ProducesResponseType(typeof(Response<CursusDetails>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(Response<object>), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(Response<object>), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(Response<object>), StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<Response<CursusDetails>>> UpdateCursus(
-        [FromRoute] Guid id,
         [FromBody] CursusUpdate cursusDto)
     {
         if (!ModelState.IsValid)
@@ -165,7 +164,7 @@ public class CursusController(CursusService cursusService, MainContext context) 
             });
         }
 
-        var response = await cursusService.UpdateCursusAsync(cursusDto);
+        var response = await cursusService.UpdateCursusAsync(cursusDto, User);
 
         return StatusCode(response.Status, response);
     }
