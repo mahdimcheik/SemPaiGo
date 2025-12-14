@@ -1,4 +1,5 @@
 ﻿using System.Reflection.Emit;
+using BonProf.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using SempaiGo.Models;
@@ -32,6 +33,7 @@ public class MainContext : IdentityDbContext<UserApp, RoleApp, Guid>
     public DbSet<Slot> Slots { get; set; }
     public DbSet<Reservation> Reservations { get; set; }
     public DbSet<Order> Orders { get; set; }
+    public DbSet<Product> Products { get; set; }
 
     // payments and transactions
     public DbSet<Payment> Payments { get; set; } // paiement d'une commande
@@ -398,6 +400,10 @@ public class MainContext : IdentityDbContext<UserApp, RoleApp, Guid>
                 .WithMany(t => t.Reservations)
                 .HasForeignKey(s => s.StudentId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            r.HasOne(s => s.Product)
+            .WithOne()
+            .HasForeignKey<Reservation>(a => a.ProductId);
         });
 
         //order
@@ -493,6 +499,27 @@ public class MainContext : IdentityDbContext<UserApp, RoleApp, Guid>
                 .HasDefaultValueSql("CURRENT_TIMESTAMP");
             p.Property(e => e.UpdatedAt).HasColumnType("timestamp with time zone");
             p.Property(e => e.ArchivedAt).HasColumnType("timestamp with time zone");
+        });
+
+        // product
+        builder.Entity<Product>(c =>
+        {
+            c.HasKey(e => e.Id);
+            c.Property(e => e.Name).IsRequired().HasMaxLength(64);
+            c.Property(e => e.Description).IsRequired().HasMaxLength(16);
+            c.Property(e => e.Price).IsRequired().HasMaxLength(256);
+            c.Property(e => e.CreatedAt)
+                .IsRequired()
+                .HasColumnType("timestamp with time zone")
+                .ValueGeneratedOnAdd()
+                .HasDefaultValueSql("CURRENT_TIMESTAMP");
+            c.Property(e => e.UpdatedAt).HasColumnType("timestamp with time zone");
+            c.Property(e => e.ArchivedAt).HasColumnType("timestamp with time zone");
+
+            c.HasOne(c => c.Cursus)
+                .WithMany()
+                .HasForeignKey(c => c.CursusId)
+                .OnDelete(DeleteBehavior.Restrict);
         });
 
         // Seed Roles

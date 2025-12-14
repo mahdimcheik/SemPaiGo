@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SemPaiGo.Contexts;
@@ -11,9 +12,11 @@ using SemPaiGo.Contexts;
 namespace SemPaiGo.Migrations
 {
     [DbContext(typeof(MainContext))]
-    partial class MainContextModelSnapshot : ModelSnapshot
+    [Migration("20251214194519_product")]
+    partial class product
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,47 +24,6 @@ namespace SemPaiGo.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
-
-            modelBuilder.Entity("BonProf.Models.Product", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime?>("ArchivedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
-
-                    b.Property<Guid?>("CursusId")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasMaxLength(16)
-                        .HasColumnType("character varying(16)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(64)
-                        .HasColumnType("character varying(64)");
-
-                    b.Property<decimal>("Price")
-                        .HasMaxLength(256)
-                        .HasColumnType("numeric");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CursusId");
-
-                    b.ToTable("Products");
-                });
 
             modelBuilder.Entity("CursusXCategories", b =>
                 {
@@ -900,9 +862,6 @@ namespace SemPaiGo.Migrations
                     b.Property<Guid>("OrderId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("ProductId")
-                        .HasColumnType("uuid");
-
                     b.Property<Guid>("SlotId")
                         .HasColumnType("uuid");
 
@@ -922,9 +881,6 @@ namespace SemPaiGo.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("OrderId");
-
-                    b.HasIndex("ProductId")
-                        .IsUnique();
 
                     b.HasIndex("SlotId")
                         .IsUnique();
@@ -1573,16 +1529,6 @@ namespace SemPaiGo.Migrations
                     b.ToTable("TeachersXLanguages");
                 });
 
-            modelBuilder.Entity("BonProf.Models.Product", b =>
-                {
-                    b.HasOne("SemPaiGo.Models.Cursus", "Cursus")
-                        .WithMany()
-                        .HasForeignKey("CursusId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.Navigation("Cursus");
-                });
-
             modelBuilder.Entity("CursusXCategories", b =>
                 {
                     b.HasOne("SemPaiGo.Models.CategoryCursus", null)
@@ -1794,12 +1740,6 @@ namespace SemPaiGo.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BonProf.Models.Product", "Product")
-                        .WithOne()
-                        .HasForeignKey("SemPaiGo.Models.Reservation", "ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("SemPaiGo.Models.Slot", "Slot")
                         .WithOne("Reservation")
                         .HasForeignKey("SemPaiGo.Models.Reservation", "SlotId")
@@ -1819,8 +1759,6 @@ namespace SemPaiGo.Migrations
                         .IsRequired();
 
                     b.Navigation("Order");
-
-                    b.Navigation("Product");
 
                     b.Navigation("Slot");
 

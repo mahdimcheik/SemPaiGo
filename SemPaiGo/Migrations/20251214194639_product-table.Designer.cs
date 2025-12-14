@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SemPaiGo.Contexts;
@@ -11,9 +12,11 @@ using SemPaiGo.Contexts;
 namespace SemPaiGo.Migrations
 {
     [DbContext(typeof(MainContext))]
-    partial class MainContextModelSnapshot : ModelSnapshot
+    [Migration("20251214194639_product-table")]
+    partial class producttable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -900,9 +903,6 @@ namespace SemPaiGo.Migrations
                     b.Property<Guid>("OrderId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("ProductId")
-                        .HasColumnType("uuid");
-
                     b.Property<Guid>("SlotId")
                         .HasColumnType("uuid");
 
@@ -922,9 +922,6 @@ namespace SemPaiGo.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("OrderId");
-
-                    b.HasIndex("ProductId")
-                        .IsUnique();
 
                     b.HasIndex("SlotId")
                         .IsUnique();
@@ -1794,12 +1791,6 @@ namespace SemPaiGo.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BonProf.Models.Product", "Product")
-                        .WithOne()
-                        .HasForeignKey("SemPaiGo.Models.Reservation", "ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("SemPaiGo.Models.Slot", "Slot")
                         .WithOne("Reservation")
                         .HasForeignKey("SemPaiGo.Models.Reservation", "SlotId")
@@ -1819,8 +1810,6 @@ namespace SemPaiGo.Migrations
                         .IsRequired();
 
                     b.Navigation("Order");
-
-                    b.Navigation("Product");
 
                     b.Navigation("Slot");
 

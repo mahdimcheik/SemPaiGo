@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using BonProf.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace SemPaiGo.Models;
 
@@ -13,6 +14,7 @@ public class ReservationDetailsDTO(Reservation booking)
     public StudentDetails? Student =>
         booking.Student is not null ? new StudentDetails(booking.Student, null) : null;
     public SlotDetailsDTO? Slot => booking.Slot is not null ? new SlotDetailsDTO(booking.Slot) : null;
+    public ProductDetails Product =>  new ProductDetails(booking.Product);
 }
 
 public class ReservationCreateDTO

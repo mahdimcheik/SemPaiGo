@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SemPaiGo.Contexts;
@@ -11,9 +12,11 @@ using SemPaiGo.Contexts;
 namespace SemPaiGo.Migrations
 {
     [DbContext(typeof(MainContext))]
-    partial class MainContextModelSnapshot : ModelSnapshot
+    [Migration("20251214195333_product-reservation")]
+    partial class productreservation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -923,8 +926,7 @@ namespace SemPaiGo.Migrations
 
                     b.HasIndex("OrderId");
 
-                    b.HasIndex("ProductId")
-                        .IsUnique();
+                    b.HasIndex("ProductId");
 
                     b.HasIndex("SlotId")
                         .IsUnique();
@@ -1795,8 +1797,8 @@ namespace SemPaiGo.Migrations
                         .IsRequired();
 
                     b.HasOne("BonProf.Models.Product", "Product")
-                        .WithOne()
-                        .HasForeignKey("SemPaiGo.Models.Reservation", "ProductId")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

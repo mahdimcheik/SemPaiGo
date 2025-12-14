@@ -1,4 +1,5 @@
-﻿using SemPaiGo.Models.Interfaces;
+﻿using BonProf.Models;
+using SemPaiGo.Models.Interfaces;
 using SemPaiGo.Utilities;
 using System.Diagnostics.CodeAnalysis;
 
@@ -10,6 +11,8 @@ public class Reservation : BaseModel
     public string Description { get; set; }
     public Guid SlotId { get; set; }
     public Slot Slot { get; set; }
+    public Guid ProductId { get; set; }
+    public Product Product { get; set; }
 
     public StatusReservation Status { get; set; }
     public Guid StatusId { get; set; } = HardCode.RESERVATION_PENDING;
