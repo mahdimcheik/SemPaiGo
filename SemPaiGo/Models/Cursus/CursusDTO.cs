@@ -163,6 +163,12 @@ public class CursusCreate
 public class CursusUpdate
 {
     /// <summary>
+    /// Identifiant unique du cursus
+    /// </summary>
+    /// <example>550e8400-e29b-41d4-a716-446655440000</example>
+    [Required]
+    public Guid Id { get; set; }
+    /// <summary>
     /// Nom du cursus
     /// </summary>
     /// <example>Formation Développement Web Full Stack</example>

@@ -254,13 +254,13 @@ public class CursusService(MainContext context)
     /// <param name="id">Identifiant du cursus</param>
     /// <param name="cursusDto">Nouvelles données du cursus</param>
     /// <returns>Cursus mis à jour</returns>
-    public async Task<Response<CursusDetails>> UpdateCursusAsync(Guid id, CursusUpdate cursusDto)
+    public async Task<Response<CursusDetails>> UpdateCursusAsync(CursusUpdate cursusDto)
     {
         try
         {
             var cursus = await context.Cursuses
                 .Include(c => c.Categories)
-                .FirstOrDefaultAsync(c => c.Id == id && c.ArchivedAt == null);
+                .FirstOrDefaultAsync(c => c.Id == cursusDto.Id && c.ArchivedAt == null);
 
             if (cursus == null)
             {
@@ -298,7 +298,7 @@ public class CursusService(MainContext context)
 
             // Vérifier que le nom n'existe pas déjà pour un autre cursus
             var existingCursus = await context.Cursuses
-                .AnyAsync(c => c.Name.ToLower() == cursusDto.Name.ToLower() && c.Id != id && c.ArchivedAt == null);
+                .AnyAsync(c => c.Name.ToLower() == cursusDto.Name.ToLower() && c.Id != cursusDto.Id && c.ArchivedAt == null);
 
             if (existingCursus)
             {
@@ -347,7 +347,7 @@ public class CursusService(MainContext context)
                 .Include(c => c.Level)
                 .Include(c => c.Teacher)
                 .Include(c => c.Categories)
-                .FirstAsync(c => c.Id == id);
+                .FirstAsync(c => c.Id == cursusDto.Id);
 
             return new Response<CursusDetails>
             {
