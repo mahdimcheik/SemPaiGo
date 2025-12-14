@@ -27,7 +27,7 @@ public class ProductCreate
     public required string Name { get; set; }
     public required string Description { get; set; }
     public required decimal Price { get; set; }
-    public Guid? CursusId { get; set; }
+    public Guid CursusId { get; set; }
 }
 
 public class ProductUpdate
@@ -35,7 +35,7 @@ public class ProductUpdate
     public required string Name { get; set; }
     public required string Description { get; set; }
     public required decimal Price { get; set; }
-    public Guid? CursusId { get; set; }
+    public Guid CursusId { get; set; }
 
     public void UpdateProduct(Product product)
     {

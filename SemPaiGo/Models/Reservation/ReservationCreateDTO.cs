@@ -24,6 +24,16 @@ public class ReservationCreateDTO
     public UserDetails? Student { get; set; }
     public Guid SlotId { get; set; }
     public Guid StudentId { get; set; }
+    public Guid ProductId { get; set; }
+
+    public ReservationCreateDTO(Reservation reservation)
+    {
+        Title = reservation.Title;
+        Description = reservation.Description;
+        SlotId = reservation.SlotId;
+        StudentId = reservation.StudentId;
+        ProductId = reservation.ProductId;
+    }
 }
 
 public class BookingUpdateDTO
