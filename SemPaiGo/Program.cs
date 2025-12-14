@@ -47,6 +47,9 @@ static void ConfigureServices(IServiceCollection services)
     services.AddTransient<FormationsService>();
     services.AddTransient<TeacherProfileService>();
     services.AddTransient<LanguagesService>();
+    services.AddTransient<CursusService>();
+    services.AddTransient<LevelCursusService>();
+    services.AddTransient<CategoryCursusService>();
 
     services.AddLogging(loggingBuilder =>
     {
