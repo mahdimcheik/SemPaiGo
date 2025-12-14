@@ -144,13 +144,12 @@ public class ProductController(ProductService productService) : ControllerBase
     /// <response code="400">Données invalides</response>
     /// <response code="404">Produit ou cursus non trouvé</response>
     /// <response code="500">Erreur interne du serveur</response>
-    [HttpPut("{id:guid}")]
+    [HttpPut]
     [ProducesResponseType(typeof(Response<ProductDetails>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(Response<object>), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(Response<object>), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(Response<object>), StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<Response<ProductDetails>>> UpdateProduct(
-        [FromRoute] Guid id,
         [FromBody] ProductUpdate productDto)
     {
         if (!ModelState.IsValid)
@@ -163,7 +162,7 @@ public class ProductController(ProductService productService) : ControllerBase
             });
         }
 
-        var response = await productService.UpdateProductAsync(id, productDto);
+        var response = await productService.UpdateProductAsync(productDto);
 
         return StatusCode(response.Status, response);
     }

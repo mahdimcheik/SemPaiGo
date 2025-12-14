@@ -228,12 +228,12 @@ public class ProductService(MainContext context)
     /// <param name="id">Identifiant du produit</param>
     /// <param name="productDto">Nouvelles données du produit</param>
     /// <returns>Produit mis à jour</returns>
-    public async Task<Response<ProductDetails>> UpdateProductAsync(Guid id, ProductUpdate productDto)
+    public async Task<Response<ProductDetails>> UpdateProductAsync(ProductUpdate productDto)
     {
         try
         {
             var product = await context.Products
-                .FirstOrDefaultAsync(p => p.Id == id && p.ArchivedAt == null);
+                .FirstOrDefaultAsync(p => p.Id == productDto.Id && p.ArchivedAt == null);
 
             if (product == null)
             {
@@ -252,7 +252,7 @@ public class ProductService(MainContext context)
             // Recharger avec les relations pour la réponse
             var updatedProduct = await context.Products
                 .Include(p => p.Cursus)
-                .FirstAsync(p => p.Id == id);
+                .FirstAsync(p => p.Id == productDto.Id);
 
             return new Response<ProductDetails>
             {
