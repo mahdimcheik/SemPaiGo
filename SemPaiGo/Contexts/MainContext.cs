@@ -746,6 +746,82 @@ public class MainContext : IdentityDbContext<UserApp, RoleApp, Guid>
         };
 
         builder.Entity<Language>().HasData(languages);
+
+        // courses type + category + level seeding can be added here similarly
+   
+        List<LevelCursus> levelCursuses = new()
+        {
+            new LevelCursus
+            {
+                Id = HardCode.LEVEL_ALL,
+                Name = "Tous niveaux",
+                Color = "#ff69b4",
+                Icon = "",
+                CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+            },
+            new LevelCursus
+            {
+                Id = HardCode.LEVEL_BEGINNER,
+                Name = "Débutant",
+                Color = "#fa69b4",
+                Icon = "",
+                CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+            },
+            new LevelCursus
+            {
+                Id = HardCode.LEVEL_INTERMEDIATE,
+                Name = "Intermédiaire",
+                Color = "#ab69b4",
+                Icon = "",
+                CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+            },  new LevelCursus
+            {
+                Id = HardCode.LEVEL_ADVANCED,
+                Name = "Avancé",
+                Color = "#ab69b4",
+                Icon = "",
+                CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+            },
+        };
+
+        builder.Entity<LevelCursus>().HasData(levelCursuses);
+
+        List<CategoryCursus> categoryCursuses = new()
+        {
+            new CategoryCursus
+            {
+                Id = HardCode.CATEGORY_BACK,
+                Name = "Back-end",
+                Color = "#ff69b4",
+                Icon = "",
+                CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+            },
+            new CategoryCursus
+            {
+                Id = HardCode.CATEGORY_FRONT,
+                Name = "Front-end",
+                Color = "#fa69b4",
+                Icon = "",
+                CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+            },
+            new CategoryCursus
+            {
+                Id = HardCode.CATEGORY_TECHNICS,
+                Name = "Techniques",
+                Color = "#ab69b4",
+                Icon = "",
+                CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+            },  new CategoryCursus
+            {
+                Id = HardCode.CATEGORY_SOFT,
+                Name = "Software",
+                Color = "#ab69b4",
+                Icon = "",
+                CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+            },
+        };
+
+        builder.Entity<CategoryCursus>().HasData(categoryCursuses);
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder builder)
