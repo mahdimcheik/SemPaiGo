@@ -506,7 +506,7 @@ public class MainContext : IdentityDbContext<UserApp, RoleApp, Guid>
         {
             c.HasKey(e => e.Id);
             c.Property(e => e.Name).IsRequired().HasMaxLength(64);
-            c.Property(e => e.Description).IsRequired().HasMaxLength(16);
+            c.Property(e => e.Description).IsRequired().HasMaxLength(256);
             c.Property(e => e.Price).IsRequired().HasMaxLength(256);
             c.Property(e => e.CreatedAt)
                 .IsRequired()
@@ -857,6 +857,8 @@ public class MainContext : IdentityDbContext<UserApp, RoleApp, Guid>
         builder.Entity<Cursus>().HasQueryFilter(d => d.ArchivedAt == null);
         builder.Entity<Formation>().HasQueryFilter(d => d.ArchivedAt == null);
         builder.Entity<Address>().HasQueryFilter(d => d.ArchivedAt == null);
+        builder.Entity<Product>().HasQueryFilter(d => d.ArchivedAt == null);
+
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder builder)
