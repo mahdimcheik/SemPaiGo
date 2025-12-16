@@ -877,6 +877,14 @@ public class MainContext : IdentityDbContext<UserApp, RoleApp, Guid>
                 Icon = "pi pi-desktop",
                 CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc),
             },
+              new TypeSlot
+            {
+                Id = HardCode.TYPE_SLOT_ALL,
+                Name = "Tous",
+                Color = "#fa69b4",
+                Icon = "pi pi-crown",
+                CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+            },
         };
         builder.Entity<TypeSlot>().HasData(typeSlots);
 

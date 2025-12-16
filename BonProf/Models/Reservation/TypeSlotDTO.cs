@@ -39,6 +39,12 @@ public class TypeSlotCreate
 public class TypeSlotUpdate
 {
     /// <summary>
+    /// Identifiant unique du type de créneau
+    /// </summary>
+    /// <example>550e8400-e29b-41d4-a716-446655440000</example>
+    [Required]
+    public Guid Id { get; set; }
+    /// <summary>
     /// Nom du type de créneau
     /// </summary>
     /// <example>Cours individuel</example>

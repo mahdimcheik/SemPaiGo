@@ -53,6 +53,7 @@ public static class HardCode
     // Type slots
     public static Guid TYPE_SLOT_PRESENTIAL => Guid.Parse("79f538c3-5f2b-4e45-a5f8-4d7cda8b3df8");
     public static Guid TYPE_SLOT_VISIO => Guid.Parse("4043e32b-4d92-49b5-b885-505155ff2fe9");
+    public static Guid TYPE_SLOT_ALL => Guid.Parse("c25c18a2-af88-4132-a27a-0025417edb56");
 
     // langues
     public static Guid LANGUAGE_FRENCH => Guid.Parse("52b54b82-1f37-4a66-a263-708b53cd685d");
