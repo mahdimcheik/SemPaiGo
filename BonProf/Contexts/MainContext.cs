@@ -31,6 +31,7 @@ public class MainContext : IdentityDbContext<UserApp, RoleApp, Guid>
 
     // reservations
     public DbSet<Slot> Slots { get; set; }
+    public DbSet<TypeSlot> TypeSlots { get; set; }
     public DbSet<Reservation> Reservations { get; set; }
     public DbSet<Order> Orders { get; set; }
     public DbSet<Product> Products { get; set; }
@@ -856,6 +857,28 @@ public class MainContext : IdentityDbContext<UserApp, RoleApp, Guid>
         };
 
         builder.Entity<CategoryCursus>().HasData(categoryCursuses);
+
+        // type slots
+        List<TypeSlot> typeSlots = new()
+        {
+            new TypeSlot
+            {
+                Id = HardCode.TYPE_SLOT_PRESENTIAL,
+                Name = "Presentiel",
+                Color = "#ff69b4",
+                Icon = "pi pi-arrow-down-left-and-arrow-up-right-to-center",
+                CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+            },
+            new TypeSlot
+            {
+                Id = HardCode.TYPE_SLOT_VISIO,
+                Name = "Visio",
+                Color = "#fa69b4",
+                Icon = "pi pi-desktop",
+                CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+            },
+        };
+        builder.Entity<TypeSlot>().HasData(typeSlots);
 
         // global filtrer
         builder.Entity<Cursus>().HasQueryFilter(d => d.ArchivedAt == null);
