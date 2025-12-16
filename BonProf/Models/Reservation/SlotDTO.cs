@@ -34,7 +34,7 @@ public class SlotDetails
     /// </summary>
     /// <example>550e8400-e29b-41d4-a716-446655440002</example>
     [Required]
-    public Guid? TypeId { get; set; }
+    public Guid TypeId { get; set; }
 
     /// <summary>
     /// Informations du type de créneau
@@ -97,7 +97,7 @@ public class SlotCreate
     /// </summary>
     /// <example>550e8400-e29b-41d4-a716-446655440002</example>
     [Required(ErrorMessage = "L'identifiant du type de créneau est requis")]
-    public Guid? TypeId { get; set; }
+    public Guid TypeId { get; set; }
 }
 
 /// <summary>
@@ -131,7 +131,7 @@ public class SlotUpdate
     /// </summary>
     /// <example>550e8400-e29b-41d4-a716-446655440002</example>
     [Required(ErrorMessage = "L'identifiant du type de créneau est requis")]
-    public Guid? TypeId { get; set; }
+    public Guid TypeId { get; set; }
 
     public void UpdateSlot(Slot slot)
     {

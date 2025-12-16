@@ -376,6 +376,11 @@ public class MainContext : IdentityDbContext<UserApp, RoleApp, Guid>
             s.Property(e => e.UpdatedAt).HasColumnType("timestamp with time zone");
             s.Property(e => e.ArchivedAt).HasColumnType("timestamp with time zone");
 
+            s.HasOne(s => s.Type)
+                .WithMany()
+                .HasForeignKey(s => s.TypeId)
+                .OnDelete(DeleteBehavior.Restrict);
+
             s.HasOne(s => s.Teacher)
                 .WithMany(t => t.Slots)
                 .HasForeignKey(s => s.TeacherId)
@@ -893,6 +898,7 @@ public class MainContext : IdentityDbContext<UserApp, RoleApp, Guid>
         builder.Entity<Formation>().HasQueryFilter(d => d.ArchivedAt == null);
         builder.Entity<Address>().HasQueryFilter(d => d.ArchivedAt == null);
         builder.Entity<Product>().HasQueryFilter(d => d.ArchivedAt == null);
+        builder.Entity<Slot>().HasQueryFilter(d => d.ArchivedAt == null);
 
     }
 
