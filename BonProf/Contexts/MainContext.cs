@@ -24,7 +24,6 @@ public class MainContext : IdentityDbContext<UserApp, RoleApp, Guid>
     public DbSet<Address> Addresses { get; set; }
     public DbSet<TypeAddress> TypeAddresses { get; set; }
     public DbSet<Cursus> Cursuses { get; set; }
-    public DbSet<Experience> Experiences { get; set; }
     public DbSet<Formation> Formations { get; set; }
     public DbSet<Language> Languages { get; set; }
     public DbSet<CategoryCursus> CategoryCursuses { get; set; }
@@ -140,7 +139,6 @@ public class MainContext : IdentityDbContext<UserApp, RoleApp, Guid>
             //relations
             pt.HasOne(s => s.Profile).WithOne(p => p.Teacher).HasForeignKey<Teacher>(s => s.Id);
             pt.HasMany(s => s.Formations).WithOne(f => f.Teacher).HasForeignKey(f => f.TeacherId);
-            pt.HasMany(s => s.Experiences).WithOne(f => f.Teacher).HasForeignKey(f => f.TeacherId);
             pt.HasMany(s => s.Slots).WithOne(f => f.Teacher).HasForeignKey(f => f.TeacherId);
            
         });
@@ -332,30 +330,6 @@ public class MainContext : IdentityDbContext<UserApp, RoleApp, Guid>
                             .HasForeignKey("CursusId")
                             .OnDelete(DeleteBehavior.Restrict)
                 );
-        });
-
-        // experiences
-        builder.Entity<Experience>(e =>
-        {
-            e.HasKey(e => e.Id);
-            e.Property(e => e.Title).IsRequired().HasMaxLength(200);
-            e.Property(e => e.Description).IsRequired().HasMaxLength(1000);
-            e.Property(e => e.Company).IsRequired().HasMaxLength(200);
-            e.Property(e => e.DateFrom).IsRequired().HasColumnType("timestamp with time zone");
-            e.Property(e => e.DateTo).HasColumnType("timestamp with time zone");
-            e.Property(e => e.CreatedAt)
-                .IsRequired()
-                .HasColumnType("timestamp with time zone")
-                .ValueGeneratedOnAdd()
-                .HasDefaultValueSql("CURRENT_TIMESTAMP");
-            e.Property(e => e.UpdatedAt).HasColumnType("timestamp with time zone");
-            e.Property(e => e.ArchivedAt).HasColumnType("timestamp with time zone");
-
-            // relation avec Teacher
-            e.HasOne(e => e.Teacher)
-                .WithMany(t => t.Experiences)
-                .HasForeignKey(e => e.TeacherId)
-                .OnDelete(DeleteBehavior.Restrict);
         });
 
         // Formations

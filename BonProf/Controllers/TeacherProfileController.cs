@@ -104,7 +104,7 @@ public class TeacherProfileController : ControllerBase
     [ProducesResponseType(typeof(Response<object>), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(Response<object>), StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<Response<TeacherDetails>>> UpdateTeacherProfile(
-        [FromBody] TeacherProfileUpdate profileDto)
+        [FromBody] TeacherUpdate profileDto)
     {
         if (!ModelState.IsValid)
         {

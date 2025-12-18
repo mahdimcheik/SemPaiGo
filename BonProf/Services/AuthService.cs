@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using BonProf.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using SemPaiGo.Contexts;
@@ -159,32 +160,47 @@ public class AuthService
     {
         try
         {
-            //if (userCreate.RoleId == HardCode.ROLE_TEACHER)
-            //{
-            //    Teacher newTeacher = new Teacher
-            //    {
-            //        Id = newUser.Id,
-            //        UserId = newUser.Id,
-            //        Title = userCreate.Title,
-            //        Description = userCreate.Description,
-            //        LinkedIn = null,
-            //        FaceBook = null,
-            //        GitHub = null,
-            //        Twitter = null,
-            //    };
-            //    await context.ProfileTeachers.AddAsync(newTeacher);
-            //    await context.SaveChangesAsync();
-            //}
-            //else
-            //{
-            //    Student newStudent = new Student
-            //    {
-            //        Id = newUser.Id,
-            //        UserId = newUser.Id,
-            //    };
-            //    await context.ProfileStudents.AddAsync(newStudent);
-            //    await context.SaveChangesAsync();
-            //}
+            if (userCreate.RoleId == HardCode.ROLE_TEACHER)
+            {
+                Teacher newTeacher = new Teacher
+                {
+                    Id = newUser.Id,
+                    PriceIndicative = 0
+                };
+                Profile newProfile = new Profile
+                {
+                    Id = newUser.Id,
+                    Title = userCreate.Title,
+                    Description = userCreate.Description,
+                    LinkedIn = null,
+                    FaceBook = null,
+                    GitHub = null,
+                    Twitter = null,
+                    Teacher = newTeacher
+                };
+                await context.Profiles.AddAsync(newProfile);
+                await context.SaveChangesAsync();
+            }
+            if (userCreate.RoleId == HardCode.ROLE_STUDENT)
+            {
+                Student newStudent = new Student
+                {
+                    Id = newUser.Id,
+                };
+                Profile newProfile = new Profile
+                {
+                    Id = newUser.Id,
+                    Title = userCreate.Title,
+                    Description = userCreate.Description,
+                    LinkedIn = null,
+                    FaceBook = null,
+                    GitHub = null,
+                    Twitter = null,
+                    Student = newStudent
+                };
+                await context.Profiles.AddAsync(newProfile);
+                await context.SaveChangesAsync();
+            }
         }
         catch
         {

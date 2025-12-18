@@ -1,4 +1,5 @@
-﻿using SemPaiGo.Models;
+﻿using BonProf.Models;
+using SemPaiGo.Models;
 using SemPaiGo.Models.Interfaces;
 using SemPaiGo.Utilities;
 using System.ComponentModel.DataAnnotations;
@@ -24,9 +25,8 @@ public class UserDetails : ICreatable
 
     [Required]
     public ICollection<RoleDetails>? Roles { get; set; }
-
-    [Required]
-    public ICollection<AddressDetails> Addresses { get; set; }
+ 
+    public ProfileDetails Profile { get; set; }
     [SetsRequiredMembers]
     public UserDetails(UserApp user, List<RoleDetails>? roles,bool minimal = false)
     {
@@ -36,14 +36,15 @@ public class UserDetails : ICreatable
         Email = user.Email ?? "";
         Roles = roles;
         Gender = user.Gender is null ? null : new GenderDetails(user.Gender);
-        if(user.Profile is not null)
-        {
-            Addresses =  user.Profile.Addresses.Select(a => new AddressDetails(a, minimal)).ToList();
-        }
+       
         PhoneNumber = user.PhoneNumber;
         DateOfBirth = user.DateOfBirth;
         ImgUrl = user.ImgUrl;
         CreatedAt = user.CreatedAt;
+        if (user.Profile is not null)
+        {
+            Profile = new ProfileDetails(user.Profile);
+        }
     }
 }
 

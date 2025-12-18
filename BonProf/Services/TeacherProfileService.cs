@@ -161,7 +161,7 @@ public class TeacherProfileService
     /// Met à jour un profil enseignant existant
     /// </summary>
     public async Task<Response<TeacherDetails>> UpdateTeacherProfileAsync(
-        TeacherProfileUpdate profileDto,
+        TeacherUpdate profileDto,
         ClaimsPrincipal userPrincipal
     )
     {
