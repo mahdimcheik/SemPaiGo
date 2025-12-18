@@ -106,6 +106,12 @@ public class SlotCreate
 public class SlotUpdate
 {
     /// <summary>
+    /// Identifiant unique du créneau
+    /// </summary>
+    /// <example>550e8400-e29b-41d4-a716-446655440000</example>
+    [Required]
+    public Guid Id { get; set; }
+    /// <summary>
     /// Date et heure de début du créneau
     /// </summary>
     /// <example>2023-01-15T10:30:00Z</example>

@@ -148,6 +148,137 @@ public class SlotsService(MainContext context)
     }
 
     /// <summary>
+    /// Ajoute un nouveau créneau pour un enseignant
+    /// </summary>
+    /// <param name="slotDto">Données du créneau à créer</param>
+    /// <param name="userPrincipal">Principal de l'utilisateur connecté</param>
+    /// <returns>Créneau créé</returns>
+    public async Task<Response<SlotDetails>> UpdateSlotByTeacherAsync(
+        SlotUpdate slotDto,
+        ClaimsPrincipal userPrincipal
+    )
+    {
+        try
+        {
+            // Récupérer l'utilisateur connecté
+            var user = CheckUser.GetUserFromClaim(userPrincipal, context);
+            if (user == null)
+            {
+                return new Response<SlotDetails>
+                {
+                    Status = 401,
+                    Message = "Utilisateur non authentifié",
+                    Data = null,
+                };
+            }
+
+            // Vérifier que l'utilisateur est bien un enseignant
+            var teacher = await context.ProfileTeachers.FirstOrDefaultAsync(t =>
+                t.UserId == user.Id
+            );
+
+            if (teacher == null)
+            {
+                return new Response<SlotDetails>
+                {
+                    Status = 403,
+                    Message = "Vous devez être un enseignant pour créer des créneaux",
+                    Data = null,
+                };
+            }
+
+            // Validation des dates
+            if (slotDto.DateFrom >= slotDto.DateTo)
+            {
+                return new Response<SlotDetails>
+                {
+                    Status = 400,
+                    Message = "La date de fin doit être postérieure à la date de début",
+                    Data = null,
+                };
+            }
+
+            // Vérifier que le créneau est dans le futur
+            if (slotDto.DateFrom < DateTimeOffset.UtcNow)
+            {
+                return new Response<SlotDetails>
+                {
+                    Status = 400,
+                    Message = "Le créneau doit être dans le futur",
+                    Data = null,
+                };
+            }
+
+            // Vérifier que le type de créneau existe
+
+            var typeExists = await context.TypeSlots.AnyAsync(t =>
+                t.Id == slotDto.TypeId && t.ArchivedAt == null
+            );
+            if (!typeExists)
+            {
+                return new Response<SlotDetails>
+                {
+                    Status = 404,
+                    Message = "Type de créneau non trouvé",
+                    Data = null,
+                };
+            }
+
+            // Vérifier qu'il n'y a pas de chevauchement avec un autre créneau du même enseignant
+            var hasOverlap = await context.Slots.AnyAsync(s =>
+                s.TeacherId == teacher.Id
+                && s.Id != slotDto.Id
+                && s.ArchivedAt == null
+                && (
+                    (slotDto.DateFrom >= s.DateFrom && slotDto.DateFrom < s.DateTo)
+                    || (slotDto.DateTo > s.DateFrom && slotDto.DateTo <= s.DateTo)
+                    || (slotDto.DateFrom <= s.DateFrom && slotDto.DateTo >= s.DateTo)
+                )
+            );
+
+            if (hasOverlap)
+            {
+                return new Response<SlotDetails>
+                {
+                    Status = 400,
+                    Message = "Ce créneau chevauche un créneau existant",
+                    Data = null,
+                };
+            }
+
+            var slot = await context.Slots.FirstOrDefaultAsync(x => x.Id == slotDto.Id);
+
+            if (slot is null)
+            {
+                return new Response<SlotDetails>
+                {
+                    Status = 400,
+                    Message = "Ce créneau n'existe pas/plus",
+                    Data = null,
+                };
+            }
+            slotDto.UpdateSlot(slot);
+            await context.SaveChangesAsync();
+
+            return new Response<SlotDetails>
+            {
+                Status = 201,
+                Message = "Créneau créé avec succès",
+                Data = new SlotDetails(slot),
+            };
+        }
+        catch (Exception ex)
+        {
+            return new Response<SlotDetails>
+            {
+                Status = 500,
+                Message = $"Erreur lors de la création du créneau: {ex.Message}",
+                Data = null,
+            };
+        }
+    }
+
+    /// <summary>
     /// Supprime un créneau pour un enseignant (suppression logique)
     /// </summary>
     /// <param name="slotId">Identifiant du créneau</param>

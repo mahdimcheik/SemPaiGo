@@ -57,6 +57,46 @@ public class SlotsController(SlotsService slotsService) : ControllerBase
     }
 
     /// <summary>
+    /// Ajoute un nouveau créneau pour l'enseignant connecté
+    /// </summary>
+    /// <param name="slotDto">Données du créneau à créer</param>
+    /// <returns>Créneau créé</returns>
+    /// <response code="201">Créneau créé avec succès</response>
+    /// <response code="400">Données invalides ou chevauchement de créneaux</response>
+    /// <response code="401">Utilisateur non authentifié</response>
+    /// <response code="403">Vous devez être un enseignant</response>
+    /// <response code="404">Type de créneau non trouvé</response>
+    /// <response code="500">Erreur interne du serveur</response>
+    [Authorize(Roles = "Teacher")]
+    [HttpPut("teacher/update")]
+    [ProducesResponseType(typeof(Response<SlotDetails>), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(Response<object>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(Response<object>), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(Response<object>), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(Response<object>), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(Response<object>), StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<Response<SlotDetails>>> UpdateSlotByTeacher(
+        [FromBody] SlotUpdate slotDto
+    )
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(
+                new Response<object>
+                {
+                    Status = 400,
+                    Message = "Données de validation invalides",
+                    Data = ModelState,
+                }
+            );
+        }
+
+        var response = await slotsService.UpdateSlotByTeacherAsync(slotDto, User);
+
+        return StatusCode(response.Status, response);
+    }
+
+    /// <summary>
     /// Supprime un créneau de l'enseignant connecté (suppression logique)
     /// </summary>
     /// <param name="slotId">Identifiant du créneau à supprimer</param>
