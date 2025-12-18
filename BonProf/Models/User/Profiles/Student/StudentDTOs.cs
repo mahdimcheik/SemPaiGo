@@ -1,39 +1,63 @@
-﻿using SemPaiGo.Models.Interfaces;
-using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace SemPaiGo.Models;
 
-public class StudentDetails : BaseModel
+public class StudentDetails
 {
+    /// <summary>
+    /// Identifiant unique du profil enseignant
+    /// </summary>
     [Required]
-    public required string FirstName { get; set; }
-    [Required]
-    public required string LastName { get; set; }
-    [Required]
-    public required string Email { get; set; } = null!;
-    public DateTimeOffset DateOfBirth { get; set; }
-    public string? PhoneNumber { get; set; }
-    public string? ImgUrl { get; set; }
+    public Guid Id { get; set; }
 
-    public GenderDetails? Gender { get; set; }
+    /// <summary>
+    /// Titre professionnel de l'enseignant
+    /// </summary>
+    /// <example>Professeur de Mathématiques</example>
+    public string? Title { get; set; }
+
+    /// <summary>
+    /// Description du profil de l'enseignant
+    /// </summary>
+    /// <example>Enseignant passionné avec 10 ans d'expérience</example>
+    public string? Description { get; set; }
+
+    /// <summary>
+    /// Identifiant de l'utilisateur associé
+    /// </summary>
+    [Required]
+    public Guid UserId { get; set; }
+
+    /// <summary>
+    /// Informations détaillées de l'utilisateur
+    /// </summary>
+    [Required]
+    public UserDetails User { get; set; }
+
+    /// <summary>
+    /// Liste des formations de l'enseignant
+    /// </summary>
+    public List<FormationDetails> Formations { get; set; } = new();
+
+    /// <summary>
+    /// Date de création du profil
+    /// </summary>
+    [Required]
     public DateTimeOffset CreatedAt { get; set; }
 
-    [Required]
-    public ICollection<RoleDetails> Roles { get; set; }
+    /// <summary>
+    /// Date de dernière mise à jour du profil
+    /// </summary>
+    public DateTimeOffset? UpdatedAt { get; set; }
+    public List<LanguageDetails> Languages { get; set; }
+    public List<CursusDetails> Cursuses { get; set; }
+    public string? LinkedIn { get; set; }
+    public string? FaceBook { get; set; }
+    public string? GitHub { get; set; }
+    public string? Twitter { get; set; }
+    public decimal PriceIndicative { get; set; }
 
-    [SetsRequiredMembers]
-    public StudentDetails(ProfileStudent student, List<RoleDetails>? roles)
-    {
-        Id = student.Id;
-        FirstName = student.User.FirstName;
-        LastName = student.User.LastName;
-        Email = student.User.Email;
-        Roles = roles;
-        Gender = student.User.Gender is null ? null : new GenderDetails(student.User.Gender);
-        PhoneNumber = student.User.PhoneNumber;
-        DateOfBirth = student.User.DateOfBirth;
-        ImgUrl = student.User.ImgUrl;
-        CreatedAt = student.CreatedAt;
-    }
+    public StudentDetails() { }   
+    public StudentDetails(Student student) { }   
+
 }

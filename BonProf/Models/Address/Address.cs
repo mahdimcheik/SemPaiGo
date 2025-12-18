@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
+using BonProf.Models;
 using SemPaiGo.Models.Interfaces;
 using SemPaiGo.Utilities;
 
@@ -24,8 +25,8 @@ public class Address : BaseModel
     public string? AdditionalInfo { get; set; }
     public float? Longitude { get; set; }
     public float? Latitude { get; set; }
-    public Guid UserId { get; set; }
-    public UserApp? User { get; set; }
+    public Guid ProfileId { get; set; }
+    public Profile? Profile { get; set; }
     public Guid TypeId { get; set; } = HardCode.TYPE_ADDRESS_HOME;
     public TypeAddress? Type { get; set; }
     public Address()
@@ -43,7 +44,7 @@ public class Address : BaseModel
         AdditionalInfo = addressDto.AdditionalInfo;
         Longitude = addressDto.Longitude;
         Latitude = addressDto.Latitude;
-        UserId = addressDto.UserId;
+        ProfileId = addressDto.UserId;
         TypeId =  HardCode.TYPE_ADDRESS_HOME;//addressDto.TypeId;
         CreatedAt = DateTimeOffset.UtcNow;
     }

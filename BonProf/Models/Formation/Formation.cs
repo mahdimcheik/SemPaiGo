@@ -12,7 +12,7 @@ public class Formation : BaseModel
     public DateTimeOffset? DateTo { get; set; }
 
     public Guid TeacherId { get; set; }
-    public ProfileTeacher? Teacher { get; set; }
+    public Teacher? Teacher { get; set; }
 
     public Formation() { }
 

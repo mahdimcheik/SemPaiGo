@@ -36,7 +36,10 @@ public class UserDetails : ICreatable
         Email = user.Email ?? "";
         Roles = roles;
         Gender = user.Gender is null ? null : new GenderDetails(user.Gender);
-        Addresses =  user.Addresses.Select(a => new AddressDetails(a, minimal)).ToList();
+        if(user.Profile is not null)
+        {
+            Addresses =  user.Profile.Addresses.Select(a => new AddressDetails(a, minimal)).ToList();
+        }
         PhoneNumber = user.PhoneNumber;
         DateOfBirth = user.DateOfBirth;
         ImgUrl = user.ImgUrl;

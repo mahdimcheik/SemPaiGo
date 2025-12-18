@@ -16,8 +16,9 @@ public class MainContext : IdentityDbContext<UserApp, RoleApp, Guid>
     public DbSet<Gender> Genders { get; set; }
 
     // Profile entities
-    public DbSet<ProfileTeacher> ProfileTeachers { get; set; }
-    public DbSet<ProfileStudent> ProfileStudents { get; set; }
+    public DbSet<Profile> Profiles { get; set; }
+    public DbSet<Teacher> Teachers { get; set; }
+    public DbSet<Student> Students { get; set; }
 
     // Related entities
     public DbSet<Address> Addresses { get; set; }
@@ -78,6 +79,86 @@ public class MainContext : IdentityDbContext<UserApp, RoleApp, Guid>
             // relations
             e.HasOne(u => u.Gender).WithMany().HasForeignKey(u => u.GenderId);
             e.HasOne(u => u.Status).WithMany().HasForeignKey(u => u.StatusId);
+            e.HasOne(u => u.Profile).WithOne(p => p.User).HasForeignKey<Profile>(p => p.Id);
+        });
+
+        builder.Entity<Profile>(e =>
+        {
+            e.HasKey(u => u.Id);
+            e.Property(u => u.Id).IsRequired().HasMaxLength(64);
+            e.Property(u => u.Title).HasMaxLength(64);
+            e.Property(u => u.Description).HasMaxLength(256);
+            e.Property(e => e.ArchivedAt).HasColumnType("timestamp with time zone");
+            e.Property(a => a.UpdatedAt).HasColumnType("timestamp with time zone");
+
+            e.Property(e => e.CreatedAt)
+                .IsRequired()
+                .HasColumnType("timestamp with time zone")
+                .ValueGeneratedOnAdd()
+                .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+            // relations 
+            e.HasOne(p => p.User).WithOne(u => u.Profile).HasForeignKey<Profile>(p => p.Id);
+            e.HasOne(p => p.Teacher).WithOne(t => t.Profile).HasForeignKey<Teacher>(t => t.Id);
+            e.HasOne(p => p.Student).WithOne(s => s.Profile).HasForeignKey<Student>(s => s.Id);
+
+
+            e.HasMany(p => p.Languages)
+               .WithMany(l => l.Profiles)
+               .UsingEntity<Dictionary<string, object>>(
+                   "ProfilesXLanguages",
+                   j =>
+                       j.HasOne<Language>()
+                           .WithMany()
+                           .HasForeignKey("LanguageId")
+                           .OnDelete(DeleteBehavior.Restrict),
+                   j =>
+                       j.HasOne<Profile>()
+                           .WithMany()
+                           .HasForeignKey("ProfileId")
+                           .OnDelete(DeleteBehavior.Restrict)
+               );
+
+            e.HasMany(p => p.Addresses)
+               .WithOne(p => p.Profile)
+               .HasForeignKey(p => p.ProfileId);
+        });
+
+        // ProfileTeacher
+        builder.Entity<Teacher>(pt =>
+        {
+            pt.HasKey(e => e.Id);
+            pt.Property(e => e.CreatedAt)
+                .IsRequired()
+                .HasColumnType("timestamp with time zone")
+                .ValueGeneratedOnAdd()
+                .HasDefaultValueSql("CURRENT_TIMESTAMP");
+            pt.Property(e => e.UpdatedAt).HasColumnType("timestamp with time zone");
+            pt.Property(e => e.ArchivedAt).HasColumnType("timestamp with time zone");
+            pt.Property(e => e.PriceIndicative).HasColumnType("decimal(18,2)");
+
+            //relations
+            pt.HasOne(s => s.Profile).WithOne(p => p.Teacher).HasForeignKey<Teacher>(s => s.Id);
+            pt.HasMany(s => s.Formations).WithOne(f => f.Teacher).HasForeignKey(f => f.TeacherId);
+            pt.HasMany(s => s.Experiences).WithOne(f => f.Teacher).HasForeignKey(f => f.TeacherId);
+            pt.HasMany(s => s.Slots).WithOne(f => f.Teacher).HasForeignKey(f => f.TeacherId);
+           
+        });
+
+        // ProfileStudent
+        builder.Entity<Student>(ps =>
+        {
+            ps.HasKey(e => e.Id);
+            ps.Property(e => e.CreatedAt)
+                .IsRequired()
+                .HasColumnType("timestamp with time zone")
+                .ValueGeneratedOnAdd()
+                .HasDefaultValueSql("CURRENT_TIMESTAMP");
+            ps.Property(e => e.UpdatedAt).HasColumnType("timestamp with time zone");
+            ps.Property(e => e.ArchivedAt).HasColumnType("timestamp with time zone");
+
+            //relations
+            ps.HasOne(s => s.Profile).WithOne(p => p.Student).HasForeignKey<Student>(s => s.Id);           
         });
 
         builder.Entity<RoleApp>(r =>
@@ -173,13 +254,13 @@ public class MainContext : IdentityDbContext<UserApp, RoleApp, Guid>
             entity.Property(a => a.ZipCode).HasMaxLength(255);
             entity.Property(a => a.Longitude).HasMaxLength(50);
             entity.Property(a => a.Latitude).HasMaxLength(50);
-            entity.Property(a => a.UserId).IsRequired();
+            entity.Property(a => a.ProfileId).IsRequired();
 
-            // Relation avec utilisateur
+            // Relation avec profile
             entity
-                .HasOne(a => a.User)
+                .HasOne(a => a.Profile)
                 .WithMany(t => t.Addresses)
-                .HasForeignKey(a => a.UserId)
+                .HasForeignKey(a => a.ProfileId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             // type addresse
@@ -317,50 +398,7 @@ public class MainContext : IdentityDbContext<UserApp, RoleApp, Guid>
             l.Property(e => e.ArchivedAt).HasColumnType("timestamp with time zone");
         });
 
-        // ProfileTeacher
-        builder.Entity<ProfileTeacher>(pt =>
-        {
-            pt.HasKey(e => e.Id);
-            pt.Property(e => e.CreatedAt)
-                .IsRequired()
-                .HasColumnType("timestamp with time zone")
-                .ValueGeneratedOnAdd()
-                .HasDefaultValueSql("CURRENT_TIMESTAMP");
-            pt.Property(e => e.UpdatedAt).HasColumnType("timestamp with time zone");
-            pt.Property(e => e.ArchivedAt).HasColumnType("timestamp with time zone");
-            pt.HasOne(s => s.User).WithOne().HasForeignKey<ProfileTeacher>(s => s.UserId);
-            pt.HasMany(s => s.Formations).WithOne(f => f.Teacher).HasForeignKey(f => f.TeacherId);
-            pt.HasMany(c => c.Languages)
-                .WithMany(cat => cat.Teachers)
-                .UsingEntity<Dictionary<string, object>>(
-                    "TeachersXLanguages",
-                    j =>
-                        j.HasOne<Language>()
-                            .WithMany()
-                            .HasForeignKey("LanguageId")
-                            .OnDelete(DeleteBehavior.Restrict),
-                    j =>
-                        j.HasOne<ProfileTeacher>()
-                            .WithMany()
-                            .HasForeignKey("TeacherId")
-                            .OnDelete(DeleteBehavior.Restrict)
-                );
-        });
 
-        // ProfileStudent
-        builder.Entity<ProfileStudent>(ps =>
-        {
-            ps.HasKey(e => e.Id);
-            ps.Property(e => e.CreatedAt)
-                .IsRequired()
-                .HasColumnType("timestamp with time zone")
-                .ValueGeneratedOnAdd()
-                .HasDefaultValueSql("CURRENT_TIMESTAMP");
-            ps.Property(e => e.UpdatedAt).HasColumnType("timestamp with time zone");
-            ps.Property(e => e.ArchivedAt).HasColumnType("timestamp with time zone");
-
-            ps.HasOne(s => s.User).WithOne().HasForeignKey<ProfileStudent>(s => s.UserId);
-        });
 
         // Slot
         builder.Entity<Slot>(s =>

@@ -8,7 +8,7 @@ using SemPaiGo.Contexts;
 
 #nullable disable
 
-namespace SemPaiGo.Migrations
+namespace BonProf.Migrations
 {
     [DbContext(typeof(MainContext))]
     partial class MainContextModelSnapshot : ModelSnapshot
@@ -61,6 +61,48 @@ namespace SemPaiGo.Migrations
                     b.HasIndex("CursusId");
 
                     b.ToTable("Products");
+                });
+
+            modelBuilder.Entity("BonProf.Models.Profile", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasMaxLength(64)
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("ArchivedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.Property<string>("FaceBook")
+                        .HasColumnType("text");
+
+                    b.Property<string>("GitHub")
+                        .HasColumnType("text");
+
+                    b.Property<string>("LinkedIn")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Title")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
+                    b.Property<string>("Twitter")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Profiles");
                 });
 
             modelBuilder.Entity("CursusXCategories", b =>
@@ -181,6 +223,21 @@ namespace SemPaiGo.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("ProfilesXLanguages", b =>
+                {
+                    b.Property<Guid>("LanguageId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("ProfileId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("LanguageId", "ProfileId");
+
+                    b.HasIndex("ProfileId");
+
+                    b.ToTable("ProfilesXLanguages");
+                });
+
             modelBuilder.Entity("SemPaiGo.Models.Address", b =>
                 {
                     b.Property<Guid>("Id")
@@ -214,7 +271,7 @@ namespace SemPaiGo.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("real");
 
-                    b.Property<Guid?>("ProfileStudentId")
+                    b.Property<Guid>("ProfileId")
                         .HasColumnType("uuid");
 
                     b.Property<string>("Street")
@@ -228,9 +285,6 @@ namespace SemPaiGo.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid");
-
                     b.Property<string>("ZipCode")
                         .IsRequired()
                         .HasMaxLength(255)
@@ -238,11 +292,9 @@ namespace SemPaiGo.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ProfileStudentId");
+                    b.HasIndex("ProfileId");
 
                     b.HasIndex("TypeId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Addresses");
                 });
@@ -440,9 +492,6 @@ namespace SemPaiGo.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)");
 
-                    b.Property<Guid?>("ProfileStudentId")
-                        .HasColumnType("uuid");
-
                     b.Property<Guid>("TeacherId")
                         .HasColumnType("uuid");
 
@@ -455,8 +504,6 @@ namespace SemPaiGo.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ProfileStudentId");
 
                     b.HasIndex("TeacherId");
 
@@ -774,83 +821,6 @@ namespace SemPaiGo.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("PaymentMethods");
-                });
-
-            modelBuilder.Entity("SemPaiGo.Models.ProfileStudent", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime?>("ArchivedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId")
-                        .IsUnique();
-
-                    b.ToTable("ProfileStudents");
-                });
-
-            modelBuilder.Entity("SemPaiGo.Models.ProfileTeacher", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime?>("ArchivedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("text");
-
-                    b.Property<string>("FaceBook")
-                        .HasColumnType("text");
-
-                    b.Property<string>("GitHub")
-                        .HasColumnType("text");
-
-                    b.Property<string>("LinkedIn")
-                        .HasColumnType("text");
-
-                    b.Property<decimal>("PriceIndicative")
-                        .HasColumnType("numeric");
-
-                    b.Property<string>("Title")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Twitter")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId")
-                        .IsUnique();
-
-                    b.ToTable("ProfileTeachers");
                 });
 
             modelBuilder.Entity("SemPaiGo.Models.RefreshToken", b =>
@@ -1179,6 +1149,64 @@ namespace SemPaiGo.Migrations
                             Icon = "",
                             Name = "Failed"
                         });
+                });
+
+            modelBuilder.Entity("SemPaiGo.Models.Student", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("ArchivedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                    b.Property<Guid?>("LanguageId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("ProfilId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LanguageId");
+
+                    b.ToTable("Students");
+                });
+
+            modelBuilder.Entity("SemPaiGo.Models.Teacher", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("ArchivedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                    b.Property<Guid?>("LanguageId")
+                        .HasColumnType("uuid");
+
+                    b.Property<decimal>("PriceIndicative")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LanguageId");
+
+                    b.ToTable("Teachers");
                 });
 
             modelBuilder.Entity("SemPaiGo.Models.TeacherPayout", b =>
@@ -1589,21 +1617,6 @@ namespace SemPaiGo.Migrations
                         });
                 });
 
-            modelBuilder.Entity("TeachersXLanguages", b =>
-                {
-                    b.Property<Guid>("LanguageId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("TeacherId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("LanguageId", "TeacherId");
-
-                    b.HasIndex("TeacherId");
-
-                    b.ToTable("TeachersXLanguages");
-                });
-
             modelBuilder.Entity("BonProf.Models.Product", b =>
                 {
                     b.HasOne("SemPaiGo.Models.Cursus", "Cursus")
@@ -1613,6 +1626,17 @@ namespace SemPaiGo.Migrations
                         .IsRequired();
 
                     b.Navigation("Cursus");
+                });
+
+            modelBuilder.Entity("BonProf.Models.Profile", b =>
+                {
+                    b.HasOne("SemPaiGo.Models.UserApp", "User")
+                        .WithOne("Profile")
+                        .HasForeignKey("BonProf.Models.Profile", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("CursusXCategories", b =>
@@ -1681,11 +1705,28 @@ namespace SemPaiGo.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("ProfilesXLanguages", b =>
+                {
+                    b.HasOne("SemPaiGo.Models.Language", null)
+                        .WithMany()
+                        .HasForeignKey("LanguageId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("BonProf.Models.Profile", null)
+                        .WithMany()
+                        .HasForeignKey("ProfileId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("SemPaiGo.Models.Address", b =>
                 {
-                    b.HasOne("SemPaiGo.Models.ProfileStudent", null)
+                    b.HasOne("BonProf.Models.Profile", "Profile")
                         .WithMany("Addresses")
-                        .HasForeignKey("ProfileStudentId");
+                        .HasForeignKey("ProfileId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("SemPaiGo.Models.TypeAddress", "Type")
                         .WithMany()
@@ -1693,15 +1734,9 @@ namespace SemPaiGo.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("SemPaiGo.Models.UserApp", "User")
-                        .WithMany("Addresses")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                    b.Navigation("Profile");
 
                     b.Navigation("Type");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("SemPaiGo.Models.Cursus", b =>
@@ -1712,7 +1747,7 @@ namespace SemPaiGo.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("SemPaiGo.Models.ProfileTeacher", "Teacher")
+                    b.HasOne("SemPaiGo.Models.Teacher", "Teacher")
                         .WithMany("Cursuses")
                         .HasForeignKey("TeacherId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -1725,7 +1760,7 @@ namespace SemPaiGo.Migrations
 
             modelBuilder.Entity("SemPaiGo.Models.Experience", b =>
                 {
-                    b.HasOne("SemPaiGo.Models.ProfileTeacher", "Teacher")
+                    b.HasOne("SemPaiGo.Models.Teacher", "Teacher")
                         .WithMany("Experiences")
                         .HasForeignKey("TeacherId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -1736,11 +1771,7 @@ namespace SemPaiGo.Migrations
 
             modelBuilder.Entity("SemPaiGo.Models.Formation", b =>
                 {
-                    b.HasOne("SemPaiGo.Models.ProfileStudent", null)
-                        .WithMany("Formations")
-                        .HasForeignKey("ProfileStudentId");
-
-                    b.HasOne("SemPaiGo.Models.ProfileTeacher", "Teacher")
+                    b.HasOne("SemPaiGo.Models.Teacher", "Teacher")
                         .WithMany("Formations")
                         .HasForeignKey("TeacherId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -1751,13 +1782,13 @@ namespace SemPaiGo.Migrations
 
             modelBuilder.Entity("SemPaiGo.Models.Order", b =>
                 {
-                    b.HasOne("SemPaiGo.Models.ProfileStudent", "Student")
+                    b.HasOne("SemPaiGo.Models.Student", "Student")
                         .WithMany("Orders")
                         .HasForeignKey("StudentId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("SemPaiGo.Models.ProfileTeacher", "Teacher")
+                    b.HasOne("SemPaiGo.Models.Teacher", "Teacher")
                         .WithMany()
                         .HasForeignKey("TeacherId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1785,28 +1816,6 @@ namespace SemPaiGo.Migrations
                     b.Navigation("Method");
 
                     b.Navigation("Order");
-                });
-
-            modelBuilder.Entity("SemPaiGo.Models.ProfileStudent", b =>
-                {
-                    b.HasOne("SemPaiGo.Models.UserApp", "User")
-                        .WithOne()
-                        .HasForeignKey("SemPaiGo.Models.ProfileStudent", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("SemPaiGo.Models.ProfileTeacher", b =>
-                {
-                    b.HasOne("SemPaiGo.Models.UserApp", "User")
-                        .WithOne()
-                        .HasForeignKey("SemPaiGo.Models.ProfileTeacher", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("SemPaiGo.Models.RefreshToken", b =>
@@ -1844,7 +1853,7 @@ namespace SemPaiGo.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SemPaiGo.Models.ProfileStudent", "Student")
+                    b.HasOne("SemPaiGo.Models.Student", "Student")
                         .WithMany("Reservations")
                         .HasForeignKey("StudentId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -1863,7 +1872,7 @@ namespace SemPaiGo.Migrations
 
             modelBuilder.Entity("SemPaiGo.Models.Slot", b =>
                 {
-                    b.HasOne("SemPaiGo.Models.ProfileTeacher", "Teacher")
+                    b.HasOne("SemPaiGo.Models.Teacher", "Teacher")
                         .WithMany("Slots")
                         .HasForeignKey("TeacherId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -1880,6 +1889,36 @@ namespace SemPaiGo.Migrations
                     b.Navigation("Type");
                 });
 
+            modelBuilder.Entity("SemPaiGo.Models.Student", b =>
+                {
+                    b.HasOne("BonProf.Models.Profile", "Profile")
+                        .WithOne("Student")
+                        .HasForeignKey("SemPaiGo.Models.Student", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SemPaiGo.Models.Language", null)
+                        .WithMany("Students")
+                        .HasForeignKey("LanguageId");
+
+                    b.Navigation("Profile");
+                });
+
+            modelBuilder.Entity("SemPaiGo.Models.Teacher", b =>
+                {
+                    b.HasOne("BonProf.Models.Profile", "Profile")
+                        .WithOne("Teacher")
+                        .HasForeignKey("SemPaiGo.Models.Teacher", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SemPaiGo.Models.Language", null)
+                        .WithMany("Teachers")
+                        .HasForeignKey("LanguageId");
+
+                    b.Navigation("Profile");
+                });
+
             modelBuilder.Entity("SemPaiGo.Models.TeacherPayout", b =>
                 {
                     b.HasOne("SemPaiGo.Models.StatusTransaction", "Status")
@@ -1888,7 +1927,7 @@ namespace SemPaiGo.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SemPaiGo.Models.ProfileTeacher", "Teacher")
+                    b.HasOne("SemPaiGo.Models.Teacher", "Teacher")
                         .WithMany()
                         .HasForeignKey("TeacherId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1935,19 +1974,20 @@ namespace SemPaiGo.Migrations
                     b.Navigation("Status");
                 });
 
-            modelBuilder.Entity("TeachersXLanguages", b =>
+            modelBuilder.Entity("BonProf.Models.Profile", b =>
                 {
-                    b.HasOne("SemPaiGo.Models.Language", null)
-                        .WithMany()
-                        .HasForeignKey("LanguageId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                    b.Navigation("Addresses");
 
-                    b.HasOne("SemPaiGo.Models.ProfileTeacher", null)
-                        .WithMany()
-                        .HasForeignKey("TeacherId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                    b.Navigation("Student");
+
+                    b.Navigation("Teacher");
+                });
+
+            modelBuilder.Entity("SemPaiGo.Models.Language", b =>
+                {
+                    b.Navigation("Students");
+
+                    b.Navigation("Teachers");
                 });
 
             modelBuilder.Entity("SemPaiGo.Models.Order", b =>
@@ -1955,28 +1995,6 @@ namespace SemPaiGo.Migrations
                     b.Navigation("Payment");
 
                     b.Navigation("Reservations");
-                });
-
-            modelBuilder.Entity("SemPaiGo.Models.ProfileStudent", b =>
-                {
-                    b.Navigation("Addresses");
-
-                    b.Navigation("Formations");
-
-                    b.Navigation("Orders");
-
-                    b.Navigation("Reservations");
-                });
-
-            modelBuilder.Entity("SemPaiGo.Models.ProfileTeacher", b =>
-                {
-                    b.Navigation("Cursuses");
-
-                    b.Navigation("Experiences");
-
-                    b.Navigation("Formations");
-
-                    b.Navigation("Slots");
                 });
 
             modelBuilder.Entity("SemPaiGo.Models.RoleApp", b =>
@@ -1989,9 +2007,27 @@ namespace SemPaiGo.Migrations
                     b.Navigation("Reservation");
                 });
 
+            modelBuilder.Entity("SemPaiGo.Models.Student", b =>
+                {
+                    b.Navigation("Orders");
+
+                    b.Navigation("Reservations");
+                });
+
+            modelBuilder.Entity("SemPaiGo.Models.Teacher", b =>
+                {
+                    b.Navigation("Cursuses");
+
+                    b.Navigation("Experiences");
+
+                    b.Navigation("Formations");
+
+                    b.Navigation("Slots");
+                });
+
             modelBuilder.Entity("SemPaiGo.Models.UserApp", b =>
                 {
-                    b.Navigation("Addresses");
+                    b.Navigation("Profile");
 
                     b.Navigation("UserRoles");
                 });

@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
+using BonProf.Models;
 using Microsoft.AspNetCore.Identity;
 using SempaiGo.Models;
 using SemPaiGo.Models.Interfaces;
@@ -19,10 +20,12 @@ public class UserApp : IdentityUser<Guid>, IArchivable, IUpdateable, ICreatable
     public DateTimeOffset? UpdatedAt { get; set; } = DateTime.UtcNow;
     public DateTimeOffset CreatedAt { get; set; } = DateTime.UtcNow;
 
+    // profile
+    public Profile? Profile { get; set; }
+
     // roles
     public ICollection<IdentityUserRole<Guid>> UserRoles { get; set; } =
         new List<IdentityUserRole<Guid>>();
-    public ICollection<Address> Addresses { get; set; } = new List<Address>();
 
     //gender
     public Guid GenderId { get; set; }

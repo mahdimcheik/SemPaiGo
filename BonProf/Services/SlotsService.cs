@@ -37,8 +37,8 @@ public class SlotsService(MainContext context)
             }
 
             // Vérifier que l'utilisateur est bien un enseignant
-            var teacher = await context.ProfileTeachers.FirstOrDefaultAsync(t =>
-                t.UserId == user.Id
+            var teacher = await context.Teachers.FirstOrDefaultAsync(t =>
+                t.Id == user.Id
             );
 
             if (teacher == null)
@@ -125,7 +125,7 @@ public class SlotsService(MainContext context)
             // Recharger avec les relations pour la réponse
             var createdSlot = await context
                 .Slots.Include(s => s.Teacher)
-                .ThenInclude(t => t.User)
+                .ThenInclude(t => t.Profile)
                 .Include(s => s.Type)
                 .FirstAsync(s => s.Id == slot.Id);
 
@@ -173,8 +173,8 @@ public class SlotsService(MainContext context)
             }
 
             // Vérifier que l'utilisateur est bien un enseignant
-            var teacher = await context.ProfileTeachers.FirstOrDefaultAsync(t =>
-                t.UserId == user.Id
+            var teacher = await context.Teachers.FirstOrDefaultAsync(t =>
+                t.Id == user.Id
             );
 
             if (teacher == null)
@@ -304,8 +304,8 @@ public class SlotsService(MainContext context)
             }
 
             // Vérifier que l'utilisateur est bien un enseignant
-            var teacher = await context.ProfileTeachers.FirstOrDefaultAsync(t =>
-                t.UserId == user.Id
+            var teacher = await context.Teachers.FirstOrDefaultAsync(t =>
+                t.Id == user.Id
             );
 
             if (teacher == null)
@@ -405,8 +405,8 @@ public class SlotsService(MainContext context)
             }
 
             // Vérifier que l'utilisateur est bien un enseignant
-            var teacher = await context.ProfileTeachers.FirstOrDefaultAsync(t =>
-                t.UserId == user.Id
+            var teacher = await context.Teachers.FirstOrDefaultAsync(t =>
+                t.Id == user.Id
             );
 
             if (teacher == null)
@@ -433,7 +433,7 @@ public class SlotsService(MainContext context)
             var slots = await context
                 .Slots.AsNoTracking()
                 .Include(s => s.Teacher)
-                .ThenInclude(t => t.User)
+                .ThenInclude(t => t.Profile)
                 .Include(s => s.Type)
                 .Where(s =>
                     s.TeacherId == teacher.Id
@@ -480,7 +480,7 @@ public class SlotsService(MainContext context)
         try
         {
             // Vérifier que l'enseignant existe
-            var teacher = await context.ProfileTeachers.FirstOrDefaultAsync(t => t.Id == teacherId);
+            var teacher = await context.Teachers.FirstOrDefaultAsync(t => t.Id == teacherId);
 
             if (teacher == null)
             {
@@ -506,7 +506,7 @@ public class SlotsService(MainContext context)
             var slots = await context
                 .Slots.AsNoTracking()
                 .Include(s => s.Teacher)
-                .ThenInclude(t => t.User)
+                .ThenInclude(t => t.Profile)
                 .Include(s => s.Type)
                 .Include(s => s.Reservation)
                 .Where(s =>

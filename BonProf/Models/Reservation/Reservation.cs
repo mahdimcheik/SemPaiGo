@@ -21,7 +21,7 @@ public class Reservation : BaseModel
     public Order Order { get; set; }
 
     public Guid StudentId { get; set; }
-    public ProfileStudent Student { get; set; }
+    public Student Student { get; set; }
     public Reservation()
     {
     }

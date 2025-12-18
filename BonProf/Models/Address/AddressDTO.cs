@@ -96,7 +96,7 @@ public class AddressDetails
         AdditionalInfo = address.AdditionalInfo;
         Longitude = address.Longitude;
         Latitude = address.Latitude;
-        UserId = address.UserId;
+        UserId = address.ProfileId;
         TypeId = address.TypeId;
         CreatedAt = address.CreatedAt;
         UpdatedAt = address.UpdatedAt;
@@ -112,7 +112,7 @@ public class AddressDetails
         AdditionalInfo = minimal ? "" : address.AdditionalInfo;
         Longitude = address.Longitude;
         Latitude = address.Latitude;
-        UserId = address.UserId;
+        UserId = address.ProfileId;
         TypeId = address.TypeId;
         CreatedAt = address.CreatedAt;
         UpdatedAt = address.UpdatedAt;

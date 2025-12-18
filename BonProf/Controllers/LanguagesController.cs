@@ -193,7 +193,7 @@ namespace SemPaiGo.Controllers
                 });
             }
 
-            var response = await languagesService.AddLanguageToTeacherAsync(userLanguageDto);
+            var response = await languagesService.AddLanguageToProfileAsync(userLanguageDto);
 
             return StatusCode(response.Status, response);
         }
@@ -226,8 +226,8 @@ namespace SemPaiGo.Controllers
                     Data = ModelState
                 });
             }
-            var teacher = await context.ProfileTeachers.FindAsync(user.Id);
-            if (teacher is null)
+            var profile = await context.Profiles.FindAsync(user.Id);
+            if (profile is null)
             {
                 return BadRequest(new Response<object>
                 {
@@ -237,7 +237,7 @@ namespace SemPaiGo.Controllers
                 });
             }
 
-            var response = await languagesService.UpdateLanguagesForTeacher(teacher, languagesIds);
+            var response = await languagesService.UpdateLanguagesForProfile(profile, languagesIds);
 
             return StatusCode(response.Status, response);
         }

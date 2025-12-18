@@ -10,9 +10,9 @@ public class Order : BaseModel
     public decimal ReductionPercentage { get; set; }
     public decimal ReductionAmount { get; set; }
     public Guid StudentId { get; set; }
-    public ProfileStudent? Student { get; set; }
+    public Student? Student { get; set; }
     public Guid TeacherId { get; set; }
-    public ProfileTeacher? Teacher { get; set; }
+    public Teacher? Teacher { get; set; }
     public ICollection<Reservation> Reservations { get; set; }
 
     public Guid? PaymentId { get; set; }

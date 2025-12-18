@@ -8,7 +8,7 @@ public class Cursus : BaseModelOption
     public Guid LevelId { get; set; }
     public LevelCursus? Level { get; set; }
     public Guid TeacherId { get; set; }
-    public ProfileTeacher? Teacher { get; set; }
+    public Teacher? Teacher { get; set; }
     public ICollection<CategoryCursus> Categories { get; set; } = new List<CategoryCursus>();
 
     public Cursus() { }

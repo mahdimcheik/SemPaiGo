@@ -159,32 +159,32 @@ public class AuthService
     {
         try
         {
-            if (userCreate.RoleId == HardCode.ROLE_TEACHER)
-            {
-                ProfileTeacher newTeacher = new ProfileTeacher
-                {
-                    Id = newUser.Id,
-                    UserId = newUser.Id,
-                    Title = userCreate.Title,
-                    Description = userCreate.Description,
-                    LinkedIn = null,
-                    FaceBook = null,
-                    GitHub = null,
-                    Twitter = null,
-                };
-                await context.ProfileTeachers.AddAsync(newTeacher);
-                await context.SaveChangesAsync();
-            }
-            else
-            {
-                ProfileStudent newStudent = new ProfileStudent
-                {
-                    Id = newUser.Id,
-                    UserId = newUser.Id,
-                };
-                await context.ProfileStudents.AddAsync(newStudent);
-                await context.SaveChangesAsync();
-            }
+            //if (userCreate.RoleId == HardCode.ROLE_TEACHER)
+            //{
+            //    Teacher newTeacher = new Teacher
+            //    {
+            //        Id = newUser.Id,
+            //        UserId = newUser.Id,
+            //        Title = userCreate.Title,
+            //        Description = userCreate.Description,
+            //        LinkedIn = null,
+            //        FaceBook = null,
+            //        GitHub = null,
+            //        Twitter = null,
+            //    };
+            //    await context.ProfileTeachers.AddAsync(newTeacher);
+            //    await context.SaveChangesAsync();
+            //}
+            //else
+            //{
+            //    Student newStudent = new Student
+            //    {
+            //        Id = newUser.Id,
+            //        UserId = newUser.Id,
+            //    };
+            //    await context.ProfileStudents.AddAsync(newStudent);
+            //    await context.SaveChangesAsync();
+            //}
         }
         catch
         {

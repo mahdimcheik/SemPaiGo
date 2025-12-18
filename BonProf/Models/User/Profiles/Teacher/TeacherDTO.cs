@@ -61,23 +61,23 @@ public class TeacherDetails
     public decimal PriceIndicative { get; set; }
 
     public TeacherDetails() { }
-    public TeacherDetails(ProfileTeacher profile)
+    public TeacherDetails(Teacher profile)
     {
-        Id = profile.Id;
-        Title = profile.Title;
-        Description = profile.Description;
-        UserId = profile.UserId;
-        User = new UserDetails(profile.User, null, true);
-        CreatedAt = profile.CreatedAt;
-        UpdatedAt = profile.UpdatedAt;
-        Formations = profile.Formations.Select(f => new FormationDetails(f)).ToList();
-        Languages = profile.Languages?.Select(l => new LanguageDetails(l)).ToList() ?? [];
-        Cursuses = profile.Cursuses?.Select(l => new CursusDetails(l)).ToList() ?? [];
-        LinkedIn = profile.LinkedIn;
-        FaceBook = profile.FaceBook;
-        GitHub = profile.GitHub;
-        Twitter = profile.Twitter;
-        PriceIndicative = profile.PriceIndicative;
+        //Id = profile.Id;
+        //Title = profile.Title;
+        //Description = profile.Description;
+        //UserId = profile.UserId;
+        //User = new UserDetails(profile.User, null, true);
+        //CreatedAt = profile.CreatedAt;
+        //UpdatedAt = profile.UpdatedAt;
+        //Formations = profile.Formations.Select(f => new FormationDetails(f)).ToList();
+        //Languages = profile.Languages?.Select(l => new LanguageDetails(l)).ToList() ?? [];
+        //Cursuses = profile.Cursuses?.Select(l => new CursusDetails(l)).ToList() ?? [];
+        //LinkedIn = profile.LinkedIn;
+        //FaceBook = profile.FaceBook;
+        //GitHub = profile.GitHub;
+        //Twitter = profile.Twitter;
+        //PriceIndicative = profile.PriceIndicative;
     }
 
 }
@@ -148,20 +148,20 @@ public class TeacherProfileUpdate
     public decimal PriceIndicative { get; set; }
 
 
-    public void UpdateProfile(ProfileTeacher profile)
+    public void UpdateProfile(Teacher profile)
     {
-        profile.Title = Title;
-        profile.Description = Description;
-        profile.UpdatedAt = DateTimeOffset.UtcNow;
-        profile.LinkedIn = LinkedIn;
-        profile.FaceBook = FaceBook;
-        profile.GitHub = GitHub;
-        profile.Twitter = Twitter;
+        //profile.Title = Title;
+        //profile.Description = Description;
+        //profile.UpdatedAt = DateTimeOffset.UtcNow;
+        //profile.LinkedIn = LinkedIn;
+        //profile.FaceBook = FaceBook;
+        //profile.GitHub = GitHub;
+        //profile.Twitter = Twitter;
         profile.PriceIndicative = PriceIndicative;
 
-        if (User is not null && profile.User is not null)
-        {
-            User.UpdateUser(profile.User);
-        }
+        //if (User is not null && profile.User is not null)
+        //{
+        //    User.UpdateUser(profile.User);
+        //}
     }
 }

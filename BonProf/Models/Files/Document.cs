@@ -10,9 +10,9 @@ public class Document :BaseModel
     public long Size { get; set; }
     public DateTimeOffset UploadedAt { get; set; }
     public Guid? TeacherId { get; set; }
-    public ProfileTeacher? Teacher { get; set; }
+    public Teacher? Teacher { get; set; }
     public Guid? StudentId { get; set; }
-    public ProfileStudent? Student { get; set; }
+    public Student? Student { get; set; }
     public Guid? ReservationId { get; set; }
     public Reservation? Reservation { get; set; }
 }

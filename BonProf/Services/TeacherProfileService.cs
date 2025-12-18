@@ -30,9 +30,9 @@ public class TeacherProfileService
         try
         {
             var profiles = await _context
-                .ProfileTeachers.Include(p => p.User)
-                .ThenInclude(u => u.Gender)
-                .Include(p => p.User)
+                .Teachers.Include(p => p.Profile)
+                .ThenInclude(u => u.User.Gender)
+                .Include(p => p.Profile)
                 .ThenInclude(u => u.Addresses)
                 .Include(p => p.Formations)
                 .ToListAsync();
@@ -70,17 +70,18 @@ public class TeacherProfileService
                     Message = "Profil enseignant non trouvé",
                 };
             }
-            var profile = await _context
-                .ProfileTeachers.Include(p => p.User)
-                .ThenInclude(u => u.Gender)
-                .Include(p => p.User)
+            var teacher = await _context
+                .Teachers.Include(p => p.Profile)
+                .ThenInclude(u => u.User.Gender)
+                .Include(p => p.Profile)
                 .ThenInclude(u => u.Addresses.Where(a =>a.ArchivedAt == null))
-                .Include(u => u.Languages)
+                .Include(p => p.Profile)
+                .Include(u => u.Profile.Languages)
                 .Include(p => p.Formations.Where(a => a.ArchivedAt == null))
                 .Include(t => t.Cursuses)
                 .FirstOrDefaultAsync(p => p.Id == user.Id);
 
-            if (profile == null)
+            if (teacher == null)
             {
                 return new Response<TeacherDetails>
                 {
@@ -89,12 +90,12 @@ public class TeacherProfileService
                 };
             }
 
-            if(profile.User?.Addresses is not null)
+            if(teacher.Profile?.Addresses is not null)
             {
-                var workAddress = profile.User?.Addresses.FirstOrDefault(a => a.TypeId == HardCode.TYPE_ADDRESS_BILLING);
+                var workAddress = teacher.Profile?.Addresses.FirstOrDefault(a => a.TypeId == HardCode.TYPE_ADDRESS_BILLING);
                 if(workAddress is not null)
                 {
-                    profile.User.Addresses = [workAddress];
+                    teacher.Profile.Addresses = [workAddress];
                 }
             }
 
@@ -102,7 +103,7 @@ public class TeacherProfileService
             {
                 Status = 200,
                 Message = "Profil enseignant récupéré avec succès",
-                Data = new TeacherDetails(profile),
+                Data = new TeacherDetails(teacher),
             };
         }
         catch (Exception ex)
@@ -123,9 +124,9 @@ public class TeacherProfileService
         try
         {
             var profile = await _context
-                .ProfileTeachers.Include(p => p.User)
-                .ThenInclude(u => u.Gender)
-                .Include(p => p.User)
+                .Teachers.Include(p => p.Profile)
+                .ThenInclude(u => u.User.Gender)
+                .Include(p => p.Profile)
                 .ThenInclude(u => u.Addresses)
                 .Include(p => p.Formations)
                 .FirstOrDefaultAsync(p => p.Id == userId);
@@ -167,13 +168,14 @@ public class TeacherProfileService
         using var transaction = await _context.Database.BeginTransactionAsync();
         try
         {
-            var profile = await _context
-                .ProfileTeachers.Include(p => p.User)
-                .ThenInclude(u => u.Gender)
-                .Include(u => u.Languages)
+            var teacher = await _context
+                .Teachers.Include(p => p.Profile)
+                .ThenInclude(u => u.User.Gender)
+                .Include(p => p.Profile)
+                .ThenInclude(u => u.Languages)
                 .FirstOrDefaultAsync(p => p.Id == profileDto.Id);
 
-            if (profile == null)
+            if (teacher == null)
             {
                 return new Response<TeacherDetails>
                 {
@@ -183,8 +185,8 @@ public class TeacherProfileService
             }
 
             // Update profile
-            profileDto.UpdateProfile(profile);
-            profile.Languages.Clear();
+            profileDto.UpdateProfile(teacher);
+            teacher.Profile.Languages.Clear();
             // Add new languages
             if (profileDto.LanguagesIds?.Any() == true)
             {
@@ -194,7 +196,7 @@ public class TeacherProfileService
 
                 foreach (var language in newLanguages)
                 {
-                    profile.Languages.Add(language);
+                    teacher.Profile.Languages.Add(language);
                 }
             }
 
@@ -204,7 +206,7 @@ public class TeacherProfileService
             {
                 Status = 200,
                 Message = "Profil enseignant récupéré avec succès",
-                Data = new TeacherDetails(profile),
+                Data = new TeacherDetails(teacher),
             };
 
         }

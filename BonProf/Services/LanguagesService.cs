@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using BonProf.Models;
+using Microsoft.EntityFrameworkCore;
 using SemPaiGo.Contexts;
 using SemPaiGo.Models;
 
@@ -89,10 +90,11 @@ public class LanguagesService(MainContext context)
     {
         try
         {
-            var languages = await context.ProfileTeachers
+            var languages = await context.Teachers
                 .AsNoTracking()
                 .Where(u => u.Id == teacherId)
-                .SelectMany(u => u.Languages)
+                .Include(u => u.Profile)
+                .SelectMany(u => u.Profile.Languages)
                 .OrderBy(l => l.Name)
                 .Select(l => new LanguageDetails(l))
                 .ToListAsync();
@@ -279,12 +281,12 @@ public class LanguagesService(MainContext context)
     /// </summary>
     /// <param name="teacherLanguageDto">Données d'association utilisateur-langue</param>
     /// <returns>Résultat de l'opération</returns>
-    public async Task<Response<object>> AddLanguageToTeacherAsync(TeacherLanguageCreate teacherLanguageDto)
+    public async Task<Response<object>> AddLanguageToProfileAsync(TeacherLanguageCreate teacherLanguageDto)
     {
         try
         {
             // Vérifier que l'utilisateur existe
-            var user = await context.ProfileTeachers
+            var user = await context.Profiles
                 .Include(u => u.Languages)
                 .FirstOrDefaultAsync(u => u.Id == teacherLanguageDto.TeacherId);
 
@@ -349,7 +351,8 @@ public class LanguagesService(MainContext context)
     /// </summary>
     /// <param name="userLanguageDto">Données d'association utilisateur-langue</param>
     /// <returns>Résultat de l'opération</returns>
-    public async Task<Response<List<LanguageDetails>>> UpdateLanguagesForTeacher(ProfileTeacher teacher, Guid[] languagesIds)
+    public async Task<Response<List<LanguageDetails>>> UpdateLanguagesForProfile
+        (Profile profile, Guid[] languagesIds)
     {
         try
         {
@@ -357,7 +360,7 @@ public class LanguagesService(MainContext context)
                 .Where(l => languagesIds.Contains(l.Id))
                 .ToListAsync();
 
-            teacher.Languages = newLanguages;
+            profile.Languages = newLanguages;
             await context.SaveChangesAsync();
 
             return new Response<List<LanguageDetails>>
@@ -388,7 +391,7 @@ public class LanguagesService(MainContext context)
         try
         {
             // Vérifier que l'utilisateur existe
-            var user = await context.ProfileTeachers
+            var user = await context.Profiles
                 .Include(u => u.Languages)
                 .FirstOrDefaultAsync(u => u.Id == teacherLanguageDto.TeacherId);
 

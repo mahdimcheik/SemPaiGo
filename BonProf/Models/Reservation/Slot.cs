@@ -7,7 +7,7 @@ namespace SemPaiGo.Models
         public DateTimeOffset DateFrom { get; set; }
         public DateTimeOffset DateTo { get; set; }
         public Guid TeacherId { get; set; }
-        public ProfileTeacher? Teacher { get; set; }
+        public Teacher? Teacher { get; set; }
         public Guid TypeId { get; set; }
         public TypeSlot? Type { get; set; }
         public Reservation? Reservation { get; set; }

@@ -98,7 +98,7 @@ public class AddressesService(MainContext context)
         {
             var addresses = await context.Addresses
                 .AsNoTracking()
-                .Where(a => a.UserId == userId && a.ArchivedAt == null)
+                .Where(a => a.ProfileId == userId && a.ArchivedAt == null)
                 .OrderByDescending(a => a.CreatedAt)
                 .Select(a => new AddressDetails(a))
                 .ToListAsync();
@@ -143,7 +143,7 @@ public class AddressesService(MainContext context)
                 };
             }
 
-            var addressesCount = await context.Addresses.CountAsync(a => a.UserId == userExists.Id && a.ArchivedAt == null);
+            var addressesCount = await context.Addresses.CountAsync(a => a.ProfileId == userExists.Id && a.ArchivedAt == null);
 
             if(addressesCount >= 2)
             {
