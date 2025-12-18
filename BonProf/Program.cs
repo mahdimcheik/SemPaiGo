@@ -205,9 +205,9 @@ static void ConfigureSwagger(IServiceCollection services)
             "v1",
             new OpenApiInfo
             {
-                Title = "SimplonHubApi API",
+                Title = "BonProfApi API",
                 Version = "v1",
-                Description = "API for SimplonHubApi application",
+                Description = "API for BonProfApi application",
             }
         );
 
@@ -275,9 +275,9 @@ static void ConfigureMiddlewarePipeline(WebApplication app)
     app.UseSwagger();
     app.UseSwaggerUI(c =>
     {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "SimplonHubApi API v1");
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "BonProfApi API v1");
         c.RoutePrefix = string.Empty;
-        c.DocumentTitle = "SimplonHubApi API Documentation";
+        c.DocumentTitle = "BonProfApi API Documentation";
     });
 
     app.UseHangfireDashboard("/hangfire");
