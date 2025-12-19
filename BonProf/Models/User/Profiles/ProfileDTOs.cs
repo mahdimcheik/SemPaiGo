@@ -29,7 +29,7 @@ public class ProfileDetails
         FaceBook = profile.FaceBook;
         GitHub = profile.GitHub;
         Twitter = profile.Twitter;
-        Languages = profile.Languages.Select(l => new LanguageDetails(l))?.ToList() ?? [];
+        Languages = profile.Languages?.Select(l => new LanguageDetails(l))?.ToList() ?? [];
         Addresses = profile.Addresses.Select(a => new AddressDetails(a))?.ToList() ?? [];
 
         if (profile.Teacher is not null)

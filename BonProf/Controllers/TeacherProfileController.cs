@@ -1,3 +1,4 @@
+using BonProf.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
@@ -24,27 +25,6 @@ public class TeacherProfileController : ControllerBase
     }
 
     /// <summary>
-    /// Récupère tous les profils enseignants
-    /// </summary>
-    /// <returns>Liste de tous les profils enseignants</returns>
-    /// <response code="200">Profils récupérés avec succès</response>
-    /// <response code="500">Erreur interne du serveur</response>
-    [HttpGet("all")]
-    [ProducesResponseType(typeof(Response<List<TeacherDetails>>), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(Response<object>), StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<Response<List<TeacherDetails>>>> GetAllTeacherProfiles()
-    {
-        var response = await _teacherProfileService.GetAllTeacherProfilesAsync();
-
-        if (response.Status == 200)
-        {
-            return Ok(response);
-        }
-
-        return StatusCode(response.Status, response);
-    }
-
-    /// <summary>
     /// Récupère un profil enseignant par son identifiant
     /// </summary>
     /// <param name="id">Identifiant unique du profil enseignant</param>
@@ -54,10 +34,10 @@ public class TeacherProfileController : ControllerBase
     /// <response code="500">Erreur interne du serveur</response>
     [HttpGet("my-profile")]
     [Authorize]
-    [ProducesResponseType(typeof(Response<TeacherDetails>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Response<ProfileDetails>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(Response<object>), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(Response<object>), StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<Response<TeacherDetails>>> GetTeacherProfileById()
+    public async Task<ActionResult<Response<ProfileDetails>>> GetTeacherProfileById()
     {
         var response = await _teacherProfileService.GetTeacherFullProfileAsync( User);
         return StatusCode(response.Status, response);
@@ -72,10 +52,10 @@ public class TeacherProfileController : ControllerBase
     /// <response code="404">Profil non trouvé</response>
     /// <response code="500">Erreur interne du serveur</response>
     [HttpGet("user/{userId:guid}")]
-    [ProducesResponseType(typeof(Response<TeacherDetails>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Response<ProfileDetails>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(Response<object>), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(Response<object>), StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<Response<TeacherDetails>>> GetTeacherProfileByUserId(
+    public async Task<ActionResult<Response<ProfileDetails>>> GetTeacherProfileByUserId(
         [FromRoute] Guid userId)
     {
         var response = await _teacherProfileService.GetTeacherProfileByUserIdAsync(userId);
@@ -97,26 +77,27 @@ public class TeacherProfileController : ControllerBase
     /// <response code="400">Données invalides</response>
     /// <response code="404">Profil non trouvé</response>
     /// <response code="500">Erreur interne du serveur</response>
-    [HttpPut]
-    [Authorize]
-    [ProducesResponseType(typeof(Response<TeacherDetails>), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(Response<object>), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(Response<object>), StatusCodes.Status404NotFound)]
-    [ProducesResponseType(typeof(Response<object>), StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<Response<TeacherDetails>>> UpdateTeacherProfile(
-        [FromBody] TeacherUpdate profileDto)
-    {
-        if (!ModelState.IsValid)
-        {
-            return BadRequest(new Response<object>
-            {
-                Status = 400,
-                Message = "Données de validation invalides",
-                Data = ModelState
-            });
-        }
+    
+    //[HttpPut]
+    //[Authorize]
+    //[ProducesResponseType(typeof(Response<TeacherDetails>), StatusCodes.Status200OK)]
+    //[ProducesResponseType(typeof(Response<object>), StatusCodes.Status400BadRequest)]
+    //[ProducesResponseType(typeof(Response<object>), StatusCodes.Status404NotFound)]
+    //[ProducesResponseType(typeof(Response<object>), StatusCodes.Status500InternalServerError)]
+    //public async Task<ActionResult<Response<TeacherDetails>>> UpdateTeacherProfile(
+    //    [FromBody] TeacherUpdate profileDto)
+    //{
+    //    if (!ModelState.IsValid)
+    //    {
+    //        return BadRequest(new Response<object>
+    //        {
+    //            Status = 400,
+    //            Message = "Données de validation invalides",
+    //            Data = ModelState
+    //        });
+    //    }
 
-        var response = await _teacherProfileService.UpdateTeacherProfileAsync(profileDto, User);
-        return StatusCode(response.Status, response);
-    }
+    //    var response = await _teacherProfileService.UpdateTeacherProfileAsync(profileDto, User);
+    //    return StatusCode(response.Status, response);
+    //}
 }
