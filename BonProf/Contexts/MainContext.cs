@@ -16,8 +16,8 @@ public class MainContext : IdentityDbContext<UserApp, RoleApp, Guid>
     public DbSet<Gender> Genders { get; set; }
 
     // Profile entities
-    public DbSet<Teacher> ProfileTeachers { get; set; }
-    public DbSet<Student> ProfileStudents { get; set; }
+    public DbSet<Teacher> Teachers { get; set; }
+    public DbSet<Student> Students { get; set; }
 
     // Related entities
     public DbSet<Address> Addresses { get; set; }
@@ -50,6 +50,8 @@ public class MainContext : IdentityDbContext<UserApp, RoleApp, Guid>
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
+        builder.Entity<UserApp>().ToTable("Users");
+        builder.Entity<RoleApp>().ToTable("Roles");
 
         // Global query filters (must stay in Fluent API)
         builder.Entity<Cursus>().HasQueryFilter(d => d.ArchivedAt == null);

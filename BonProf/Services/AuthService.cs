@@ -75,7 +75,7 @@ public class AuthService
                 };
             }
             // Créer un nouvel utilisateur en utilisant les données du modèle et la base de données contextuelle
-            UserApp newUser = new UserApp(newUserDTO);
+            UserApp? newUser = new UserApp(newUserDTO);
             newUser.CreatedAt = DateTime.Now;
 
             // Obtenir la date actuelle
@@ -89,6 +89,24 @@ public class AuthService
                 user: newUser,
                 roles: newUserDTO.RoleId == HardCode.ROLE_TEACHER ? ["Teacher"] : ["Student"]
             );
+
+            newUser = await context.Users.Where(u => u.Id == newUser.Id)
+                .Include(u => u.Status)
+                .Include(u => u.Profile)
+                .ThenInclude(x => x.Gender)
+                .FirstOrDefaultAsync()
+                ;
+
+            if(newUser is null)
+            {
+                await transaction.RollbackAsync();
+                return new Response<UserDetails>
+                {
+                    Message = "Création échouée",
+                    Status = 404,
+                    Data = null,
+                };
+            }
 
             // Vérifier si la création de l'utilisateur a échoué
             if (!result.Succeeded)
@@ -113,7 +131,7 @@ public class AuthService
             await context.SaveChangesAsync();
 
             // creer les profiles
-            await CreateProfile(newUser, newUserDTO);
+            //await CreateProfile(newUser, newUserDTO);
             await transaction.CommitAsync();
 
             try
@@ -170,7 +188,7 @@ public class AuthService
                     GitHub = null,
                     Twitter = null,
                 };
-                await context.ProfileTeachers.AddAsync(newTeacher);
+                await context.Teachers.AddAsync(newTeacher);
                 await context.SaveChangesAsync();
             }
             else
@@ -180,7 +198,7 @@ public class AuthService
                     Id = newUser.Id,
                     UserId = newUser.Id,
                 };
-                await context.ProfileStudents.AddAsync(newStudent);
+                await context.Students.AddAsync(newStudent);
                 await context.SaveChangesAsync();
             }
         }

@@ -6,7 +6,6 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace BonProf.Models;
 
-[Table("Profiles")]
 public class Profile : BaseModel
 {
     [Required]
@@ -19,8 +18,13 @@ public class Profile : BaseModel
 
     [MaxLength(500)]
     public string? ImgUrl { get; set; }
-
     public ICollection<Address> Addresses { get; set; } = new List<Address>();
+    public ICollection<Formation> Formations { get; set; } = new List<Formation>();
+    public ICollection<Language> Languages { get; set; } = new List<Language>();
+
+    [ForeignKey(nameof(User))]
+    public Guid UserId { get; set; }
+    public UserApp User { get; set; }
 
     //gender
     [Required]

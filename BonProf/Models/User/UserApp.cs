@@ -20,16 +20,10 @@ public class UserApp : IdentityUser<Guid>, IArchivable, IUpdateable, ICreatable
     [Required]
     public required bool PrivacyPolicyConsent { get; set; } = false;
     public DateTimeOffset? UpdatedAt { get; set; }
-
-    [Required]
     public DateTimeOffset? ArchivedAt { get; set; }
 
     [Required]
     public DateTimeOffset CreatedAt { get; set; } = DateTime.UtcNow;
-
-    // roles
-    public ICollection<IdentityUserRole<Guid>> UserRoles { get; set; } =
-        new List<IdentityUserRole<Guid>>();
 
     // Status account
     [Required]
@@ -40,11 +34,11 @@ public class UserApp : IdentityUser<Guid>, IArchivable, IUpdateable, ICreatable
     // navigation to teacher / student
     public Teacher? Teacher { get; set; }
     public Student? Student { get; set; }
-
-    [Required]
-    [ForeignKey(nameof(Profile))]
-    public Guid ProfileId { get; set; }
     public Profile Profile { get; set; }
+
+    // roles
+    public ICollection<IdentityUserRole<Guid>> UserRoles { get; set; } =
+        new List<IdentityUserRole<Guid>>();
 
     [SetsRequiredMembers]
     public UserApp() { }
@@ -61,5 +55,14 @@ public class UserApp : IdentityUser<Guid>, IArchivable, IUpdateable, ICreatable
         PrivacyPolicyConsent = true;
 
         Profile = new Profile(newUser.Profile);
+
+        if (newUser.RoleId == HardCode.ROLE_TEACHER)
+        {
+            Teacher = new Teacher();
+        }
+        else
+        {
+            Student = new Student();
+        }
     }
 }

@@ -30,9 +30,8 @@ public class TeacherProfileService
         try
         {
             var profiles = await _context
-                .ProfileTeachers.Include(p => p.User)
+                .Teachers.Include(p => p.User)
                 .Include(p => p.User)
-                .Include(p => p.Formations)
                 .ToListAsync();
 
             return new Response<List<TeacherDetails>>
@@ -69,10 +68,9 @@ public class TeacherProfileService
                 };
             }
             var profile = await _context
-                .ProfileTeachers.Include(p => p.User)
+                .Teachers.Include(p => p.User)
                 .Include(p => p.User)
-                .Include(u => u.Languages)
-                .Include(p => p.Formations.Where(a => a.ArchivedAt == null))
+                //.Include(p => p.Formations.Where(a => a.ArchivedAt == null))
                 .Include(t => t.Cursuses)
                 .FirstOrDefaultAsync(p => p.Id == user.Id);
 
@@ -112,9 +110,9 @@ public class TeacherProfileService
         try
         {
             var profile = await _context
-                .ProfileTeachers.Include(p => p.User)
+                .Teachers.Include(p => p.User)
                 .Include(p => p.User)
-                .Include(p => p.Formations)
+                //.Include(p => p.Formations)
                 .FirstOrDefaultAsync(p => p.Id == userId);
 
             if (profile == null)
@@ -139,68 +137,6 @@ public class TeacherProfileService
             {
                 Status = 500,
                 Message = $"Erreur lors de la récupération du profil: {ex.Message}",
-            };
-        }
-    }
-
-    /// <summary>
-    /// Met à jour un profil enseignant existant
-    /// </summary>
-    public async Task<Response<TeacherDetails>> UpdateTeacherProfileAsync(
-        TeacherUpdate profileDto,
-        ClaimsPrincipal userPrincipal
-    )
-    {
-        using var transaction = await _context.Database.BeginTransactionAsync();
-        try
-        {
-            var profile = await _context
-                .ProfileTeachers.Include(p => p.User)
-                .Include(u => u.Languages)
-                .FirstOrDefaultAsync(p => p.Id == profileDto.Id);
-
-            if (profile == null)
-            {
-                return new Response<TeacherDetails>
-                {
-                    Status = 404,
-                    Message = "Profil enseignant non trouvé",
-                };
-            }
-
-            // Update profile
-            profileDto.UpdateProfile(profile);
-            profile.Languages.Clear();
-            // Add new languages
-            if (profileDto.LanguagesIds?.Any() == true)
-            {
-                var newLanguages = await _context
-                    .Languages.Where(l => profileDto.LanguagesIds.Contains(l.Id))
-                    .ToListAsync();
-
-                foreach (var language in newLanguages)
-                {
-                    profile.Languages.Add(language);
-                }
-            }
-
-            await _context.SaveChangesAsync();
-            await transaction.CommitAsync();
-            return new Response<TeacherDetails>
-            {
-                Status = 200,
-                Message = "Profil enseignant récupéré avec succès",
-                //Data = new TeacherDetails(profile),
-            };
-
-        }
-        catch (Exception ex)
-        {
-            await transaction.RollbackAsync();
-            return new Response<TeacherDetails>
-            {
-                Status = 500,
-                Message = $"Erreur lors de la mise à jour du profil: {ex.Message}",
             };
         }
     }

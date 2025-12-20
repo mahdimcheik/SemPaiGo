@@ -37,7 +37,7 @@ public class SlotsService(MainContext context)
             }
 
             // Vérifier que l'utilisateur est bien un enseignant
-            var teacher = await context.ProfileTeachers.FirstOrDefaultAsync(t =>
+            var teacher = await context.Teachers.FirstOrDefaultAsync(t =>
                 t.UserId == user.Id
             );
 
@@ -173,7 +173,7 @@ public class SlotsService(MainContext context)
             }
 
             // Vérifier que l'utilisateur est bien un enseignant
-            var teacher = await context.ProfileTeachers.FirstOrDefaultAsync(t =>
+            var teacher = await context.Teachers            .FirstOrDefaultAsync(t =>
                 t.UserId == user.Id
             );
 
@@ -304,7 +304,7 @@ public class SlotsService(MainContext context)
             }
 
             // Vérifier que l'utilisateur est bien un enseignant
-            var teacher = await context.ProfileTeachers.FirstOrDefaultAsync(t =>
+            var teacher = await context.Teachers.FirstOrDefaultAsync(t =>
                 t.UserId == user.Id
             );
 
@@ -405,7 +405,7 @@ public class SlotsService(MainContext context)
             }
 
             // Vérifier que l'utilisateur est bien un enseignant
-            var teacher = await context.ProfileTeachers.FirstOrDefaultAsync(t =>
+            var teacher = await context.Teachers.FirstOrDefaultAsync(t =>
                 t.UserId == user.Id
             );
 
@@ -480,7 +480,7 @@ public class SlotsService(MainContext context)
         try
         {
             // Vérifier que l'enseignant existe
-            var teacher = await context.ProfileTeachers.FirstOrDefaultAsync(t => t.Id == teacherId);
+            var teacher = await context.Teachers.FirstOrDefaultAsync(t => t.Id == teacherId);
 
             if (teacher == null)
             {

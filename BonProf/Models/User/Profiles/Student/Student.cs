@@ -3,8 +3,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 using SemPaiGo.Models.Interfaces;
 
 namespace SemPaiGo.Models;
-
-[Table("ProfileStudents")]
 public class Student: BaseModel
 {
     [Required]
@@ -12,10 +10,6 @@ public class Student: BaseModel
     public Guid UserId { get; set; }
     
     public UserApp? User { get; set; }
-    
-    public ICollection<Address> Addresses { get; set; } = new List<Address>();
-    
-    public ICollection<Formation> Formations { get; set; } = new List<Formation>();
     
     public ICollection<Reservation> Reservations { get; set; } = new List<Reservation>();
     
