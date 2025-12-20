@@ -75,8 +75,6 @@ public class UserCreate
     [Required]
     public required DateTimeOffset DateOfBirth { get; set; }
     [Required]
-    public Guid RoleId { get; set; } = HardCode.ROLE_STUDENT;
-    [Required]
     public Guid GenderId { get; set; } = HardCode.GENDER_OTHER;
 
     [Required]
