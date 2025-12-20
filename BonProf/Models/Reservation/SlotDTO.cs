@@ -52,7 +52,7 @@ public class SlotDetails
         Id = slot.Id;
         DateFrom = slot.DateFrom;
         DateTo = slot.DateTo;
-        TypeId = slot.TypeId;
+        TypeId = slot.TypeId ?? Guid.Empty;
 
         if (slot.Teacher != null)
         {

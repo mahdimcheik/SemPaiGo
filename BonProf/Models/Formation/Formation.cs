@@ -1,16 +1,34 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.CodeAnalysis;
 using SemPaiGo.Models.Interfaces;
 
 namespace SemPaiGo.Models;
 
+[Table("Formations")]
 public class Formation : BaseModel
 {
+    [Required]
+    [MaxLength(200)]
     public required string Title { get; set; }
+    
+    [Required]
+    [MaxLength(200)]
     public required string Institute { get; set; }
+    
+    [Required]
+    [MaxLength(1000)]
     public required string Description { get; set; }
+    
+    [Required]
+    [Column(TypeName = "timestamp with time zone")]
     public required DateTimeOffset DateFrom { get; set; }
+    
+    [Column(TypeName = "timestamp with time zone")]
     public DateTimeOffset? DateTo { get; set; }
 
+    [Required]
+    [ForeignKey(nameof(Teacher))]
     public Guid TeacherId { get; set; }
     public ProfileTeacher? Teacher { get; set; }
 
