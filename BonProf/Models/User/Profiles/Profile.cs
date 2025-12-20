@@ -6,15 +6,20 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace BonProf.Models;
 
+[Table("Profiles")]
 public class Profile : BaseModel
 {
     [Required]
-    public required string FirstName { get; set; }
+    [MaxLength(64)]
+    public string FirstName { get; set; } = string.Empty;
 
     [Required]
-    public required string LastName { get; set; }
+    [MaxLength(64)]
+    public string LastName { get; set; } = string.Empty;
 
+    [MaxLength(500)]
     public string? ImgUrl { get; set; }
+
     public ICollection<Address> Addresses { get; set; } = new List<Address>();
 
     //gender
@@ -22,6 +27,11 @@ public class Profile : BaseModel
     [ForeignKey(nameof(Gender))]
     public Guid GenderId { get; set; }
     public Gender? Gender { get; set; }
+
+    // Parameterless constructor for EF Core
+    public Profile()
+    {
+    }
 
     [SetsRequiredMembers]
     public Profile(ProfileCreate newProfile)

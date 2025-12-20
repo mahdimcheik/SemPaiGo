@@ -1,22 +1,38 @@
 ﻿using SemPaiGo.Models.Interfaces;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SemPaiGo.Models;
 
-
-public class Experience: BaseModel
+[Table("Experiences")]
+public class Experience : BaseModel
 {
     [Required]
-    required public string Title { get; set; }
-    [Required]
-    required public string Description { get; set; }
+    [MaxLength(200)]
+    public string Title { get; set; } = string.Empty;
 
     [Required]
-    required public string Company { get; set; }
+    [MaxLength(1000)]
+    public string Description { get; set; } = string.Empty;
+
     [Required]
-    required public DateTimeOffset DateFrom { get; set; }
+    [MaxLength(200)]
+    public string Company { get; set; } = string.Empty;
+
+    [Required]
+    [Column(TypeName = "timestamp with time zone")]
+    public DateTimeOffset DateFrom { get; set; }
+
+    [Column(TypeName = "timestamp with time zone")]
     public DateTimeOffset? DateTo { get; set; }
 
+    [Required]
+    [ForeignKey(nameof(Teacher))]
     public Guid TeacherId { get; set; }
     public Teacher? Teacher { get; set; }
+
+    // Parameterless constructor for EF Core
+    public Experience()
+    {
+    }
 }

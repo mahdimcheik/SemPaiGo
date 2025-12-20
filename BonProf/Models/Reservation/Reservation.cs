@@ -7,18 +7,22 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace SemPaiGo.Models;
 
+[Table("Reservations")]
 public class Reservation : BaseModel
 {
     [Required]
     [StringLength(64)]
-    public string Title { get; set; }
+    public string Title { get; set; } = string.Empty;
+
     [Required]
     [StringLength(256)]
-    public string Description { get; set; }
+    public string Description { get; set; } = string.Empty;
+
     [Required]
     [ForeignKey(nameof(Slot))]
     public Guid SlotId { get; set; }
     public Slot? Slot { get; set; }
+
     [Required]
     [ForeignKey(nameof(Product))]
     public Guid ProductId { get; set; }
@@ -27,7 +31,7 @@ public class Reservation : BaseModel
     [Required]
     [ForeignKey(nameof(Status))]
     public Guid StatusId { get; set; } = HardCode.RESERVATION_PENDING;
-    public StatusReservation Status { get; set; }
+    public StatusReservation? Status { get; set; }
 
     [Required]
     [ForeignKey(nameof(Order))]
@@ -37,7 +41,9 @@ public class Reservation : BaseModel
     [Required]
     [ForeignKey(nameof(Student))]
     public Guid StudentId { get; set; }
-    public Student Student { get; set; }
+    public Student? Student { get; set; }
+
+    // Parameterless constructor for EF Core
     public Reservation()
     {
     }
