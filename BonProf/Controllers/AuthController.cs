@@ -92,7 +92,7 @@ public class AuthController : ControllerBase
     [Route("update")]
     [HttpPatch]
     public async Task<ActionResult<Response<UserDetails>>> Update(
-        [FromBody] UserUpdateInput model
+        [FromBody] UserUpdate model
     )
     {
         if (!ModelState.IsValid)
@@ -121,7 +121,7 @@ public class AuthController : ControllerBase
     [AllowAnonymous]
     [Route("login")]
     [HttpPost]
-    public async Task<ActionResult<Response<LoginOutput>>> Login(
+    public async Task<ActionResult<Response<Login>>> Login(
         [FromBody] UserLogin model
     )
     {
@@ -244,14 +244,14 @@ public class AuthController : ControllerBase
     [AllowAnonymous]
     [Route("forgot-password")]
     [HttpPost]
-    public async Task<ActionResult<Response<PasswordResetOutput?>>> ForgotPassword(
+    public async Task<ActionResult<Response<PasswordReset?>>> ForgotPassword(
         [FromBody] ForgotPassword model
     )
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(
-                new Response<PasswordResetOutput?>
+                new Response<PasswordReset?>
                 {
                     Message = "Demande refusée",
                     Status = 400,
@@ -311,12 +311,12 @@ public class AuthController : ControllerBase
     [Route("refresh-token")]
     [AllowAnonymous]
     [HttpGet]
-    public async Task<ActionResult<Response<LoginOutput?>>> UpdateRefreshToken()
+    public async Task<ActionResult<Response<Login?>>> UpdateRefreshToken()
     {
         if (!Request.Cookies.TryGetValue("refreshToken", out var refreshToken))
         {
             return Unauthorized(
-                new Response<LoginOutput?>
+                new Response<Login?>
                 {
                     Message = "Refresh token non-existant",
                     Status = 401,

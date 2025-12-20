@@ -2,7 +2,7 @@
 
 namespace SemPaiGo.Models;
 
-public class ProfileTeacher : BaseModel
+public class Teacher : BaseModel
 {
     public string? Title { get; set; }
     public string? Description { get; set; }

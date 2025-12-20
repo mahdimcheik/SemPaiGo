@@ -5,7 +5,7 @@ using SemPaiGo.Models.Interfaces;
 namespace SemPaiGo.Models;
 
 [Table("ProfileStudents")]
-public class ProfileStudent: BaseModel
+public class Student: BaseModel
 {
     [Required]
     [ForeignKey(nameof(User))]

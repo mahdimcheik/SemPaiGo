@@ -161,12 +161,10 @@ public class AuthService
         {
             if (userCreate.RoleId == HardCode.ROLE_TEACHER)
             {
-                ProfileTeacher newTeacher = new ProfileTeacher
+                Teacher newTeacher = new Teacher
                 {
                     Id = newUser.Id,
                     UserId = newUser.Id,
-                    Title = userCreate.Title,
-                    Description = userCreate.Description,
                     LinkedIn = null,
                     FaceBook = null,
                     GitHub = null,
@@ -177,7 +175,7 @@ public class AuthService
             }
             else
             {
-                ProfileStudent newStudent = new ProfileStudent
+                Student newStudent = new Student
                 {
                     Id = newUser.Id,
                     UserId = newUser.Id,
@@ -211,12 +209,7 @@ public class AuthService
         var rolesDetailed = roles
             .Where(r => userRoles.Contains(r.Name ?? string.Empty))
             .Select(r => new RoleDetails(r))
-            .ToList();
-
-        if (user.ImgUrl is not null)
-        {
-            user.ImgUrl = await minioService.GetFileUrlAsync(user.ImgUrl);
-        }
+            .ToList();    
 
         return new Response<UserDetails>
         {
@@ -234,7 +227,7 @@ public class AuthService
     /// <param name="UserPrincipal">Principal de l'utilisateur connecté</param>
     /// <returns>Réponse contenant les informations mises à jour</returns>
     public async Task<Response<UserDetails>> Update(
-        UserUpdateInput model,
+        UserUpdate model,
         ClaimsPrincipal UserPrincipal
     )
     {
@@ -330,7 +323,7 @@ public class AuthService
     /// <param name="refreshToken">Token de rafraîchissement</param>
     /// <param name="httpContext">Contexte HTTP</param>
     /// <returns>Réponse contenant les nouvelles informations de connexion</returns>
-    public async Task<Response<LoginOutput>> UpdateRefreshToken(
+    public async Task<Response<Login>> UpdateRefreshToken(
         string refreshToken,
         HttpContext httpContext
     )
@@ -343,7 +336,7 @@ public class AuthService
 
         if (refreshTokenDB is null || refreshTokenDB.User is null)
         {
-            return new Response<LoginOutput>
+            return new Response<Login>
             {
                 Message = "Token expiré ou non valide",
                 Status = 401,
@@ -362,17 +355,11 @@ public class AuthService
             .Where(r => userRoles.Contains(r.Name ?? string.Empty))
             .Select(r => new RoleDetails(r))
             .ToList();
-        if (refreshTokenDB.User.ImgUrl is not null)
-        {
-            refreshTokenDB.User.ImgUrl = await minioService.GetFileUrlAsync(
-                refreshTokenDB.User.ImgUrl
-            );
-        }
 
-        return new Response<LoginOutput>
+        return new Response<Login>
         {
             Message = "Autorisation renouvelée",
-            Data = new LoginOutput
+            Data = new Login
             {
                 User = new UserDetails(refreshTokenDB.User, rolesDetailed),
                 Token = await GenerateAccessTokenAsync(refreshTokenDB.User),
@@ -387,7 +374,7 @@ public class AuthService
     /// </summary>
     /// <param name="model">Données de récupération</param>
     /// <returns>Réponse contenant les informations de récupération</returns>
-    public async Task<Response<PasswordResetOutput>> ForgotPassword(
+    public async Task<Response<PasswordReset>> ForgotPassword(
         ForgotPassword model
     )
     {
@@ -417,13 +404,13 @@ public class AuthService
                 //    resetLink
                 //);
 
-                return new Response<PasswordResetOutput>
+                return new Response<PasswordReset>
                 {
                     Message =
                         "Un email de réinitialisation vient d'être envoyé à cette adresse "
                         + user.Email,
                     Status = 200,
-                    Data = new PasswordResetOutput
+                    Data = new PasswordReset
                     {
                         ResetToken = resetToken,
                         Email = user.Email,
@@ -433,7 +420,7 @@ public class AuthService
             }
             catch
             {
-                return new Response<PasswordResetOutput>
+                return new Response<PasswordReset>
                 {
                     Message = "Erreur de réinitialisation, réessayez plus tard ",
                     Status = 400,
@@ -441,7 +428,7 @@ public class AuthService
             }
         }
 
-        return new Response<PasswordResetOutput>
+        return new Response<PasswordReset>
         {
             Message = "Erreur de réinitialisation, réessayez plus tard ",
             Status = 400,
@@ -495,7 +482,7 @@ public class AuthService
     /// <param name="model">Données de connexion</param>
     /// <param name="response">Réponse HTTP</param>
     /// <returns>Réponse contenant les informations de connexion</returns>
-    public async Task<Response<LoginOutput>> Login(
+    public async Task<Response<Login>> Login(
         UserLogin model,
         HttpResponse response
     )
@@ -504,7 +491,7 @@ public class AuthService
 
         if (user == null)
         {
-            return new Response<LoginOutput>
+            return new Response<Login>
             {
                 Message = "L'utilisateur n'existe pas ",
                 Status = 404,
@@ -514,7 +501,7 @@ public class AuthService
         var result = await userManager.CheckPasswordAsync(user: user, password: model.Password);
         if (!userManager.CheckPasswordAsync(user: user, password: model.Password).Result)
         {
-            return new Response<LoginOutput>
+            return new Response<Login>
             {
                 Message = "Connexion échouée",
                 Status = 401,
@@ -548,16 +535,12 @@ public class AuthService
                 ),
             }
         );
-        if (user.ImgUrl is not null)
-        {
-            user.ImgUrl = await minioService.GetFileUrlAsync(user.ImgUrl);
-        }
 
-        return new Response<LoginOutput>
+        return new Response<Login>
         {
             Message = "Connexion réussite",
             Status = 200,
-            Data = new LoginOutput
+            Data = new Login
             {
                 Token = await GenerateAccessTokenAsync(user),
                 RefreshToken = refreshToken?.Token,
@@ -741,7 +724,7 @@ public class AuthService
         // supprimer l' ancien fichier s' il existe
         try
         {
-            await minioService.RemoveFileAsync(user.ImgUrl);
+            //await minioService.RemoveFileAsync(user.ImgUrl);
         }
         catch { }
         // resize
@@ -759,17 +742,17 @@ public class AuthService
 
         // minio
         var url = await minioService.UploadFileAsync("avatars", file.FileName, file);
-        user.ImgUrl = url.ObjectName;
+        //user.ImgUrl = url.ObjectName;
 
         await context.SaveChangesAsync();
 
-        var imgUrl = await minioService.GetFileUrlAsync(user.ImgUrl);
+        //var imgUrl = await minioService.GetFileUrlAsync(user.ImgUrl);
 
         return new Response<FileUrl>
         {
             Message = "Avatar téléversé",
             Status = 200,
-            Data = new FileUrl { Url = imgUrl },
+            //Data = new FileUrl { Url = imgUrl },
         };
     }
 }

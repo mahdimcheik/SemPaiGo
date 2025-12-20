@@ -349,7 +349,7 @@ public class LanguagesService(MainContext context)
     /// </summary>
     /// <param name="userLanguageDto">Données d'association utilisateur-langue</param>
     /// <returns>Résultat de l'opération</returns>
-    public async Task<Response<List<LanguageDetails>>> UpdateLanguagesForTeacher(ProfileTeacher teacher, Guid[] languagesIds)
+    public async Task<Response<List<LanguageDetails>>> UpdateLanguagesForTeacher(Teacher teacher, Guid[] languagesIds)
     {
         try
         {

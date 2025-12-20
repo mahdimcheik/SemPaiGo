@@ -31,9 +31,7 @@ public class TeacherProfileService
         {
             var profiles = await _context
                 .ProfileTeachers.Include(p => p.User)
-                .ThenInclude(u => u.Gender)
                 .Include(p => p.User)
-                .ThenInclude(u => u.Addresses)
                 .Include(p => p.Formations)
                 .ToListAsync();
 
@@ -41,7 +39,7 @@ public class TeacherProfileService
             {
                 Status = 200,
                 Message = "Profils enseignants récupérés avec succès",
-                Data = profiles.Select(p => new TeacherDetails(p)).ToList(),
+                //Data = profiles.Select(p => new TeacherDetails(p)).ToList(),
             };
         }
         catch (Exception ex)
@@ -72,9 +70,7 @@ public class TeacherProfileService
             }
             var profile = await _context
                 .ProfileTeachers.Include(p => p.User)
-                .ThenInclude(u => u.Gender)
                 .Include(p => p.User)
-                .ThenInclude(u => u.Addresses.Where(a =>a.ArchivedAt == null))
                 .Include(u => u.Languages)
                 .Include(p => p.Formations.Where(a => a.ArchivedAt == null))
                 .Include(t => t.Cursuses)
@@ -89,20 +85,13 @@ public class TeacherProfileService
                 };
             }
 
-            if(profile.User?.Addresses is not null)
-            {
-                var workAddress = profile.User?.Addresses.FirstOrDefault(a => a.TypeId == HardCode.TYPE_ADDRESS_BILLING);
-                if(workAddress is not null)
-                {
-                    profile.User.Addresses = [workAddress];
-                }
-            }
+            
 
             return new Response<TeacherDetails>
             {
                 Status = 200,
                 Message = "Profil enseignant récupéré avec succès",
-                Data = new TeacherDetails(profile),
+                //Data = new TeacherDetails(profile),
             };
         }
         catch (Exception ex)
@@ -124,9 +113,7 @@ public class TeacherProfileService
         {
             var profile = await _context
                 .ProfileTeachers.Include(p => p.User)
-                .ThenInclude(u => u.Gender)
                 .Include(p => p.User)
-                .ThenInclude(u => u.Addresses)
                 .Include(p => p.Formations)
                 .FirstOrDefaultAsync(p => p.Id == userId);
 
@@ -143,7 +130,7 @@ public class TeacherProfileService
             {
                 Status = 200,
                 Message = "Profil enseignant récupéré avec succès",
-                Data = new TeacherDetails(profile),
+                //Data = new TeacherDetails(profile),
             };
         }
         catch (Exception ex)
@@ -160,7 +147,7 @@ public class TeacherProfileService
     /// Met à jour un profil enseignant existant
     /// </summary>
     public async Task<Response<TeacherDetails>> UpdateTeacherProfileAsync(
-        TeacherProfileUpdate profileDto,
+        TeacherUpdate profileDto,
         ClaimsPrincipal userPrincipal
     )
     {
@@ -169,7 +156,6 @@ public class TeacherProfileService
         {
             var profile = await _context
                 .ProfileTeachers.Include(p => p.User)
-                .ThenInclude(u => u.Gender)
                 .Include(u => u.Languages)
                 .FirstOrDefaultAsync(p => p.Id == profileDto.Id);
 
@@ -204,7 +190,7 @@ public class TeacherProfileService
             {
                 Status = 200,
                 Message = "Profil enseignant récupéré avec succès",
-                Data = new TeacherDetails(profile),
+                //Data = new TeacherDetails(profile),
             };
 
         }

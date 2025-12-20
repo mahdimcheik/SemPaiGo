@@ -18,7 +18,7 @@ namespace SemPaiGo.Models
         [Required]
         [ForeignKey(nameof(Teacher))]
         public Guid TeacherId { get; set; }
-        public ProfileTeacher? Teacher { get; set; }
+        public Teacher? Teacher { get; set; }
         
         [ForeignKey(nameof(Type))]
         public Guid? TypeId { get; set; }

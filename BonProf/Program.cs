@@ -305,13 +305,10 @@ static void SeedUsers(IServiceProvider serviceProvider)
         // Seed a default super admin user
         var superAdminEmail = new UserApp
         {
-            FirstName = "Super",
-            LastName = "Admin",
             UserName = EnvironmentVariables.SUPER_ADMIN_EMAIL,
             Email = EnvironmentVariables.SUPER_ADMIN_EMAIL,
             EmailConfirmed = true,
             DateOfBirth = new DateTime(1986, 04, 21),
-            GenderId = HardCode.GENDER_OTHER,
             StatusId = HardCode.ACCOUNT_ACTIVE
         };
         var superAdminPassword = EnvironmentVariables.SUPER_ADMIN_PASSWORD;

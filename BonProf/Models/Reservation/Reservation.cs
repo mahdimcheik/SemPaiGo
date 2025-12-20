@@ -37,7 +37,7 @@ public class Reservation : BaseModel
     [Required]
     [ForeignKey(nameof(Student))]
     public Guid StudentId { get; set; }
-    public ProfileStudent Student { get; set; }
+    public Student Student { get; set; }
     public Reservation()
     {
     }

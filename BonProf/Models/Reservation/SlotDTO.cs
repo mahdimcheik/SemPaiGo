@@ -54,10 +54,10 @@ public class SlotDetails
         DateTo = slot.DateTo;
         TypeId = slot.TypeId ?? Guid.Empty;
 
-        if (slot.Teacher != null)
-        {
-            Teacher = new TeacherDetails(slot.Teacher);
-        }
+        //if (slot.Teacher != null)
+        //{
+        //    Teacher = new TeacherDetails(slot.Teacher);
+        //}
 
         if (slot.Type != null)
         {

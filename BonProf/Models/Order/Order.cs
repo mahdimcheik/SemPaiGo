@@ -19,7 +19,7 @@ public class Order : BaseModel
     [Required]
     [ForeignKey(nameof(Student))]
     public Guid StudentId { get; set; }
-    public ProfileStudent? Student { get; set; }
+    public Student? Student { get; set; }
     public ICollection<Reservation> Reservations { get; set; }
 
     public Guid? PaymentId { get; set; }

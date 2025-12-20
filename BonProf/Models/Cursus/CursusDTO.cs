@@ -63,7 +63,7 @@ public class CursusDetails
     /// <summary>
     /// Informations de l'enseignant
     /// </summary>
-    public ProfileTeacher? Teacher { get; set; }
+    public Teacher? Teacher { get; set; }
 
     /// <summary>
     /// Liste des catégories associées au cursus

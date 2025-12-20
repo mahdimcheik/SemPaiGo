@@ -4,5 +4,5 @@ namespace SemPaiGo.Models;
 
 public class Language : BaseModelOption
 {
-    public ICollection<ProfileTeacher>? Teachers { get; set; }
+    public ICollection<Teacher>? Teachers { get; set; }
 }

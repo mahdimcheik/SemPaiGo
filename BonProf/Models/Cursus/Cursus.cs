@@ -18,7 +18,7 @@ public class Cursus : BaseModelOption
     [Required]
     [ForeignKey(nameof(Teacher))]
     public Guid TeacherId { get; set; }
-    public ProfileTeacher? Teacher { get; set; }
+    public Teacher? Teacher { get; set; }
     
     public ICollection<CategoryCursus> Categories { get; set; } = new List<CategoryCursus>();
 

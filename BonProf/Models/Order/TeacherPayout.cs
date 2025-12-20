@@ -9,7 +9,7 @@ public class TeacherPayout : BaseModel
     [Required]
     [ForeignKey(nameof(Teacher))]
     public Guid TeacherId { get; set; }
-    public ProfileTeacher? Teacher { get; set; }
+    public Teacher? Teacher { get; set; }
     [Required]
     [Column(TypeName = "timestamp with time zone")]
     public DateTimeOffset PaidAt { get; set; }

@@ -16,8 +16,8 @@ public class MainContext : IdentityDbContext<UserApp, RoleApp, Guid>
     public DbSet<Gender> Genders { get; set; }
 
     // Profile entities
-    public DbSet<ProfileTeacher> ProfileTeachers { get; set; }
-    public DbSet<ProfileStudent> ProfileStudents { get; set; }
+    public DbSet<Teacher> ProfileTeachers { get; set; }
+    public DbSet<Student> ProfileStudents { get; set; }
 
     // Related entities
     public DbSet<Address> Addresses { get; set; }

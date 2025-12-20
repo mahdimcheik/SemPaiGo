@@ -11,8 +11,7 @@ public class ReservationDetailsDTO(Reservation booking)
     public string Description => booking.Description;
     public StatusReservationOutput? Status =>
         booking.Status is not null ? new StatusReservationOutput(booking.Status) : null;
-    public StudentDetails? Student =>
-        booking.Student is not null ? new StudentDetails(booking.Student, null) : null;
+    public StudentDetails? Student => null; // todo repair
     public SlotDetails? Slot => booking.Slot is not null ? new SlotDetails(booking.Slot) : null;
     public ProductDetails Product =>  new ProductDetails(booking.Product);
 }

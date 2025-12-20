@@ -61,31 +61,12 @@ public class TeacherDetails
     public decimal PriceIndicative { get; set; }
 
     public TeacherDetails() { }
-    public TeacherDetails(ProfileTeacher profile)
-    {
-        Id = profile.Id;
-        Title = profile.Title;
-        Description = profile.Description;
-        UserId = profile.UserId;
-        User = new UserDetails(profile.User, null, true);
-        CreatedAt = profile.CreatedAt;
-        UpdatedAt = profile.UpdatedAt;
-        Formations = profile.Formations.Select(f => new FormationDetails(f)).ToList();
-        Languages = profile.Languages?.Select(l => new LanguageDetails(l)).ToList() ?? [];
-        Cursuses = profile.Cursuses?.Select(l => new CursusDetails(l)).ToList() ?? [];
-        LinkedIn = profile.LinkedIn;
-        FaceBook = profile.FaceBook;
-        GitHub = profile.GitHub;
-        Twitter = profile.Twitter;
-        PriceIndicative = profile.PriceIndicative;
-    }
-
 }
 
 /// <summary>
 /// DTO pour la création d'un profil enseignant
 /// </summary>
-public class TeacherProfileCreate
+public class TeacherCreate
 {
     /// <summary>
     /// Titre professionnel de l'enseignant
@@ -116,7 +97,7 @@ public class TeacherProfileCreate
 /// <summary>
 /// DTO pour la mise à jour d'un profil enseignant
 /// </summary>
-public class TeacherProfileUpdate
+public class TeacherUpdate
 {
     /// <summary>
     /// Identifiant du profil à mettre à jour
@@ -131,7 +112,7 @@ public class TeacherProfileUpdate
     [StringLength(200, ErrorMessage = "Le titre ne peut pas dépasser 200 caractères")]
     public string? Title { get; set; }
 
-    public UserUpdateInput? User { get; set; }
+    public UserUpdate? User { get; set; }
 
     /// <summary>
     /// Description du profil de l'enseignant
@@ -148,7 +129,7 @@ public class TeacherProfileUpdate
     public decimal PriceIndicative { get; set; }
 
 
-    public void UpdateProfile(ProfileTeacher profile)
+    public void UpdateProfile(Teacher profile)
     {
         profile.Title = Title;
         profile.Description = Description;

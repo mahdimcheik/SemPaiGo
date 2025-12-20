@@ -21,19 +21,4 @@ public class StudentDetails : BaseModel
 
     [Required]
     public ICollection<RoleDetails> Roles { get; set; }
-
-    [SetsRequiredMembers]
-    public StudentDetails(ProfileStudent student, List<RoleDetails>? roles)
-    {
-        Id = student.Id;
-        FirstName = student.User.FirstName;
-        LastName = student.User.LastName;
-        Email = student.User.Email;
-        Roles = roles;
-        Gender = student.User.Gender is null ? null : new GenderDetails(student.User.Gender);
-        PhoneNumber = student.User.PhoneNumber;
-        DateOfBirth = student.User.DateOfBirth;
-        ImgUrl = student.User.ImgUrl;
-        CreatedAt = student.CreatedAt;
-    }
 }
