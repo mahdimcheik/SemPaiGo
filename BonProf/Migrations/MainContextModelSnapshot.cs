@@ -72,6 +72,9 @@ namespace BonProf.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<DateTime>("DateOfBirth")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasMaxLength(64)
@@ -1495,9 +1498,6 @@ namespace BonProf.Migrations
 
                     b.Property<bool>("DataProcessingConsent")
                         .HasColumnType("boolean");
-
-                    b.Property<DateTime>("DateOfBirth")
-                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256)

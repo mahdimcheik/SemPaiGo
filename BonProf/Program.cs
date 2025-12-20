@@ -308,7 +308,6 @@ static void SeedUsers(IServiceProvider serviceProvider)
             UserName = EnvironmentVariables.SUPER_ADMIN_EMAIL,
             Email = EnvironmentVariables.SUPER_ADMIN_EMAIL,
             EmailConfirmed = true,
-            DateOfBirth = new DateTime(1986, 04, 21),
             StatusId = HardCode.ACCOUNT_ACTIVE
         };
         var superAdminPassword = EnvironmentVariables.SUPER_ADMIN_PASSWORD;

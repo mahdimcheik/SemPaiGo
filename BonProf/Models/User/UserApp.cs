@@ -12,9 +12,6 @@ namespace SemPaiGo.Models;
 public class UserApp : IdentityUser<Guid>, IArchivable, IUpdateable, ICreatable
 {
     [Required]
-    public required DateTimeOffset DateOfBirth { get; set; }
-
-    [Required]
     public required bool DataProcessingConsent { get; set; } = false;
 
     [Required]
@@ -48,7 +45,6 @@ public class UserApp : IdentityUser<Guid>, IArchivable, IUpdateable, ICreatable
     {
         UserName = newUser.Email;
         Email = newUser.Email;
-        DateOfBirth = newUser.DateOfBirth;
         StatusId = HardCode.ACCOUNT_PENDING;
 
         DataProcessingConsent = true;

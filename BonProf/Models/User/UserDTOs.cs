@@ -27,7 +27,6 @@ public class UserDetails
         Id = user.Id;
         Email = user.Email ?? user.UserName ?? "";
         Roles = roles;
-        DateOfBirth = user.DateOfBirth;
         Status = user.Status is not null ?  new StatusAccountDetails(user.Status) : null;
         Profile = new ProfileDetails(user.Profile);
     }
@@ -73,9 +72,7 @@ public class UserCreate
     [Required]
     public required bool PrivacyPolicyConsent { get; set; } = false;
     [Required]
-    public required DateTimeOffset DateOfBirth { get; set; }
-    [Required]
-    public Guid GenderId { get; set; } = HardCode.GENDER_OTHER;
+    public Guid RoleId { get; set; } = HardCode.ROLE_STUDENT;
 
     [Required]
     public ProfileCreate Profile{ get; set; }
@@ -140,12 +137,9 @@ public class Login
 }
 
 public class UserUpdate
-{
-    [Required]
-    public required DateTimeOffset DateOfBirth { get; set; }
+{    
     public void UpdateUser(UserApp user)
     {
-        user.DateOfBirth = DateOfBirth;
         user.UpdatedAt  = DateTimeOffset.UtcNow;
     }
 }

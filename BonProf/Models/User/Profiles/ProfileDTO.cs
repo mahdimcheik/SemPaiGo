@@ -43,7 +43,6 @@ public class ProfileDetails
 
     [Required]
     public required string LastName { get; set; }
-
     [Required]
     public required DateTimeOffset DateOfBirth { get; set; }
 
@@ -56,7 +55,7 @@ public class ProfileDetails
     {
         FirstName = profile.FirstName;
         LastName = profile.LastName;
-        DateOfBirth = profile.CreatedAt;
+        DateOfBirth = profile.DateOfBirth;
         Gender = new GenderDetails(profile.Gender);
     }
 }

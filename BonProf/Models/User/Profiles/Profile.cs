@@ -15,6 +15,8 @@ public class Profile : BaseModel
     [Required]
     [MaxLength(64)]
     public string LastName { get; set; } = string.Empty;
+    [Required]
+    public required DateTimeOffset DateOfBirth { get; set; }
 
     [MaxLength(500)]
     public string? ImgUrl { get; set; }

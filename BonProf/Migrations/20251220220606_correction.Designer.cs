@@ -12,8 +12,8 @@ using SemPaiGo.Contexts;
 namespace BonProf.Migrations
 {
     [DbContext(typeof(MainContext))]
-    [Migration("20251220204840_correction1")]
-    partial class correction1
+    [Migration("20251220220606_correction")]
+    partial class correction
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -73,6 +73,9 @@ namespace BonProf.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("DateOfBirth")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("FirstName")
@@ -1498,9 +1501,6 @@ namespace BonProf.Migrations
 
                     b.Property<bool>("DataProcessingConsent")
                         .HasColumnType("boolean");
-
-                    b.Property<DateTime>("DateOfBirth")
-                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256)
