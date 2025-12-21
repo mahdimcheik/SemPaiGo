@@ -358,7 +358,7 @@ namespace BonProf.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Profile",
+                name: "Profiles",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
@@ -374,15 +374,15 @@ namespace BonProf.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Profile", x => x.Id);
+                    table.PrimaryKey("PK_Profiles", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Profile_Genders_GenderId",
+                        name: "FK_Profiles_Genders_GenderId",
                         column: x => x.GenderId,
                         principalTable: "Genders",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Profile_Users_UserId",
+                        name: "FK_Profiles_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
@@ -451,9 +451,9 @@ namespace BonProf.Migrations
                 {
                     table.PrimaryKey("PK_Addresses", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Addresses_Profile_ProfileId",
+                        name: "FK_Addresses_Profiles_ProfileId",
                         column: x => x.ProfileId,
-                        principalTable: "Profile",
+                        principalTable: "Profiles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -481,9 +481,9 @@ namespace BonProf.Migrations
                 {
                     table.PrimaryKey("PK_Languages", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Languages_Profile_ProfileId",
+                        name: "FK_Languages_Profiles_ProfileId",
                         column: x => x.ProfileId,
-                        principalTable: "Profile",
+                        principalTable: "Profiles",
                         principalColumn: "Id");
                 });
 
@@ -599,9 +599,9 @@ namespace BonProf.Migrations
                 {
                     table.PrimaryKey("PK_Formations", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Formations_Profile_ProfileId",
+                        name: "FK_Formations_Profiles_ProfileId",
                         column: x => x.ProfileId,
-                        principalTable: "Profile",
+                        principalTable: "Profiles",
                         principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Formations_Teachers_TeacherId",
@@ -1067,13 +1067,13 @@ namespace BonProf.Migrations
                 column: "CursusId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Profile_GenderId",
-                table: "Profile",
+                name: "IX_Profiles_GenderId",
+                table: "Profiles",
                 column: "GenderId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Profile_UserId",
-                table: "Profile",
+                name: "IX_Profiles_UserId",
+                table: "Profiles",
                 column: "UserId",
                 unique: true);
 
@@ -1275,7 +1275,7 @@ namespace BonProf.Migrations
                 name: "Languages");
 
             migrationBuilder.DropTable(
-                name: "Profile");
+                name: "Profiles");
 
             migrationBuilder.DropTable(
                 name: "Genders");

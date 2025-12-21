@@ -105,7 +105,7 @@ namespace BonProf.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("Profile");
+                    b.ToTable("Profiles");
                 });
 
             modelBuilder.Entity("CategoryCursusCursus", b =>

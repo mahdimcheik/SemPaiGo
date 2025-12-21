@@ -45,6 +45,8 @@ public class ProfileDetails
     public required string LastName { get; set; }
     [Required]
     public required DateTimeOffset DateOfBirth { get; set; }
+    [MaxLength(500)]
+    public string? ImgUrl { get; set; }
 
     //gender
     [Required]

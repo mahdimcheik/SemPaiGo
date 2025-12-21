@@ -12,7 +12,7 @@ using SemPaiGo.Contexts;
 namespace BonProf.Migrations
 {
     [DbContext(typeof(MainContext))]
-    [Migration("20251220220606_correction")]
+    [Migration("20251220234425_correction")]
     partial class correction
     {
         /// <inheritdoc />
@@ -108,7 +108,7 @@ namespace BonProf.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("Profile");
+                    b.ToTable("Profiles");
                 });
 
             modelBuilder.Entity("CategoryCursusCursus", b =>

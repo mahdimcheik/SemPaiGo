@@ -42,11 +42,11 @@ static void ConfigureServices(IServiceCollection services)
     services.AddTransient<AuthService>();
     services.AddTransient<MailService>();
     services.AddTransient<MinioService>();
-    //services.AddTransient<AddressesService>();
+    services.AddTransient<AddressesService>();
     services.AddTransient<TypeAddressService>();
     services.AddTransient<FormationsService>();
     services.AddTransient<TeacherProfileService>();
-    //services.AddTransient<LanguagesService>();
+    services.AddTransient<LanguagesService>();
     services.AddTransient<CursusService>();
     services.AddTransient<LevelCursusService>();
     services.AddTransient<CategoryCursusService>();
