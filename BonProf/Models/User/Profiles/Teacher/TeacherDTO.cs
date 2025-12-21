@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SemPaiGo.Models;
 
@@ -26,23 +27,6 @@ public class TeacherDetails
     public string? Description { get; set; }
 
     /// <summary>
-    /// Identifiant de l'utilisateur associé
-    /// </summary>
-    [Required]
-    public Guid UserId { get; set; }
-
-    /// <summary>
-    /// Informations détaillées de l'utilisateur
-    /// </summary>
-    [Required]
-    public UserDetails User { get; set; }
-
-    /// <summary>
-    /// Liste des formations de l'enseignant
-    /// </summary>
-    public List<FormationDetails> Formations { get; set; } = new();
-
-    /// <summary>
     /// Date de création du profil
     /// </summary>
     [Required]
@@ -52,7 +36,6 @@ public class TeacherDetails
     /// Date de dernière mise à jour du profil
     /// </summary>
     public DateTimeOffset? UpdatedAt { get; set; }
-    public List<LanguageDetails> Languages { get; set; }
     public List<CursusDetails> Cursuses { get; set; }
     public string? LinkedIn { get; set; }
     public string? FaceBook { get; set; }
@@ -61,6 +44,22 @@ public class TeacherDetails
     public decimal PriceIndicative { get; set; }
 
     public TeacherDetails() { }
+    [SetsRequiredMembers]
+    public TeacherDetails(Teacher teacher)
+    {
+        Title = teacher.Title;
+        Description = teacher.Description;
+        Id = teacher.Id;
+        CreatedAt = teacher.CreatedAt;
+        UpdatedAt = teacher.UpdatedAt;
+
+        LinkedIn = teacher.LinkedIn;
+        FaceBook = teacher.FaceBook;
+        GitHub = teacher.GitHub;
+        Twitter = teacher.Twitter;
+        PriceIndicative = teacher.PriceIndicative;
+        Cursuses = teacher.Cursuses.Select(c => new CursusDetails(c)).ToList();
+    }
 }
 
 /// <summary>

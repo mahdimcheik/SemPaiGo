@@ -21,6 +21,9 @@ public class UserDetails
     public ICollection<RoleDetails>? Roles { get; set; }
     [Required]
     public ProfileDetails Profile { get; set; }
+
+    public TeacherDetails? Teacher { get; set; }
+    public StudentDetails? Student { get; set; }
     [SetsRequiredMembers]
     public UserDetails(UserApp user, List<RoleDetails>? roles)
     {
@@ -29,6 +32,8 @@ public class UserDetails
         Roles = roles;
         Status = user.Status is not null ?  new StatusAccountDetails(user.Status) : null;
         Profile = new ProfileDetails(user.Profile);
+        Teacher = user.Teacher is not null ? new TeacherDetails(user.Teacher) : null;
+        Student = user.Student is not null ? new StudentDetails(user.Student) : null;
     }
 }
 

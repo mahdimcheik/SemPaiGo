@@ -14,11 +14,11 @@ namespace SemPaiGo.Controllers;
 [Route("[controller]")]
 [ApiController]
 [EnableCors]
-public class TeacherProfileController : ControllerBase
+public class TeachersController : ControllerBase
 {
-    private readonly TeacherProfileService _teacherProfileService;
+    private readonly TeacherService _teacherProfileService;
 
-    public TeacherProfileController(TeacherProfileService teacherProfileService)
+    public TeachersController(TeacherService teacherProfileService)
     {
         _teacherProfileService = teacherProfileService;
     }
@@ -54,10 +54,10 @@ public class TeacherProfileController : ControllerBase
     /// <response code="500">Erreur interne du serveur</response>
     [HttpGet("my-profile")]
     [Authorize]
-    [ProducesResponseType(typeof(Response<TeacherDetails>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Response<UserDetails>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(Response<object>), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(Response<object>), StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<Response<TeacherDetails>>> GetTeacherProfileById()
+    public async Task<ActionResult<Response<UserDetails>>> GetTeacherProfileById()
     {
         var response = await _teacherProfileService.GetTeacherFullProfileAsync( User);
         return StatusCode(response.Status, response);

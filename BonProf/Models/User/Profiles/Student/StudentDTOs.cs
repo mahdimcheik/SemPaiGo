@@ -6,19 +6,14 @@ namespace SemPaiGo.Models;
 
 public class StudentDetails : BaseModel
 {
+    /// <summary>
+    /// Identifiant unique du profil enseignant
+    /// </summary>
     [Required]
-    public required string FirstName { get; set; }
-    [Required]
-    public required string LastName { get; set; }
-    [Required]
-    public required string Email { get; set; } = null!;
-    public DateTimeOffset DateOfBirth { get; set; }
-    public string? PhoneNumber { get; set; }
-    public string? ImgUrl { get; set; }
+    public Guid Id { get; set; }
 
-    public GenderDetails? Gender { get; set; }
-    public DateTimeOffset CreatedAt { get; set; }
-
-    [Required]
-    public ICollection<RoleDetails> Roles { get; set; }
+    public StudentDetails(Student student)
+    {
+        Id = student.Id;
+    }
 }

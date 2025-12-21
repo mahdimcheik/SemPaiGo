@@ -45,7 +45,7 @@ static void ConfigureServices(IServiceCollection services)
     services.AddTransient<AddressesService>();
     services.AddTransient<TypeAddressService>();
     services.AddTransient<FormationsService>();
-    services.AddTransient<TeacherProfileService>();
+    services.AddTransient<TeacherService>();
     services.AddTransient<LanguagesService>();
     services.AddTransient<CursusService>();
     services.AddTransient<LevelCursusService>();
