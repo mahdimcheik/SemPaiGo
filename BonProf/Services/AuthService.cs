@@ -1,4 +1,8 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using System.Web;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using SemPaiGo.Contexts;
@@ -6,10 +10,6 @@ using SemPaiGo.Models;
 using SemPaiGo.Utilities;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-using System.Web;
 
 namespace SemPaiGo.Services;
 
@@ -90,14 +90,14 @@ public class AuthService
                 roles: newUserDTO.RoleId == HardCode.ROLE_TEACHER ? ["Teacher"] : ["Student"]
             );
 
-            newUser = await context.Users.Where(u => u.Id == newUser.Id)
+            newUser = await context
+                .Users.Where(u => u.Id == newUser.Id)
                 .Include(u => u.Status)
                 .Include(u => u.Profile)
                 .ThenInclude(x => x.Gender)
-                .FirstOrDefaultAsync()
-                ;
+                .FirstOrDefaultAsync();
 
-            if(newUser is null)
+            if (newUser is null)
             {
                 await transaction.RollbackAsync();
                 return new Response<UserDetails>
@@ -168,9 +168,6 @@ public class AuthService
                 Data = null,
             };
         }
-       
-
-        
     }
 
     private async Task CreateProfile(UserApp newUser, UserCreate userCreate)
@@ -193,11 +190,7 @@ public class AuthService
             }
             else
             {
-                Student newStudent = new Student
-                {
-                    Id = newUser.Id,
-                    UserId = newUser.Id,
-                };
+                Student newStudent = new Student { Id = newUser.Id, UserId = newUser.Id };
                 await context.Students.AddAsync(newStudent);
                 await context.SaveChangesAsync();
             }
@@ -206,7 +199,6 @@ public class AuthService
         {
             throw;
         }
-       
     }
 
     public async Task<Response<UserDetails>> GetPublicInformations(Guid userId)
@@ -227,7 +219,7 @@ public class AuthService
         var rolesDetailed = roles
             .Where(r => userRoles.Contains(r.Name ?? string.Empty))
             .Select(r => new RoleDetails(r))
-            .ToList();    
+            .ToList();
 
         return new Response<UserDetails>
         {
@@ -237,17 +229,13 @@ public class AuthService
         };
     }
 
-
     /// <summary>
     /// Met à jour les informations d'un utilisateur
     /// </summary>
     /// <param name="model">Données de mise à jour</param>
     /// <param name="UserPrincipal">Principal de l'utilisateur connecté</param>
     /// <returns>Réponse contenant les informations mises à jour</returns>
-    public async Task<Response<UserDetails>> Update(
-        UserUpdate model,
-        ClaimsPrincipal UserPrincipal
-    )
+    public async Task<Response<UserDetails>> Update(UserUpdate model, ClaimsPrincipal UserPrincipal)
     {
         var user = CheckUser.GetUserFromClaim(UserPrincipal, context);
         if (user is null)
@@ -277,7 +265,7 @@ public class AuthService
             }
 
             // Update basic data
-            model.UpdateUser(userWithLanguages);           
+            model.UpdateUser(userWithLanguages);
 
             await context.SaveChangesAsync();
             await transaction.CommitAsync();
@@ -309,10 +297,7 @@ public class AuthService
     /// <param name="userId">ID de l'utilisateur</param>
     /// <param name="confirmationToken">Token de confirmation</param>
     /// <returns>Réponse indiquant le succès ou l'échec de la confirmation</returns>
-    public async Task<Response<string?>> EmailConfirmation(
-        string userId,
-        string confirmationToken
-    )
+    public async Task<Response<string?>> EmailConfirmation(string userId, string confirmationToken)
     {
         UserApp user = await userManager.FindByIdAsync(userId);
         if (user is null)
@@ -326,8 +311,7 @@ public class AuthService
         {
             return new Response<string?>
             {
-                Message =
-                    $"{EnvironmentVariables.API_FRONT_URL}/auth/email-confirmation-success",
+                Message = $"{EnvironmentVariables.API_FRONT_URL}/auth/email-confirmation-success",
                 Status = 200,
             };
         }
@@ -347,24 +331,25 @@ public class AuthService
     )
     {
         var refreshTokenDB = await context
-            .RefreshTokens.Include(x => x.User)
-            .FirstOrDefaultAsync(x =>
+            .RefreshTokens.Where(x =>
                 x.Token == refreshToken && x.ExpirationDate > DateTimeOffset.UtcNow
-            );
+            )
+            .FirstOrDefaultAsync();
 
-        if (refreshTokenDB is null || refreshTokenDB.User is null)
+        if (refreshTokenDB is null)
         {
-            return new Response<Login>
-            {
-                Message = "Token expiré ou non valide",
-                Status = 401,
-            };
+            return new Response<Login> { Message = "Token expiré ou non valide", Status = 401 };
         }
 
-        httpContext.Response.Headers.Append(
-            key: "Access-Control-Allow-Credentials",
-            value: "true"
-        );
+        var user = await context
+            .Users.Where(u => u.Id == refreshTokenDB.UserId)
+            .Include(x => x.Profile)
+            .ThenInclude(p => p.Gender)
+            .Include(u => u.Teacher)
+            .Include(u => u.Student)
+            .FirstOrDefaultAsync();
+
+        httpContext.Response.Headers.Append(key: "Access-Control-Allow-Credentials", value: "true");
 
         var userRoles = await userManager.GetRolesAsync(refreshTokenDB.User);
         var roles = context.Roles.ToList();
@@ -379,7 +364,7 @@ public class AuthService
             Message = "Autorisation renouvelée",
             Data = new Login
             {
-                User = new UserDetails(refreshTokenDB.User, rolesDetailed),
+                User = new UserDetails(user!, rolesDetailed),
                 Token = await GenerateAccessTokenAsync(refreshTokenDB.User),
                 RefreshToken = refreshToken,
             },
@@ -392,9 +377,7 @@ public class AuthService
     /// </summary>
     /// <param name="model">Données de récupération</param>
     /// <returns>Réponse contenant les informations de récupération</returns>
-    public async Task<Response<PasswordReset>> ForgotPassword(
-        ForgotPassword model
-    )
+    public async Task<Response<PasswordReset>> ForgotPassword(ForgotPassword model)
     {
         var user = await userManager.FindByEmailAsync(model.Email);
         if (user != null)
@@ -463,11 +446,7 @@ public class AuthService
         UserApp? user = await userManager.FindByIdAsync(model.UserId);
         if (user is null)
         {
-            return new Response<string?>
-            {
-                Message = "L'utilisateur n'existe pas",
-                Status = 404,
-            };
+            return new Response<string?> { Message = "L'utilisateur n'existe pas", Status = 404 };
         }
 
         IdentityResult result = await userManager.ResetPasswordAsync(
@@ -500,13 +479,11 @@ public class AuthService
     /// <param name="model">Données de connexion</param>
     /// <param name="response">Réponse HTTP</param>
     /// <returns>Réponse contenant les informations de connexion</returns>
-    public async Task<Response<Login>> Login(
-        UserLogin model,
-        HttpResponse response
-    )
+    public async Task<Response<Login>> Login(UserLogin model, HttpResponse response)
     {
         //var user = await userManager.FindByEmailAsync(model.Email);
-        var user = await context.Users.Where(u => u.UserName.ToLower() == model.Email)
+        var user = await context
+            .Users.Where(u => u.UserName.ToLower() == model.Email)
             .Include(x => x.Profile)
             .ThenInclude(p => p.Gender)
             .Include(u => u.Teacher)
@@ -515,21 +492,13 @@ public class AuthService
 
         if (user == null)
         {
-            return new Response<Login>
-            {
-                Message = "L'utilisateur n'existe pas ",
-                Status = 404,
-            };
+            return new Response<Login> { Message = "L'utilisateur n'existe pas ", Status = 404 };
         }
 
         var result = await userManager.CheckPasswordAsync(user: user, password: model.Password);
         if (!userManager.CheckPasswordAsync(user: user, password: model.Password).Result)
         {
-            return new Response<Login>
-            {
-                Message = "Connexion échouée",
-                Status = 401,
-            };
+            return new Response<Login> { Message = "Connexion échouée", Status = 401 };
         }
 
         // à la connection, je crée ou je met à jour le refreshtoken
@@ -554,9 +523,7 @@ public class AuthService
                 HttpOnly = true,
                 Secure = true,
                 SameSite = SameSiteMode.Strict,
-                Expires = DateTimeOffset.UtcNow.AddDays(
-                    EnvironmentVariables.COOKIES_VALIDITY_DAYS
-                ),
+                Expires = DateTimeOffset.UtcNow.AddDays(EnvironmentVariables.COOKIES_VALIDITY_DAYS),
             }
         );
 
@@ -657,10 +624,10 @@ public class AuthService
         var userRoles = await userManager.GetRolesAsync(user);
 
         var authClaims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Name, user.UserName!),
-                new Claim(type: ClaimTypes.Email, value: user.Email),
-            };
+        {
+            new Claim(ClaimTypes.Name, user.UserName!),
+            new Claim(type: ClaimTypes.Email, value: user.Email),
+        };
 
         foreach (var userRole in userRoles)
         {
@@ -709,11 +676,7 @@ public class AuthService
     {
         if (file == null)
         {
-            return new Response<FileUrl>
-            {
-                Message = "Aucun fichier téléversé",
-                Status = 400,
-            };
+            return new Response<FileUrl> { Message = "Aucun fichier téléversé", Status = 400 };
         }
         var user = CheckUser.GetUserFromClaim(UserPrincipal, context);
         if (user is null)
@@ -724,12 +687,12 @@ public class AuthService
         //verifier si le type est image
         var allowedMimeTypes = new[]
         {
-                "image/jpeg",
-                "image/png",
-                "image/gif",
-                "image/bmp",
-                "image/webp",
-            };
+            "image/jpeg",
+            "image/png",
+            "image/gif",
+            "image/bmp",
+            "image/webp",
+        };
         var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp" };
 
         var fileExtension = Path.GetExtension(file.FileName).ToLowerInvariant();
