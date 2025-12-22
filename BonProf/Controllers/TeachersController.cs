@@ -86,5 +86,40 @@ public class TeachersController : ControllerBase
         }
 
         return StatusCode(response.Status, response);
-    }   
+    }
+
+    /// <summary>
+    /// Met à jour le profil de l'enseignant connecté
+    /// </summary>
+    /// <param name="teacherUpdateDto">Données de mise à jour du profil</param>
+    /// <returns>Profil enseignant mis à jour</returns>
+    /// <response code="200">Profil mis à jour avec succès</response>
+    /// <response code="400">Données invalides</response>
+    /// <response code="401">Utilisateur non authentifié</response>
+    /// <response code="404">Profil enseignant non trouvé</response>
+    /// <response code="500">Erreur interne du serveur</response>
+    [HttpPut("update-profile")]
+    [Authorize(Roles = "Teacher")]
+    [ProducesResponseType(typeof(Response<UserDetails>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Response<object>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(Response<object>), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(Response<object>), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(Response<object>), StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<Response<UserDetails>>> UpdateTeacherProfile(
+        [FromBody] TeacherUpdate teacherUpdateDto)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(new Response<object>
+            {
+                Status = 400,
+                Message = "Données de validation invalides",
+                Data = ModelState
+            });
+        }
+
+        var response = await _teacherProfileService.UpdateTeacherProfileAsync(teacherUpdateDto, User);
+
+        return StatusCode(response.Status, response);
+    }
 }

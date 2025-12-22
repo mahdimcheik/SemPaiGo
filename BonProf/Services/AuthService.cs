@@ -97,6 +97,8 @@ public class AuthService
                 .ThenInclude(x => x.Gender)
                 .FirstOrDefaultAsync();
 
+            newUser.Profile.DateOfBirth = newUserDTO.Profile.DateOfBirth;
+
             if (newUser is null)
             {
                 await transaction.RollbackAsync();
