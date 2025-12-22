@@ -505,7 +505,13 @@ public class AuthService
         HttpResponse response
     )
     {
-        var user = await userManager.FindByEmailAsync(model.Email);
+        //var user = await userManager.FindByEmailAsync(model.Email);
+        var user = await context.Users.Where(u => u.UserName.ToLower() == model.Email)
+            .Include(x => x.Profile)
+            .ThenInclude(p => p.Gender)
+            .Include(u => u.Teacher)
+            .Include(u => u.Student)
+            .FirstOrDefaultAsync();
 
         if (user == null)
         {
