@@ -57,4 +57,7 @@ public static class EnvironmentVariables
     public static string MINIO_ENDPOINT => GetEnvVar("MINIO_ENDPOINT", "sempaigo");
     public static string MINIO_ACCESSKEY => GetEnvVar("MINIO_ACCESSKEY", "minioadmin");
     public static string MINIO_SECRETKEY => GetEnvVar("MINIO_SECRETKEY", "minioadmin");
+
+    // seaWeedFS
+    public static string FilerUrl => GetEnvVar("FILER_URL", "http://localhost:8888");
 }

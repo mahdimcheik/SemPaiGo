@@ -100,6 +100,7 @@
 
   <ItemGroup>
     <Folder Include="Models\Payment\" />
+    <Folder Include="SeaWeedFS\" />
   </ItemGroup>
 
 </Project>

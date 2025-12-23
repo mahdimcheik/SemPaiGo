@@ -1,3 +1,5 @@
+using BonProf.Services;
+using BonProf.Services.Interfaces;
 using Hangfire;
 using Hangfire.PostgreSql;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -55,6 +57,7 @@ static void ConfigureServices(IServiceCollection services)
     services.AddTransient<SlotsService>();
     services.AddTransient<GendersService>();
     services.AddTransient<RolesService>();
+    services.AddHttpClient<IFileService, SeaweedService>();
 
     services.AddLogging(loggingBuilder =>
     {

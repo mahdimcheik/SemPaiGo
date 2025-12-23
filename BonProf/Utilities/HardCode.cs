@@ -58,7 +58,5 @@ public static class HardCode
     // langues
     public static Guid LANGUAGE_FRENCH => Guid.Parse("52b54b82-1f37-4a66-a263-708b53cd685d");
     public static Guid LANGUAGE_ENGLISH => Guid.Parse("3aa916ed-53d2-4f93-80e9-b49171a7ebe1");
-    public static Guid LANGUAGE_ARAB => Guid.Parse("ff34f5ba-6201-45bf-9217-dcda019976a3");
-
-
+    public static Guid LANGUAGE_ARAB => Guid.Parse("ff34f5ba-6201-45bf-9217-dcda019976a3");  
 }
