@@ -1,9 +1,9 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using SemPaiGo.Models.Interfaces;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SemPaiGo.Models;
-
 public class RoleApp : IdentityRole<Guid>, IArchivable, ICreatable, IUpdateable
 {
     public DateTimeOffset? ArchivedAt { get; set; }

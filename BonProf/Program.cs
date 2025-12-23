@@ -45,12 +45,16 @@ static void ConfigureServices(IServiceCollection services)
     services.AddTransient<AddressesService>();
     services.AddTransient<TypeAddressService>();
     services.AddTransient<FormationsService>();
-    services.AddTransient<TeacherProfileService>();
+    services.AddTransient<TeacherService>();
     services.AddTransient<LanguagesService>();
     services.AddTransient<CursusService>();
     services.AddTransient<LevelCursusService>();
     services.AddTransient<CategoryCursusService>();
     services.AddTransient<ProductService>();
+    services.AddTransient<TypeSlotsService>();
+    services.AddTransient<SlotsService>();
+    services.AddTransient<GendersService>();
+    services.AddTransient<RolesService>();
 
     services.AddLogging(loggingBuilder =>
     {
@@ -203,9 +207,9 @@ static void ConfigureSwagger(IServiceCollection services)
             "v1",
             new OpenApiInfo
             {
-                Title = "SimplonHubApi API",
+                Title = "BonProfApi API",
                 Version = "v1",
-                Description = "API for SimplonHubApi application",
+                Description = "API for BonProfApi application",
             }
         );
 
@@ -273,9 +277,9 @@ static void ConfigureMiddlewarePipeline(WebApplication app)
     app.UseSwagger();
     app.UseSwaggerUI(c =>
     {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "SimplonHubApi API v1");
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "BonProfApi API v1");
         c.RoutePrefix = string.Empty;
-        c.DocumentTitle = "SimplonHubApi API Documentation";
+        c.DocumentTitle = "BonProfApi API Documentation";
     });
 
     app.UseHangfireDashboard("/hangfire");
@@ -303,13 +307,9 @@ static void SeedUsers(IServiceProvider serviceProvider)
         // Seed a default super admin user
         var superAdminEmail = new UserApp
         {
-            FirstName = "Super",
-            LastName = "Admin",
             UserName = EnvironmentVariables.SUPER_ADMIN_EMAIL,
             Email = EnvironmentVariables.SUPER_ADMIN_EMAIL,
             EmailConfirmed = true,
-            DateOfBirth = new DateTime(1986, 04, 21),
-            GenderId = HardCode.GENDER_OTHER,
             StatusId = HardCode.ACCOUNT_ACTIVE
         };
         var superAdminPassword = EnvironmentVariables.SUPER_ADMIN_PASSWORD;

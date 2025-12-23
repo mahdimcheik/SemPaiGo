@@ -65,7 +65,7 @@ public class AddressDetails
     /// <summary>
     /// user , prof ou eleve
     /// </summary>
-    public Guid UserId { get; set; }
+    public Guid ProfileId { get; set; }
     [Required(ErrorMessage = "Le type est requis")]
     public Guid TypeId { get; set; }
 
@@ -96,23 +96,7 @@ public class AddressDetails
         AdditionalInfo = address.AdditionalInfo;
         Longitude = address.Longitude;
         Latitude = address.Latitude;
-        UserId = address.UserId;
-        TypeId = address.TypeId;
-        CreatedAt = address.CreatedAt;
-        UpdatedAt = address.UpdatedAt;
-    }
-
-    public AddressDetails(Address address, bool minimal)
-    {
-        Id = address.Id;
-        Street = minimal ? "" :address.Street;
-        City = address.City;
-        Country = address.Country;
-        ZipCode = address.ZipCode;
-        AdditionalInfo = minimal ? "" : address.AdditionalInfo;
-        Longitude = address.Longitude;
-        Latitude = address.Latitude;
-        UserId = address.UserId;
+        ProfileId = address.ProfileId;
         TypeId = address.TypeId;
         CreatedAt = address.CreatedAt;
         UpdatedAt = address.UpdatedAt;
@@ -179,9 +163,9 @@ public class AddressCreate
     public float? Latitude { get; set; }
 
     [Required(ErrorMessage = "L'identifiant utilisateur est requis")]
-    public Guid UserId { get; set; }
+    public Guid ProfileId { get; set; }
     [Required(ErrorMessage = "Le type est requis")]
-    public Guid TypeId { get; set; }  
+    public Guid TypeId { get; set; }
 }
 
 /// <summary>
@@ -249,7 +233,7 @@ public class AddressUpdate
     /// </summary>
     /// <example>550e8400-e29b-41d4-a716-446655440001</example>
     [Required(ErrorMessage = "L'identifiant utilisateur est requis")]
-    public Guid UserId { get; set; }
+    public Guid ProfileId { get; set; }
     [Required(ErrorMessage = "Le type est requis")]
     public Guid TypeId { get; set; }
 }

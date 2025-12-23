@@ -1,4 +1,8 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using System.Web;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using SemPaiGo.Contexts;
@@ -6,10 +10,6 @@ using SemPaiGo.Models;
 using SemPaiGo.Utilities;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-using System.Web;
 
 namespace SemPaiGo.Services;
 
@@ -75,7 +75,7 @@ public class AuthService
                 };
             }
             // Créer un nouvel utilisateur en utilisant les données du modèle et la base de données contextuelle
-            UserApp newUser = new UserApp(newUserDTO);
+            UserApp? newUser = new UserApp(newUserDTO);
             newUser.CreatedAt = DateTime.Now;
 
             // Obtenir la date actuelle
@@ -89,6 +89,26 @@ public class AuthService
                 user: newUser,
                 roles: newUserDTO.RoleId == HardCode.ROLE_TEACHER ? ["Teacher"] : ["Student"]
             );
+
+            newUser = await context
+                .Users.Where(u => u.Id == newUser.Id)
+                .Include(u => u.Status)
+                .Include(u => u.Profile)
+                .ThenInclude(x => x.Gender)
+                .FirstOrDefaultAsync();
+
+            newUser.Profile.DateOfBirth = newUserDTO.Profile.DateOfBirth;
+
+            if (newUser is null)
+            {
+                await transaction.RollbackAsync();
+                return new Response<UserDetails>
+                {
+                    Message = "Création échouée",
+                    Status = 404,
+                    Data = null,
+                };
+            }
 
             // Vérifier si la création de l'utilisateur a échoué
             if (!result.Succeeded)
@@ -113,7 +133,7 @@ public class AuthService
             await context.SaveChangesAsync();
 
             // creer les profiles
-            await CreateProfile(newUser, newUserDTO);
+            //await CreateProfile(newUser, newUserDTO);
             await transaction.CommitAsync();
 
             try
@@ -150,9 +170,6 @@ public class AuthService
                 Data = null,
             };
         }
-       
-
-        
     }
 
     private async Task CreateProfile(UserApp newUser, UserCreate userCreate)
@@ -161,28 +178,22 @@ public class AuthService
         {
             if (userCreate.RoleId == HardCode.ROLE_TEACHER)
             {
-                ProfileTeacher newTeacher = new ProfileTeacher
+                Teacher newTeacher = new Teacher
                 {
                     Id = newUser.Id,
                     UserId = newUser.Id,
-                    Title = userCreate.Title,
-                    Description = userCreate.Description,
                     LinkedIn = null,
                     FaceBook = null,
                     GitHub = null,
                     Twitter = null,
                 };
-                await context.ProfileTeachers.AddAsync(newTeacher);
+                await context.Teachers.AddAsync(newTeacher);
                 await context.SaveChangesAsync();
             }
             else
             {
-                ProfileStudent newStudent = new ProfileStudent
-                {
-                    Id = newUser.Id,
-                    UserId = newUser.Id,
-                };
-                await context.ProfileStudents.AddAsync(newStudent);
+                Student newStudent = new Student { Id = newUser.Id, UserId = newUser.Id };
+                await context.Students.AddAsync(newStudent);
                 await context.SaveChangesAsync();
             }
         }
@@ -190,7 +201,6 @@ public class AuthService
         {
             throw;
         }
-       
     }
 
     public async Task<Response<UserDetails>> GetPublicInformations(Guid userId)
@@ -213,11 +223,6 @@ public class AuthService
             .Select(r => new RoleDetails(r))
             .ToList();
 
-        if (user.ImgUrl is not null)
-        {
-            user.ImgUrl = await minioService.GetFileUrlAsync(user.ImgUrl);
-        }
-
         return new Response<UserDetails>
         {
             Message = "Demande acceptée",
@@ -226,17 +231,13 @@ public class AuthService
         };
     }
 
-
     /// <summary>
     /// Met à jour les informations d'un utilisateur
     /// </summary>
     /// <param name="model">Données de mise à jour</param>
     /// <param name="UserPrincipal">Principal de l'utilisateur connecté</param>
     /// <returns>Réponse contenant les informations mises à jour</returns>
-    public async Task<Response<UserDetails>> Update(
-        UserUpdateInput model,
-        ClaimsPrincipal UserPrincipal
-    )
+    public async Task<Response<UserDetails>> Update(UserUpdate model, ClaimsPrincipal UserPrincipal)
     {
         var user = CheckUser.GetUserFromClaim(UserPrincipal, context);
         if (user is null)
@@ -266,7 +267,7 @@ public class AuthService
             }
 
             // Update basic data
-            model.UpdateUser(userWithLanguages);           
+            model.UpdateUser(userWithLanguages);
 
             await context.SaveChangesAsync();
             await transaction.CommitAsync();
@@ -298,10 +299,7 @@ public class AuthService
     /// <param name="userId">ID de l'utilisateur</param>
     /// <param name="confirmationToken">Token de confirmation</param>
     /// <returns>Réponse indiquant le succès ou l'échec de la confirmation</returns>
-    public async Task<Response<string?>> EmailConfirmation(
-        string userId,
-        string confirmationToken
-    )
+    public async Task<Response<string?>> EmailConfirmation(string userId, string confirmationToken)
     {
         UserApp user = await userManager.FindByIdAsync(userId);
         if (user is null)
@@ -315,8 +313,7 @@ public class AuthService
         {
             return new Response<string?>
             {
-                Message =
-                    $"{EnvironmentVariables.API_FRONT_URL}/auth/email-confirmation-success",
+                Message = $"{EnvironmentVariables.API_FRONT_URL}/auth/email-confirmation-success",
                 Status = 200,
             };
         }
@@ -330,30 +327,31 @@ public class AuthService
     /// <param name="refreshToken">Token de rafraîchissement</param>
     /// <param name="httpContext">Contexte HTTP</param>
     /// <returns>Réponse contenant les nouvelles informations de connexion</returns>
-    public async Task<Response<LoginOutput>> UpdateRefreshToken(
+    public async Task<Response<Login>> UpdateRefreshToken(
         string refreshToken,
         HttpContext httpContext
     )
     {
         var refreshTokenDB = await context
-            .RefreshTokens.Include(x => x.User)
-            .FirstOrDefaultAsync(x =>
+            .RefreshTokens.Where(x =>
                 x.Token == refreshToken && x.ExpirationDate > DateTimeOffset.UtcNow
-            );
+            )
+            .FirstOrDefaultAsync();
 
-        if (refreshTokenDB is null || refreshTokenDB.User is null)
+        if (refreshTokenDB is null)
         {
-            return new Response<LoginOutput>
-            {
-                Message = "Token expiré ou non valide",
-                Status = 401,
-            };
+            return new Response<Login> { Message = "Token expiré ou non valide", Status = 401 };
         }
 
-        httpContext.Response.Headers.Append(
-            key: "Access-Control-Allow-Credentials",
-            value: "true"
-        );
+        var user = await context
+            .Users.Where(u => u.Id == refreshTokenDB.UserId)
+            .Include(x => x.Profile)
+            .ThenInclude(p => p.Gender)
+            .Include(u => u.Teacher)
+            .Include(u => u.Student)
+            .FirstOrDefaultAsync();
+
+        httpContext.Response.Headers.Append(key: "Access-Control-Allow-Credentials", value: "true");
 
         var userRoles = await userManager.GetRolesAsync(refreshTokenDB.User);
         var roles = context.Roles.ToList();
@@ -362,19 +360,13 @@ public class AuthService
             .Where(r => userRoles.Contains(r.Name ?? string.Empty))
             .Select(r => new RoleDetails(r))
             .ToList();
-        if (refreshTokenDB.User.ImgUrl is not null)
-        {
-            refreshTokenDB.User.ImgUrl = await minioService.GetFileUrlAsync(
-                refreshTokenDB.User.ImgUrl
-            );
-        }
 
-        return new Response<LoginOutput>
+        return new Response<Login>
         {
             Message = "Autorisation renouvelée",
-            Data = new LoginOutput
+            Data = new Login
             {
-                User = new UserDetails(refreshTokenDB.User, rolesDetailed),
+                User = new UserDetails(user!, rolesDetailed),
                 Token = await GenerateAccessTokenAsync(refreshTokenDB.User),
                 RefreshToken = refreshToken,
             },
@@ -387,9 +379,7 @@ public class AuthService
     /// </summary>
     /// <param name="model">Données de récupération</param>
     /// <returns>Réponse contenant les informations de récupération</returns>
-    public async Task<Response<PasswordResetOutput>> ForgotPassword(
-        ForgotPassword model
-    )
+    public async Task<Response<PasswordReset>> ForgotPassword(ForgotPassword model)
     {
         var user = await userManager.FindByEmailAsync(model.Email);
         if (user != null)
@@ -417,13 +407,13 @@ public class AuthService
                 //    resetLink
                 //);
 
-                return new Response<PasswordResetOutput>
+                return new Response<PasswordReset>
                 {
                     Message =
                         "Un email de réinitialisation vient d'être envoyé à cette adresse "
                         + user.Email,
                     Status = 200,
-                    Data = new PasswordResetOutput
+                    Data = new PasswordReset
                     {
                         ResetToken = resetToken,
                         Email = user.Email,
@@ -433,7 +423,7 @@ public class AuthService
             }
             catch
             {
-                return new Response<PasswordResetOutput>
+                return new Response<PasswordReset>
                 {
                     Message = "Erreur de réinitialisation, réessayez plus tard ",
                     Status = 400,
@@ -441,7 +431,7 @@ public class AuthService
             }
         }
 
-        return new Response<PasswordResetOutput>
+        return new Response<PasswordReset>
         {
             Message = "Erreur de réinitialisation, réessayez plus tard ",
             Status = 400,
@@ -458,11 +448,7 @@ public class AuthService
         UserApp? user = await userManager.FindByIdAsync(model.UserId);
         if (user is null)
         {
-            return new Response<string?>
-            {
-                Message = "L'utilisateur n'existe pas",
-                Status = 404,
-            };
+            return new Response<string?> { Message = "L'utilisateur n'existe pas", Status = 404 };
         }
 
         IdentityResult result = await userManager.ResetPasswordAsync(
@@ -495,30 +481,26 @@ public class AuthService
     /// <param name="model">Données de connexion</param>
     /// <param name="response">Réponse HTTP</param>
     /// <returns>Réponse contenant les informations de connexion</returns>
-    public async Task<Response<LoginOutput>> Login(
-        UserLogin model,
-        HttpResponse response
-    )
+    public async Task<Response<Login>> Login(UserLogin model, HttpResponse response)
     {
-        var user = await userManager.FindByEmailAsync(model.Email);
+        //var user = await userManager.FindByEmailAsync(model.Email);
+        var user = await context
+            .Users.Where(u => u.UserName.ToLower() == model.Email)
+            .Include(x => x.Profile)
+            .ThenInclude(p => p.Gender)
+            .Include(u => u.Teacher)
+            .Include(u => u.Student)
+            .FirstOrDefaultAsync();
 
         if (user == null)
         {
-            return new Response<LoginOutput>
-            {
-                Message = "L'utilisateur n'existe pas ",
-                Status = 404,
-            };
+            return new Response<Login> { Message = "L'utilisateur n'existe pas ", Status = 404 };
         }
 
         var result = await userManager.CheckPasswordAsync(user: user, password: model.Password);
         if (!userManager.CheckPasswordAsync(user: user, password: model.Password).Result)
         {
-            return new Response<LoginOutput>
-            {
-                Message = "Connexion échouée",
-                Status = 401,
-            };
+            return new Response<Login> { Message = "Connexion échouée", Status = 401 };
         }
 
         // à la connection, je crée ou je met à jour le refreshtoken
@@ -543,21 +525,15 @@ public class AuthService
                 HttpOnly = true,
                 Secure = true,
                 SameSite = SameSiteMode.Strict,
-                Expires = DateTimeOffset.UtcNow.AddDays(
-                    EnvironmentVariables.COOKIES_VALIDITY_DAYS
-                ),
+                Expires = DateTimeOffset.UtcNow.AddDays(EnvironmentVariables.COOKIES_VALIDITY_DAYS),
             }
         );
-        if (user.ImgUrl is not null)
-        {
-            user.ImgUrl = await minioService.GetFileUrlAsync(user.ImgUrl);
-        }
 
-        return new Response<LoginOutput>
+        return new Response<Login>
         {
             Message = "Connexion réussite",
             Status = 200,
-            Data = new LoginOutput
+            Data = new Login
             {
                 Token = await GenerateAccessTokenAsync(user),
                 RefreshToken = refreshToken?.Token,
@@ -650,10 +626,10 @@ public class AuthService
         var userRoles = await userManager.GetRolesAsync(user);
 
         var authClaims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Name, user.UserName!),
-                new Claim(type: ClaimTypes.Email, value: user.Email),
-            };
+        {
+            new Claim(ClaimTypes.Name, user.UserName!),
+            new Claim(type: ClaimTypes.Email, value: user.Email),
+        };
 
         foreach (var userRole in userRoles)
         {
@@ -702,11 +678,7 @@ public class AuthService
     {
         if (file == null)
         {
-            return new Response<FileUrl>
-            {
-                Message = "Aucun fichier téléversé",
-                Status = 400,
-            };
+            return new Response<FileUrl> { Message = "Aucun fichier téléversé", Status = 400 };
         }
         var user = CheckUser.GetUserFromClaim(UserPrincipal, context);
         if (user is null)
@@ -717,12 +689,12 @@ public class AuthService
         //verifier si le type est image
         var allowedMimeTypes = new[]
         {
-                "image/jpeg",
-                "image/png",
-                "image/gif",
-                "image/bmp",
-                "image/webp",
-            };
+            "image/jpeg",
+            "image/png",
+            "image/gif",
+            "image/bmp",
+            "image/webp",
+        };
         var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp" };
 
         var fileExtension = Path.GetExtension(file.FileName).ToLowerInvariant();
@@ -741,7 +713,7 @@ public class AuthService
         // supprimer l' ancien fichier s' il existe
         try
         {
-            await minioService.RemoveFileAsync(user.ImgUrl);
+            //await minioService.RemoveFileAsync(user.ImgUrl);
         }
         catch { }
         // resize
@@ -759,17 +731,17 @@ public class AuthService
 
         // minio
         var url = await minioService.UploadFileAsync("avatars", file.FileName, file);
-        user.ImgUrl = url.ObjectName;
+        //user.ImgUrl = url.ObjectName;
 
         await context.SaveChangesAsync();
 
-        var imgUrl = await minioService.GetFileUrlAsync(user.ImgUrl);
+        //var imgUrl = await minioService.GetFileUrlAsync(user.ImgUrl);
 
         return new Response<FileUrl>
         {
             Message = "Avatar téléversé",
             Status = 200,
-            Data = new FileUrl { Url = imgUrl },
+            //Data = new FileUrl { Url = imgUrl },
         };
     }
 }

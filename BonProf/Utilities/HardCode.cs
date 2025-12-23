@@ -50,6 +50,11 @@ public static class HardCode
     public static Guid TYPE_ADDRESS_HOME => Guid.Parse("e1fee3ea-6190-48c3-8e40-c1f053fea79d");
     public static Guid TYPE_ADDRESS_BILLING => Guid.Parse("b8b8a8fc-ca60-440b-815f-1e44b89c9803");
 
+    // Type slots
+    public static Guid TYPE_SLOT_PRESENTIAL => Guid.Parse("79f538c3-5f2b-4e45-a5f8-4d7cda8b3df8");
+    public static Guid TYPE_SLOT_VISIO => Guid.Parse("4043e32b-4d92-49b5-b885-505155ff2fe9");
+    public static Guid TYPE_SLOT_ALL => Guid.Parse("c25c18a2-af88-4132-a27a-0025417edb56");
+
     // langues
     public static Guid LANGUAGE_FRENCH => Guid.Parse("52b54b82-1f37-4a66-a263-708b53cd685d");
     public static Guid LANGUAGE_ENGLISH => Guid.Parse("3aa916ed-53d2-4f93-80e9-b49171a7ebe1");

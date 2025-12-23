@@ -40,39 +40,18 @@ namespace SemPaiGo.Controllers
         }
 
         /// <summary>
-        /// Récupère une langue par son identifiant
-        /// </summary>
-        /// <param name="id">Identifiant unique de la langue</param>
-        /// <returns>Langue trouvée</returns>
-        /// <response code="200">Langue récupérée avec succès</response>
-        /// <response code="404">Langue non trouvée</response>
-        /// <response code="500">Erreur interne du serveur</response>
-        [HttpGet("{id:guid}")]
-        [ProducesResponseType(typeof(Response<LanguageDetails>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(Response<object>), StatusCodes.Status404NotFound)]
-        [ProducesResponseType(typeof(Response<object>), StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<Response<LanguageDetails>>> GetLanguageById(
-            [FromRoute] Guid id)
-        {
-            var response = await languagesService.GetLanguageByIdAsync(id);
-
-            return StatusCode(response.Status, response);
-        }
-
-        /// <summary>
         /// Récupère toutes les langues d'un utilisateur
         /// </summary>
         /// <param name="teacherId">Identifiant de l'utilisateur</param>
         /// <returns>Liste des langues de l'utilisateur</returns>
         /// <response code="200">Langues de l'utilisateur récupérées avec succès</response>
         /// <response code="500">Erreur interne du serveur</response>
-        [HttpGet("user/{teacherId:guid}")]
+        [HttpGet("user")]
         [ProducesResponseType(typeof(Response<List<LanguageDetails>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(Response<object>), StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<Response<List<LanguageDetails>>>> GetLanguagesByUserId(
-            [FromRoute] Guid teacherId)
+        public async Task<ActionResult<Response<List<LanguageDetails>>>> GetLanguagesByUserId()
         {
-            var response = await languagesService.GetLanguagesByTeacherIdAsync(teacherId);
+            var response = await languagesService.GetLanguagesByTeacherIdAsync(User);
 
             if (response.Status == 200)
             {
@@ -175,38 +154,6 @@ namespace SemPaiGo.Controllers
         /// <response code="400">Association déjà existante ou données invalides</response>
         /// <response code="404">Utilisateur ou langue non trouvé</response>
         /// <response code="500">Erreur interne du serveur</response>
-        [HttpPost("teacher/add")]
-        [ProducesResponseType(typeof(Response<object>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(Response<object>), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(Response<object>), StatusCodes.Status404NotFound)]
-        [ProducesResponseType(typeof(Response<object>), StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<Response<object>>> AddLanguageToUser(
-            [FromBody] TeacherLanguageCreate userLanguageDto)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(new Response<object>
-                {
-                    Status = 400,
-                    Message = "Données de validation invalides",
-                    Data = ModelState
-                });
-            }
-
-            var response = await languagesService.AddLanguageToTeacherAsync(userLanguageDto);
-
-            return StatusCode(response.Status, response);
-        }
-
-        /// <summary>
-        /// Associe une langue à un utilisateur
-        /// </summary>
-        /// <param name="userLanguageDto">Données d'association utilisateur-langue</param>
-        /// <returns>Résultat de l'opération d'association</returns>
-        /// <response code="200">Langue associée à l'utilisateur avec succès</response>
-        /// <response code="400">Association déjà existante ou données invalides</response>
-        /// <response code="404">Utilisateur ou langue non trouvé</response>
-        /// <response code="500">Erreur interne du serveur</response>
         [HttpPost("teacher/update-languages")]
         [ProducesResponseType(typeof(Response<object>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(Response<object>), StatusCodes.Status400BadRequest)]
@@ -226,7 +173,7 @@ namespace SemPaiGo.Controllers
                     Data = ModelState
                 });
             }
-            var teacher = await context.ProfileTeachers.FindAsync(user.Id);
+            var teacher = await context.Teachers.FindAsync(user.Id);
             if (teacher is null)
             {
                 return BadRequest(new Response<object>
@@ -237,39 +184,7 @@ namespace SemPaiGo.Controllers
                 });
             }
 
-            var response = await languagesService.UpdateLanguagesForTeacher(teacher, languagesIds);
-
-            return StatusCode(response.Status, response);
-        }
-
-        /// <summary>
-        /// Dissocie une langue d'un utilisateur
-        /// </summary>
-        /// <param name="userLanguageDto">Données de dissociation utilisateur-langue</param>
-        /// <returns>Résultat de l'opération de dissociation</returns>
-        /// <response code="200">Langue dissociée de l'utilisateur avec succès</response>
-        /// <response code="400">Données invalides</response>
-        /// <response code="404">Utilisateur non trouvé ou langue non associée</response>
-        /// <response code="500">Erreur interne du serveur</response>
-        [HttpPost("user/remove")]
-        [ProducesResponseType(typeof(Response<object>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(Response<object>), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(Response<object>), StatusCodes.Status404NotFound)]
-        [ProducesResponseType(typeof(Response<object>), StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<Response<object>>> RemoveLanguageFromUser(
-            [FromBody] TeacherLanguageCreate userLanguageDto)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(new Response<object>
-                {
-                    Status = 400,
-                    Message = "Données de validation invalides",
-                    Data = ModelState
-                });
-            }
-
-            var response = await languagesService.RemoveLanguageFromUserAsync(userLanguageDto);
+            var response = await languagesService.UpdateLanguagesForUser(languagesIds, User);
 
             return StatusCode(response.Status, response);
         }

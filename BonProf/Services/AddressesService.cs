@@ -12,93 +12,36 @@ namespace SemPaiGo.Services;
 public class AddressesService(MainContext context)
 {
     /// <summary>
-    /// Récupère toutes les adresses
-    /// </summary>
-    /// <returns>Liste des adresses</returns>
-    public async Task<Response<List<AddressDetails>>> GetAllAddressesAsync()
-    {
-        try
-        {
-            var addresses = await context.Addresses
-                .AsNoTracking()
-                .Where(a => a.ArchivedAt == null)
-                .OrderByDescending(a => a.CreatedAt)
-                .Select(a => new AddressDetails(a))
-                .ToListAsync();
-
-            return new Response<List<AddressDetails>>
-            {
-                Status = 200,
-                Message = "Adresses récupérées avec succès",
-                Data = addresses,
-                Count = addresses.Count
-            };
-        }
-        catch (Exception ex)
-        {
-            return new Response<List<AddressDetails>>
-            {
-                Status = 500,
-                Message = $"Erreur lors de la récupération des adresses: {ex.Message}",
-                Data = null
-            };
-        }
-    }
-    
-
-    /// <summary>
-    /// Récupère une adresse par son identifiant
-    /// </summary>
-    /// <param name="id">Identifiant de l'adresse</param>
-    /// <returns>Adresse trouvée</returns>
-    public async Task<Response<AddressDetails>> GetAddressByIdAsync(Guid id)
-    {
-        try
-        {
-            var address = await context.Addresses
-                .AsNoTracking()
-                .FirstOrDefaultAsync(a => a.Id == id && a.ArchivedAt == null);
-
-            if (address == null)
-            {
-                return new Response<AddressDetails>
-                {
-                    Status = 404,
-                    Message = "Adresse non trouvée",
-                    Data = null
-                };
-            }
-
-            return new Response<AddressDetails>
-            {
-                Status = 200,
-                Message = "Adresse récupérée avec succès",
-                Data = new AddressDetails(address)
-            };
-        }
-        catch (Exception ex)
-        {
-            return new Response<AddressDetails>
-            {
-                Status = 500,
-                Message = $"Erreur lors de la récupération de l'adresse: {ex.Message}",
-                Data = null
-            };
-        }
-    }
-
-    /// <summary>
     /// Récupère les adresses d'un utilisateur
     /// </summary>
     /// <param name="userId">Identifiant de l'utilisateur</param>
     /// <returns>Liste des adresses de l'utilisateur</returns>
-    public async Task<Response<List<AddressDetails>>> GetAddressesByUserIdAsync(Guid userId)
+    public async Task<Response<List<AddressDetails>>> GetAddressesByUserIdAsync(ClaimsPrincipal principal)
     {
         try
         {
+            var user = CheckUser.GetUserFromClaim(principal, context);
+            if (user is null)
+            {
+                return new Response<List<AddressDetails>>
+                {
+                    Status = 404,
+                    Message = $"L'utilisateur n'existe pas",
+                };
+            }
+            var profile = await context.Profiles.FirstOrDefaultAsync(p => p.UserId == user.Id);
+            if (profile is null)
+            {
+                return new Response<List<AddressDetails>>
+                {
+                    Status = 404,
+                    Message = $"L'utilisateur n'existe pas",
+                };
+            }
+
             var addresses = await context.Addresses
                 .AsNoTracking()
-                .Where(a => a.UserId == userId && a.ArchivedAt == null)
+                .Where(a => a.ProfileId == profile.Id)
                 .OrderByDescending(a => a.CreatedAt)
                 .Select(a => new AddressDetails(a))
                 .ToListAsync();
@@ -132,8 +75,8 @@ public class AddressesService(MainContext context)
         try
         {
             // Vérifier que l'utilisateur existe
-            var userExists = CheckUser.GetUserFromClaim(User, context);
-            if (userExists is null)
+            var user = CheckUser.GetUserFromClaim(User, context);
+            if (user is null)
             {
                 return new Response<AddressDetails>
                 {
@@ -142,10 +85,19 @@ public class AddressesService(MainContext context)
                     Data = null
                 };
             }
+            var profile = await context.Profiles.FirstOrDefaultAsync(p => p.UserId == user.Id);
+            if (profile is null)
+            {
+                return new Response<AddressDetails>
+                {
+                    Status = 404,
+                    Message = "Utilisateur non trouvé",
+                    Data = null
+                };
+            }
+            var addressesCount = await context.Addresses.CountAsync(a => a.ProfileId == profile.Id && a.ArchivedAt == null);
 
-            var addressesCount = await context.Addresses.CountAsync(a => a.UserId == userExists.Id && a.ArchivedAt == null);
-
-            if(addressesCount >= 2)
+            if (addressesCount >= 2)
             {
                 return new Response<AddressDetails>
                 {
@@ -155,8 +107,8 @@ public class AddressesService(MainContext context)
                 };
             }
 
-            addressDto.UserId = userExists.Id;
-            var address = new Address(addressDto);           
+            addressDto.ProfileId = profile.Id;
+            var address = new Address(addressDto);
 
             context.Addresses.Add(address);
             await context.SaveChangesAsync();
@@ -205,7 +157,7 @@ public class AddressesService(MainContext context)
             }
 
             // Vérifier que l'utilisateur existe
-            var user = CheckUser.GetUserFromClaim(User,context);
+            var user = CheckUser.GetUserFromClaim(User, context);
             if (user is null)
             {
                 return new Response<AddressDetails>
@@ -215,7 +167,17 @@ public class AddressesService(MainContext context)
                     Data = null
                 };
             }
-            addressDto.UserId = user.Id;
+            var profile = await context.Profiles.FirstOrDefaultAsync(p => p.UserId == user.Id);
+            if (profile is null)
+            {
+                return new Response<AddressDetails>
+                {
+                    Status = 404,
+                    Message = "Utilisateur non trouvé",
+                    Data = null
+                };
+            }
+            addressDto.ProfileId = profile.Id;
             address.UpdateAddress(addressDto);
 
             await context.SaveChangesAsync();
@@ -243,12 +205,31 @@ public class AddressesService(MainContext context)
     /// </summary>
     /// <param name="id">Identifiant de l'adresse</param>
     /// <returns>Résultat de l'opération</returns>
-    public async Task<Response<object>> DeleteAddressAsync(Guid id)
+    public async Task<Response<object>> DeleteAddressAsync(Guid id, ClaimsPrincipal principal)
     {
         try
         {
+            // Vérifier que l'utilisateur existe
+            var user = CheckUser.GetUserFromClaim(principal, context);
+            if (user is null)
+            {
+                return new Response<object>
+                {
+                    Status = 404,
+                    Message = "Utilisateur non trouvé",
+                };
+            }
+            var profile = await context.Profiles.FirstOrDefaultAsync(p => p.UserId == user.Id);
+            if (profile is null)
+            {
+                return new Response<object>
+                {
+                    Status = 404,
+                    Message = "Utilisateur non trouvé",
+                };
+            }
             var address = await context.Addresses
-                .FirstOrDefaultAsync(a => a.Id == id && a.ArchivedAt == null);
+                .FirstOrDefaultAsync(a => a.Id == id && a.ProfileId == profile.Id);
 
             if (address == null)
             {

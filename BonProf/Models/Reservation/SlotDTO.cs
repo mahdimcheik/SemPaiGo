@@ -52,12 +52,12 @@ public class SlotDetails
         Id = slot.Id;
         DateFrom = slot.DateFrom;
         DateTo = slot.DateTo;
-        TypeId = slot.TypeId;
+        TypeId = slot.TypeId ?? Guid.Empty;
 
-        if (slot.Teacher != null)
-        {
-            Teacher = new TeacherDetails(slot.Teacher);
-        }
+        //if (slot.Teacher != null)
+        //{
+        //    Teacher = new TeacherDetails(slot.Teacher);
+        //}
 
         if (slot.Type != null)
         {
@@ -105,6 +105,12 @@ public class SlotCreate
 /// </summary>
 public class SlotUpdate
 {
+    /// <summary>
+    /// Identifiant unique du créneau
+    /// </summary>
+    /// <example>550e8400-e29b-41d4-a716-446655440000</example>
+    [Required]
+    public Guid Id { get; set; }
     /// <summary>
     /// Date et heure de début du créneau
     /// </summary>

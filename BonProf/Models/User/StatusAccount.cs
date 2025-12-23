@@ -2,8 +2,4 @@
 
 namespace SempaiGo.Models;
 
-public class StatusAccount : BaseModelOption
-{
-}
-
-
+public class StatusAccount : BaseModelOption { }

@@ -1,52 +1,42 @@
-﻿using SemPaiGo.Models;
+﻿using BonProf.Models;
+using SempaiGo.Models;
+using SemPaiGo.Models;
 using SemPaiGo.Models.Interfaces;
 using SemPaiGo.Utilities;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 
-public class UserDetails : ICreatable
+public class UserDetails
 {
     [Required]
     public required Guid Id { get; set; }
-    [Required]
-    public required string FirstName { get; set; }
-    [Required]
-    public required string LastName { get; set; }
-    public string? ImgUrl { get; set; }
 
     [Required]
     public required string Email { get; set; } = null!;
     public DateTimeOffset DateOfBirth { get; set; }
-    public string? PhoneNumber { get; set; }
 
-    public GenderDetails? Gender { get; set; }
-    public DateTimeOffset CreatedAt { get; set; }
+    public StatusAccountDetails? Status { get; set; }
 
     [Required]
     public ICollection<RoleDetails>? Roles { get; set; }
-
     [Required]
-    public ICollection<AddressDetails> Addresses { get; set; }
+    public ProfileDetails Profile { get; set; }
+
+    public TeacherDetails? Teacher { get; set; }
+    public StudentDetails? Student { get; set; }
     [SetsRequiredMembers]
-    public UserDetails(UserApp user, List<RoleDetails>? roles,bool minimal = false)
+    public UserDetails(UserApp user, List<RoleDetails>? roles)
     {
         Id = user.Id;
-        FirstName = user.FirstName;
-        LastName = user.LastName;
-        Email = user.Email ?? "";
+        Email = user.Email ?? user.UserName ?? "";
         Roles = roles;
-        Gender = user.Gender is null ? null : new GenderDetails(user.Gender);
-        Addresses =  user.Addresses.Select(a => new AddressDetails(a, minimal)).ToList();
-        PhoneNumber = user.PhoneNumber;
-        DateOfBirth = user.DateOfBirth;
-        ImgUrl = user.ImgUrl;
-        CreatedAt = user.CreatedAt;
+        Status = user.Status is not null ?  new StatusAccountDetails(user.Status) : null;
+        Profile = new ProfileDetails(user.Profile);
+        Teacher = user.Teacher is not null ? new TeacherDetails(user.Teacher) : null;
+        Student = user.Student is not null ? new StudentDetails(user.Student) : null;
     }
 }
 
-/// <summary>
-/// Modèle de données pour la connexion utilisateur
-/// </summary>
 public class UserLogin
 {
     /// <summary>
@@ -80,31 +70,20 @@ public class UserCreate
 
     [Required]
     [DataType(DataType.Password)]
-    public required string Password { get; set; }
-
-    [Required]
-    public required string FirstName { get; set; }
-
-    [Required]
-    public required string LastName { get; set; }
+    public required string Password { get; set; }   
 
     [Required]
     public required bool DataProcessingConsent { get; set; } = false;
     [Required]
     public required bool PrivacyPolicyConsent { get; set; } = false;
     [Required]
-    public required DateTimeOffset DateOfBirth { get; set; }
-
-    public string? PhoneNumber { get; set; }
-    public string? Title { get; set; }
-    public string? Description { get; set; }
-    [Required]
     public Guid RoleId { get; set; } = HardCode.ROLE_STUDENT;
+
     [Required]
-    public Guid GenderId { get; set; } = HardCode.GENDER_OTHER;
+    public ProfileCreate Profile{ get; set; }
 }
 
-public class PasswordResetOutput
+public class PasswordReset
 {
     [Required]
     public required string ResetToken { get; set; } = string.Empty;
@@ -150,7 +129,7 @@ public class PasswordRecovery
     public required string PasswordConfirmation { get; set; }
 }
 
-public class LoginOutput
+public class Login
 {
     [Required]
     public required string Token { get; set; } = null!;
@@ -162,22 +141,11 @@ public class LoginOutput
     public required UserDetails User { get; set; } = null!;
 }
 
-public class UserUpdateInput
-{
-    [Required]
-    public required string FirstName { get; set; }
-    [Required]
-    public required string LastName { get; set; }
-    [Required]
-    public required DateTimeOffset DateOfBirth { get; set; }
-    public string? PhoneNumber { get; set; }
-
+public class UserUpdate
+{    
     public void UpdateUser(UserApp user)
     {
-        user.FirstName = FirstName;
-        user.LastName = LastName;
-        user.DateOfBirth = DateOfBirth;
-        user.PhoneNumber = PhoneNumber;
+        user.UpdatedAt  = DateTimeOffset.UtcNow;
     }
 }
 
@@ -188,11 +156,4 @@ public class UserInfosWithtoken
 
     [Required]
     public required UserDetails User { get; set; }
-}
-
-public class UserPublicReport
-{
-    public required int FreeSlotsCount { get; set; }
-    public required int GivenBookingsCount { get; set; }
-    public required int StudentsCount { get; set; }
 }

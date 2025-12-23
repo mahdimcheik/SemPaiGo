@@ -14,11 +14,11 @@ namespace SemPaiGo.Controllers;
 [Route("[controller]")]
 [ApiController]
 [EnableCors]
-public class TeacherProfileController : ControllerBase
+public class TeachersController : ControllerBase
 {
-    private readonly TeacherProfileService _teacherProfileService;
+    private readonly TeacherService _teacherProfileService;
 
-    public TeacherProfileController(TeacherProfileService teacherProfileService)
+    public TeachersController(TeacherService teacherProfileService)
     {
         _teacherProfileService = teacherProfileService;
     }
@@ -54,10 +54,10 @@ public class TeacherProfileController : ControllerBase
     /// <response code="500">Erreur interne du serveur</response>
     [HttpGet("my-profile")]
     [Authorize]
-    [ProducesResponseType(typeof(Response<TeacherDetails>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Response<UserDetails>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(Response<object>), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(Response<object>), StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<Response<TeacherDetails>>> GetTeacherProfileById()
+    public async Task<ActionResult<Response<UserDetails>>> GetTeacherProfileById()
     {
         var response = await _teacherProfileService.GetTeacherFullProfileAsync( User);
         return StatusCode(response.Status, response);
@@ -87,24 +87,26 @@ public class TeacherProfileController : ControllerBase
 
         return StatusCode(response.Status, response);
     }
-    
+
     /// <summary>
-    /// Met à jour un profil enseignant existant
+    /// Met à jour le profil de l'enseignant connecté
     /// </summary>
-    /// <param name="profileDto">Nouvelles données du profil</param>
-    /// <returns>Profil mis à jour</returns>
+    /// <param name="teacherUpdateDto">Données de mise à jour du profil</param>
+    /// <returns>Profil enseignant mis à jour</returns>
     /// <response code="200">Profil mis à jour avec succès</response>
     /// <response code="400">Données invalides</response>
-    /// <response code="404">Profil non trouvé</response>
+    /// <response code="401">Utilisateur non authentifié</response>
+    /// <response code="404">Profil enseignant non trouvé</response>
     /// <response code="500">Erreur interne du serveur</response>
-    [HttpPut]
-    [Authorize]
-    [ProducesResponseType(typeof(Response<TeacherDetails>), StatusCodes.Status200OK)]
+    [HttpPut("update-profile")]
+    [Authorize(Roles = "Teacher")]
+    [ProducesResponseType(typeof(Response<UserDetails>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(Response<object>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(Response<object>), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(Response<object>), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(Response<object>), StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<Response<TeacherDetails>>> UpdateTeacherProfile(
-        [FromBody] TeacherProfileUpdate profileDto)
+    public async Task<ActionResult<Response<UserDetails>>> UpdateTeacherProfile(
+        [FromBody] TeacherUpdate teacherUpdateDto)
     {
         if (!ModelState.IsValid)
         {
@@ -116,7 +118,8 @@ public class TeacherProfileController : ControllerBase
             });
         }
 
-        var response = await _teacherProfileService.UpdateTeacherProfileAsync(profileDto, User);
+        var response = await _teacherProfileService.UpdateTeacherProfileAsync(teacherUpdateDto, User);
+
         return StatusCode(response.Status, response);
     }
 }

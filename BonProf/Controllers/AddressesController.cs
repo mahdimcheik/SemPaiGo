@@ -14,52 +14,8 @@ namespace SemPaiGo.Controllers
     [Route("[controller]")]
     [ApiController]
     [EnableCors]
-    public class AddressesController(MainContext context, AddressesService addressesService) : ControllerBase
+    public class AddressesController(AddressesService addressesService) : ControllerBase
     {
-        /// <summary>
-        /// Récupère toutes les adresses
-        /// </summary>
-        /// <returns>Liste de toutes les adresses</returns>
-        /// <response code="200">Adresses récupérées avec succès</response>
-        /// <response code="500">Erreur interne du serveur</response>
-        [HttpGet("all")]
-        [ProducesResponseType(typeof(Response<List<AddressDetails>>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(Response<object>), StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<Response<List<AddressDetails>>>> GetAllAddresses()
-        {
-            //var query = context.Addresses.AsQueryable();
-            //var res  = (IQueryable<Address>)options.ApplyTo(query);
-            //res.ToList();
-            var response = await addressesService.GetAllAddressesAsync();
-
-            if (response.Status == 200)
-            {
-                return Ok(response);
-            }
-
-            return StatusCode(response.Status, response);
-        }
-
-        /// <summary>
-        /// Récupère une adresse par son identifiant
-        /// </summary>
-        /// <param name="id">Identifiant unique de l'adresse</param>
-        /// <returns>Adresse trouvée</returns>
-        /// <response code="200">Adresse récupérée avec succès</response>
-        /// <response code="404">Adresse non trouvée</response>
-        /// <response code="500">Erreur interne du serveur</response>
-        [HttpGet("{id:guid}")]
-        [ProducesResponseType(typeof(Response<AddressDetails>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(Response<object>), StatusCodes.Status404NotFound)]
-        [ProducesResponseType(typeof(Response<object>), StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<Response<AddressDetails>>> GetAddressById(
-            [FromRoute] Guid id)
-        {
-            var response = await addressesService.GetAddressByIdAsync(id);
-
-            return StatusCode(response.Status, response);
-        }
-
         /// <summary>
         /// Récupère toutes les adresses d'un utilisateur
         /// </summary>
@@ -67,13 +23,12 @@ namespace SemPaiGo.Controllers
         /// <returns>Liste des adresses de l'utilisateur</returns>
         /// <response code="200">Adresses de l'utilisateur récupérées avec succès</response>
         /// <response code="500">Erreur interne du serveur</response>
-        [HttpGet("user/{id:guid}")]
+        [HttpGet]
         [ProducesResponseType(typeof(Response<List<AddressDetails>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(Response<object>), StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<Response<List<AddressDetails>>>> GetAddressesByUserId(
-            [FromRoute] Guid id)
+        public async Task<ActionResult<Response<List<AddressDetails>>>> GetAddressesByUserId()
         {
-            var response = await addressesService.GetAddressesByUserIdAsync(id);
+            var response = await addressesService.GetAddressesByUserIdAsync(User);
 
             if (response.Status == 200)
             {
@@ -163,7 +118,7 @@ namespace SemPaiGo.Controllers
         public async Task<ActionResult<Response<object>>> DeleteAddress(
             [FromRoute] Guid id)
         {
-            var response = await addressesService.DeleteAddressAsync(id);
+            var response = await addressesService.DeleteAddressAsync(id, User);
 
             return StatusCode(response.Status, response);
         }

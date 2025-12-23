@@ -8,7 +8,7 @@ using SemPaiGo.Contexts;
 
 #nullable disable
 
-namespace SemPaiGo.Migrations
+namespace BonProf.Migrations
 {
     [DbContext(typeof(MainContext))]
     partial class MainContextModelSnapshot : ModelSnapshot
@@ -33,24 +33,20 @@ namespace SemPaiGo.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid>("CursusId")
                         .HasColumnType("uuid");
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
+                        .HasColumnType("text");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(64)
-                        .HasColumnType("character varying(64)");
+                        .HasColumnType("text");
 
                     b.Property<decimal>("Price")
-                        .HasMaxLength(256)
                         .HasColumnType("numeric");
 
                     b.Property<DateTime?>("UpdatedAt")
@@ -63,19 +59,68 @@ namespace SemPaiGo.Migrations
                     b.ToTable("Products");
                 });
 
-            modelBuilder.Entity("CursusXCategories", b =>
+            modelBuilder.Entity("BonProf.Models.Profile", b =>
                 {
-                    b.Property<Guid>("CategorieId")
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("CursusId")
+                    b.Property<DateTime?>("ArchivedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("DateOfBirth")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
+                    b.Property<Guid>("GenderId")
                         .HasColumnType("uuid");
 
-                    b.HasKey("CategorieId", "CursusId");
+                    b.Property<string>("ImgUrl")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
 
-                    b.HasIndex("CursusId");
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
 
-                    b.ToTable("CursusXCategories");
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GenderId");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("Profiles");
+                });
+
+            modelBuilder.Entity("CategoryCursusCursus", b =>
+                {
+                    b.Property<Guid>("CategoriesId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("CursusesId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("CategoriesId", "CursusesId");
+
+                    b.HasIndex("CursusesId");
+
+                    b.ToTable("CategoryCursusCursus");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
@@ -155,9 +200,19 @@ namespace SemPaiGo.Migrations
                     b.Property<Guid>("RoleId")
                         .HasColumnType("uuid");
 
+                    b.Property<Guid?>("RoleAppId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("UserAppId")
+                        .HasColumnType("uuid");
+
                     b.HasKey("UserId", "RoleId");
 
+                    b.HasIndex("RoleAppId");
+
                     b.HasIndex("RoleId");
+
+                    b.HasIndex("UserAppId");
 
                     b.ToTable("AspNetUserRoles", (string)null);
                 });
@@ -188,7 +243,8 @@ namespace SemPaiGo.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<string>("AdditionalInfo")
-                        .HasColumnType("text");
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
 
                     b.Property<DateTime?>("ArchivedAt")
                         .HasColumnType("timestamp with time zone");
@@ -204,17 +260,16 @@ namespace SemPaiGo.Migrations
                         .HasColumnType("character varying(150)");
 
                     b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<float?>("Latitude")
-                        .HasMaxLength(50)
                         .HasColumnType("real");
 
                     b.Property<float?>("Longitude")
-                        .HasMaxLength(50)
                         .HasColumnType("real");
 
-                    b.Property<Guid?>("ProfileStudentId")
+                    b.Property<Guid>("ProfileId")
                         .HasColumnType("uuid");
 
                     b.Property<string>("Street")
@@ -228,21 +283,16 @@ namespace SemPaiGo.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid");
-
                     b.Property<string>("ZipCode")
                         .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)");
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ProfileStudentId");
+                    b.HasIndex("ProfileId");
 
                     b.HasIndex("TypeId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Addresses");
                 });
@@ -258,17 +308,21 @@ namespace SemPaiGo.Migrations
 
                     b.Property<string>("Color")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)");
 
                     b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Icon")
-                        .HasColumnType("text");
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -328,8 +382,7 @@ namespace SemPaiGo.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Description")
                         .HasMaxLength(255)
@@ -378,8 +431,7 @@ namespace SemPaiGo.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime>("DateFrom")
                         .HasColumnType("timestamp with time zone");
@@ -421,8 +473,7 @@ namespace SemPaiGo.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime>("DateFrom")
                         .HasColumnType("timestamp with time zone");
@@ -440,7 +491,7 @@ namespace SemPaiGo.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)");
 
-                    b.Property<Guid?>("ProfileStudentId")
+                    b.Property<Guid?>("ProfileId")
                         .HasColumnType("uuid");
 
                     b.Property<Guid>("TeacherId")
@@ -456,7 +507,7 @@ namespace SemPaiGo.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ProfileStudentId");
+                    b.HasIndex("ProfileId");
 
                     b.HasIndex("TeacherId");
 
@@ -467,7 +518,6 @@ namespace SemPaiGo.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasMaxLength(64)
                         .HasColumnType("uuid");
 
                     b.Property<DateTime?>("ArchivedAt")
@@ -480,8 +530,7 @@ namespace SemPaiGo.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Icon")
                         .HasMaxLength(256)
@@ -497,7 +546,7 @@ namespace SemPaiGo.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Genders", (string)null);
+                    b.ToTable("Genders");
 
                     b.HasData(
                         new
@@ -537,27 +586,31 @@ namespace SemPaiGo.Migrations
 
                     b.Property<string>("Color")
                         .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)");
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)");
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Icon")
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)");
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)");
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
+                    b.Property<Guid?>("ProfileId")
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ProfileId");
 
                     b.ToTable("Languages");
 
@@ -599,17 +652,21 @@ namespace SemPaiGo.Migrations
 
                     b.Property<string>("Color")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)");
 
                     b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Icon")
-                        .HasColumnType("text");
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -664,29 +721,26 @@ namespace SemPaiGo.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime>("OrderDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("OrderNumber")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.Property<Guid?>("PaymentId")
                         .HasColumnType("uuid");
 
                     b.Property<decimal>("ReductionAmount")
-                        .HasColumnType("numeric");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("ReductionPercentage")
-                        .HasColumnType("numeric");
+                        .HasColumnType("decimal(5,2)");
 
                     b.Property<Guid>("StudentId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("TeacherId")
                         .HasColumnType("uuid");
 
                     b.Property<decimal>("TotalAmount")
@@ -697,9 +751,9 @@ namespace SemPaiGo.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("StudentId");
+                    b.HasIndex("PaymentId");
 
-                    b.HasIndex("TeacherId");
+                    b.HasIndex("StudentId");
 
                     b.ToTable("Orders");
                 });
@@ -711,15 +765,14 @@ namespace SemPaiGo.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<decimal>("Amount")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("numeric");
 
                     b.Property<DateTime?>("ArchivedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid>("MethodId")
                         .HasColumnType("uuid");
@@ -737,8 +790,7 @@ namespace SemPaiGo.Migrations
 
                     b.HasIndex("MethodId");
 
-                    b.HasIndex("OrderId")
-                        .IsUnique();
+                    b.HasIndex("OrderId");
 
                     b.ToTable("Payments");
                 });
@@ -754,19 +806,21 @@ namespace SemPaiGo.Migrations
 
                     b.Property<string>("Color")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)");
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Icon")
-                        .HasColumnType("text");
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -776,107 +830,26 @@ namespace SemPaiGo.Migrations
                     b.ToTable("PaymentMethods");
                 });
 
-            modelBuilder.Entity("SemPaiGo.Models.ProfileStudent", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime?>("ArchivedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId")
-                        .IsUnique();
-
-                    b.ToTable("ProfileStudents");
-                });
-
-            modelBuilder.Entity("SemPaiGo.Models.ProfileTeacher", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime?>("ArchivedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("text");
-
-                    b.Property<string>("FaceBook")
-                        .HasColumnType("text");
-
-                    b.Property<string>("GitHub")
-                        .HasColumnType("text");
-
-                    b.Property<string>("LinkedIn")
-                        .HasColumnType("text");
-
-                    b.Property<decimal>("PriceIndicative")
-                        .HasColumnType("numeric");
-
-                    b.Property<string>("Title")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Twitter")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId")
-                        .IsUnique();
-
-                    b.ToTable("ProfileTeachers");
-                });
-
             modelBuilder.Entity("SemPaiGo.Models.RefreshToken", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasMaxLength(64)
                         .HasColumnType("uuid");
 
                     b.Property<DateTime>("ExpirationDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Token")
-                        .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
+                        .HasColumnType("text");
 
                     b.Property<Guid?>("UserId")
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId")
-                        .IsUnique();
+                    b.HasIndex("UserId");
 
-                    b.ToTable("RefreshTokens", (string)null);
+                    b.ToTable("RefreshTokens");
                 });
 
             modelBuilder.Entity("SemPaiGo.Models.Reservation", b =>
@@ -890,12 +863,12 @@ namespace SemPaiGo.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
 
                     b.Property<Guid>("OrderId")
                         .HasColumnType("uuid");
@@ -914,7 +887,8 @@ namespace SemPaiGo.Migrations
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -923,8 +897,7 @@ namespace SemPaiGo.Migrations
 
                     b.HasIndex("OrderId");
 
-                    b.HasIndex("ProductId")
-                        .IsUnique();
+                    b.HasIndex("ProductId");
 
                     b.HasIndex("SlotId")
                         .IsUnique();
@@ -940,7 +913,6 @@ namespace SemPaiGo.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasMaxLength(64)
                         .HasColumnType("uuid");
 
                     b.Property<DateTime?>("ArchivedAt")
@@ -955,19 +927,15 @@ namespace SemPaiGo.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(64)
-                        .HasColumnType("character varying(64)");
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
 
                     b.Property<string>("NormalizedName")
-                        .IsRequired()
-                        .HasMaxLength(64)
-                        .HasColumnType("character varying(64)");
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -1030,8 +998,7 @@ namespace SemPaiGo.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime>("DateFrom")
                         .HasColumnType("timestamp with time zone");
@@ -1042,7 +1009,7 @@ namespace SemPaiGo.Migrations
                     b.Property<Guid>("TeacherId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("TypeId")
+                    b.Property<Guid?>("TypeId")
                         .HasColumnType("uuid");
 
                     b.Property<DateTime?>("UpdatedAt")
@@ -1068,17 +1035,21 @@ namespace SemPaiGo.Migrations
 
                     b.Property<string>("Color")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)");
 
                     b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Icon")
-                        .HasColumnType("text");
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -1133,19 +1104,21 @@ namespace SemPaiGo.Migrations
 
                     b.Property<string>("Color")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)");
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Icon")
-                        .HasColumnType("text");
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -1181,6 +1154,86 @@ namespace SemPaiGo.Migrations
                         });
                 });
 
+            modelBuilder.Entity("SemPaiGo.Models.Student", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("ArchivedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("Students");
+                });
+
+            modelBuilder.Entity("SemPaiGo.Models.Teacher", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("ArchivedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<string>("FaceBook")
+                        .HasColumnType("text");
+
+                    b.Property<string>("GitHub")
+                        .HasColumnType("text");
+
+                    b.Property<Guid?>("LanguageId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("LinkedIn")
+                        .HasColumnType("text");
+
+                    b.Property<decimal>("PriceIndicative")
+                        .HasColumnType("numeric");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Twitter")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LanguageId");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("Teachers");
+                });
+
             modelBuilder.Entity("SemPaiGo.Models.TeacherPayout", b =>
                 {
                     b.Property<Guid>("Id")
@@ -1191,6 +1244,7 @@ namespace SemPaiGo.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime>("PaidAt")
@@ -1221,15 +1275,14 @@ namespace SemPaiGo.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<decimal>("Amount")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("numeric");
 
                     b.Property<DateTime?>("ArchivedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid?>("ReservationId")
                         .HasColumnType("uuid");
@@ -1244,8 +1297,7 @@ namespace SemPaiGo.Migrations
 
                     b.HasIndex("ReservationId");
 
-                    b.HasIndex("TypeId")
-                        .IsUnique();
+                    b.HasIndex("TypeId");
 
                     b.ToTable("TeacherWalletTransactions");
                 });
@@ -1261,19 +1313,21 @@ namespace SemPaiGo.Migrations
 
                     b.Property<string>("Color")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)");
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Icon")
-                        .HasColumnType("text");
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -1312,24 +1366,54 @@ namespace SemPaiGo.Migrations
 
                     b.Property<string>("Color")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)");
 
                     b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Icon")
-                        .HasColumnType("text");
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
 
-                    b.ToTable("TypeSlot");
+                    b.ToTable("TypeSlots");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("79f538c3-5f2b-4e45-a5f8-4d7cda8b3df8"),
+                            Color = "#ff69b4",
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Icon = "pi pi-arrow-down-left-and-arrow-up-right-to-center",
+                            Name = "Presentiel"
+                        },
+                        new
+                        {
+                            Id = new Guid("4043e32b-4d92-49b5-b885-505155ff2fe9"),
+                            Color = "#fa69b4",
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Icon = "pi pi-desktop",
+                            Name = "Visio"
+                        },
+                        new
+                        {
+                            Id = new Guid("c25c18a2-af88-4132-a27a-0025417edb56"),
+                            Color = "#fa69b4",
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Icon = "pi pi-crown",
+                            Name = "Tous"
+                        });
                 });
 
             modelBuilder.Entity("SemPaiGo.Models.TypeTeacherTransaction", b =>
@@ -1343,19 +1427,21 @@ namespace SemPaiGo.Migrations
 
                     b.Property<string>("Color")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)");
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Icon")
-                        .HasColumnType("text");
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -1395,7 +1481,6 @@ namespace SemPaiGo.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasMaxLength(64)
                         .HasColumnType("uuid");
 
                     b.Property<int>("AccessFailedCount")
@@ -1409,15 +1494,10 @@ namespace SemPaiGo.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<bool>("DataProcessingConsent")
                         .HasColumnType("boolean");
-
-                    b.Property<DateTime>("DateOfBirth")
-                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256)
@@ -1425,22 +1505,6 @@ namespace SemPaiGo.Migrations
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("boolean");
-
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasMaxLength(64)
-                        .HasColumnType("character varying(64)");
-
-                    b.Property<Guid>("GenderId")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("ImgUrl")
-                        .HasColumnType("text");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasMaxLength(64)
-                        .HasColumnType("character varying(64)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("boolean");
@@ -1477,7 +1541,7 @@ namespace SemPaiGo.Migrations
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("boolean");
 
-                    b.Property<DateTime>("UpdatedAt")
+                    b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("UserName")
@@ -1485,8 +1549,6 @@ namespace SemPaiGo.Migrations
                         .HasColumnType("character varying(256)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("GenderId");
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
@@ -1504,7 +1566,6 @@ namespace SemPaiGo.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasMaxLength(64)
                         .HasColumnType("uuid");
 
                     b.Property<DateTime?>("ArchivedAt")
@@ -1517,8 +1578,7 @@ namespace SemPaiGo.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Icon")
                         .HasMaxLength(256)
@@ -1563,44 +1623,48 @@ namespace SemPaiGo.Migrations
                         });
                 });
 
-            modelBuilder.Entity("TeachersXLanguages", b =>
-                {
-                    b.Property<Guid>("LanguageId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("TeacherId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("LanguageId", "TeacherId");
-
-                    b.HasIndex("TeacherId");
-
-                    b.ToTable("TeachersXLanguages");
-                });
-
             modelBuilder.Entity("BonProf.Models.Product", b =>
                 {
                     b.HasOne("SemPaiGo.Models.Cursus", "Cursus")
                         .WithMany()
                         .HasForeignKey("CursusId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Cursus");
                 });
 
-            modelBuilder.Entity("CursusXCategories", b =>
+            modelBuilder.Entity("BonProf.Models.Profile", b =>
+                {
+                    b.HasOne("SemPaiGo.Models.Gender", "Gender")
+                        .WithMany()
+                        .HasForeignKey("GenderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SemPaiGo.Models.UserApp", "User")
+                        .WithOne("Profile")
+                        .HasForeignKey("BonProf.Models.Profile", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Gender");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("CategoryCursusCursus", b =>
                 {
                     b.HasOne("SemPaiGo.Models.CategoryCursus", null)
                         .WithMany()
-                        .HasForeignKey("CategorieId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .HasForeignKey("CategoriesId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("SemPaiGo.Models.Cursus", null)
                         .WithMany()
-                        .HasForeignKey("CursusId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .HasForeignKey("CursusesId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
@@ -1635,12 +1699,20 @@ namespace SemPaiGo.Migrations
                 {
                     b.HasOne("SemPaiGo.Models.RoleApp", null)
                         .WithMany("UserRoles")
+                        .HasForeignKey("RoleAppId");
+
+                    b.HasOne("SemPaiGo.Models.RoleApp", null)
+                        .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("SemPaiGo.Models.UserApp", null)
                         .WithMany("UserRoles")
+                        .HasForeignKey("UserAppId");
+
+                    b.HasOne("SemPaiGo.Models.UserApp", null)
+                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1657,25 +1729,21 @@ namespace SemPaiGo.Migrations
 
             modelBuilder.Entity("SemPaiGo.Models.Address", b =>
                 {
-                    b.HasOne("SemPaiGo.Models.ProfileStudent", null)
+                    b.HasOne("BonProf.Models.Profile", "Profile")
                         .WithMany("Addresses")
-                        .HasForeignKey("ProfileStudentId");
+                        .HasForeignKey("ProfileId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("SemPaiGo.Models.TypeAddress", "Type")
                         .WithMany()
                         .HasForeignKey("TypeId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SemPaiGo.Models.UserApp", "User")
-                        .WithMany("Addresses")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                    b.Navigation("Profile");
 
                     b.Navigation("Type");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("SemPaiGo.Models.Cursus", b =>
@@ -1683,13 +1751,13 @@ namespace SemPaiGo.Migrations
                     b.HasOne("SemPaiGo.Models.LevelCursus", "Level")
                         .WithMany()
                         .HasForeignKey("LevelId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SemPaiGo.Models.ProfileTeacher", "Teacher")
+                    b.HasOne("SemPaiGo.Models.Teacher", "Teacher")
                         .WithMany("Cursuses")
                         .HasForeignKey("TeacherId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Level");
@@ -1699,10 +1767,10 @@ namespace SemPaiGo.Migrations
 
             modelBuilder.Entity("SemPaiGo.Models.Experience", b =>
                 {
-                    b.HasOne("SemPaiGo.Models.ProfileTeacher", "Teacher")
+                    b.HasOne("SemPaiGo.Models.Teacher", "Teacher")
                         .WithMany("Experiences")
                         .HasForeignKey("TeacherId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Teacher");
@@ -1710,36 +1778,41 @@ namespace SemPaiGo.Migrations
 
             modelBuilder.Entity("SemPaiGo.Models.Formation", b =>
                 {
-                    b.HasOne("SemPaiGo.Models.ProfileStudent", null)
+                    b.HasOne("BonProf.Models.Profile", null)
                         .WithMany("Formations")
-                        .HasForeignKey("ProfileStudentId");
+                        .HasForeignKey("ProfileId");
 
-                    b.HasOne("SemPaiGo.Models.ProfileTeacher", "Teacher")
-                        .WithMany("Formations")
-                        .HasForeignKey("TeacherId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Teacher");
-                });
-
-            modelBuilder.Entity("SemPaiGo.Models.Order", b =>
-                {
-                    b.HasOne("SemPaiGo.Models.ProfileStudent", "Student")
-                        .WithMany("Orders")
-                        .HasForeignKey("StudentId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("SemPaiGo.Models.ProfileTeacher", "Teacher")
+                    b.HasOne("SemPaiGo.Models.Teacher", "Teacher")
                         .WithMany()
                         .HasForeignKey("TeacherId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Student");
-
                     b.Navigation("Teacher");
+                });
+
+            modelBuilder.Entity("SemPaiGo.Models.Language", b =>
+                {
+                    b.HasOne("BonProf.Models.Profile", null)
+                        .WithMany("Languages")
+                        .HasForeignKey("ProfileId");
+                });
+
+            modelBuilder.Entity("SemPaiGo.Models.Order", b =>
+                {
+                    b.HasOne("SemPaiGo.Models.Payment", "Payment")
+                        .WithMany()
+                        .HasForeignKey("PaymentId");
+
+                    b.HasOne("SemPaiGo.Models.Student", "Student")
+                        .WithMany("Orders")
+                        .HasForeignKey("StudentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Payment");
+
+                    b.Navigation("Student");
                 });
 
             modelBuilder.Entity("SemPaiGo.Models.Payment", b =>
@@ -1751,9 +1824,9 @@ namespace SemPaiGo.Migrations
                         .IsRequired();
 
                     b.HasOne("SemPaiGo.Models.Order", "Order")
-                        .WithOne("Payment")
-                        .HasForeignKey("SemPaiGo.Models.Payment", "OrderId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .WithMany()
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Method");
@@ -1761,33 +1834,11 @@ namespace SemPaiGo.Migrations
                     b.Navigation("Order");
                 });
 
-            modelBuilder.Entity("SemPaiGo.Models.ProfileStudent", b =>
-                {
-                    b.HasOne("SemPaiGo.Models.UserApp", "User")
-                        .WithOne()
-                        .HasForeignKey("SemPaiGo.Models.ProfileStudent", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("SemPaiGo.Models.ProfileTeacher", b =>
-                {
-                    b.HasOne("SemPaiGo.Models.UserApp", "User")
-                        .WithOne()
-                        .HasForeignKey("SemPaiGo.Models.ProfileTeacher", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("SemPaiGo.Models.RefreshToken", b =>
                 {
                     b.HasOne("SemPaiGo.Models.UserApp", "User")
-                        .WithOne()
-                        .HasForeignKey("SemPaiGo.Models.RefreshToken", "UserId");
+                        .WithMany()
+                        .HasForeignKey("UserId");
 
                     b.Navigation("User");
                 });
@@ -1801,8 +1852,8 @@ namespace SemPaiGo.Migrations
                         .IsRequired();
 
                     b.HasOne("BonProf.Models.Product", "Product")
-                        .WithOne()
-                        .HasForeignKey("SemPaiGo.Models.Reservation", "ProductId")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -1818,10 +1869,10 @@ namespace SemPaiGo.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SemPaiGo.Models.ProfileStudent", "Student")
+                    b.HasOne("SemPaiGo.Models.Student", "Student")
                         .WithMany("Reservations")
                         .HasForeignKey("StudentId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Order");
@@ -1837,21 +1888,45 @@ namespace SemPaiGo.Migrations
 
             modelBuilder.Entity("SemPaiGo.Models.Slot", b =>
                 {
-                    b.HasOne("SemPaiGo.Models.ProfileTeacher", "Teacher")
+                    b.HasOne("SemPaiGo.Models.Teacher", "Teacher")
                         .WithMany("Slots")
                         .HasForeignKey("TeacherId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("SemPaiGo.Models.TypeSlot", "Type")
                         .WithMany()
-                        .HasForeignKey("TypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("TypeId");
 
                     b.Navigation("Teacher");
 
                     b.Navigation("Type");
+                });
+
+            modelBuilder.Entity("SemPaiGo.Models.Student", b =>
+                {
+                    b.HasOne("SemPaiGo.Models.UserApp", "User")
+                        .WithOne("Student")
+                        .HasForeignKey("SemPaiGo.Models.Student", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("SemPaiGo.Models.Teacher", b =>
+                {
+                    b.HasOne("SemPaiGo.Models.Language", null)
+                        .WithMany("Teachers")
+                        .HasForeignKey("LanguageId");
+
+                    b.HasOne("SemPaiGo.Models.UserApp", "User")
+                        .WithOne("Teacher")
+                        .HasForeignKey("SemPaiGo.Models.Teacher", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("SemPaiGo.Models.TeacherPayout", b =>
@@ -1862,7 +1937,7 @@ namespace SemPaiGo.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SemPaiGo.Models.ProfileTeacher", "Teacher")
+                    b.HasOne("SemPaiGo.Models.Teacher", "Teacher")
                         .WithMany()
                         .HasForeignKey("TeacherId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1880,8 +1955,8 @@ namespace SemPaiGo.Migrations
                         .HasForeignKey("ReservationId");
 
                     b.HasOne("SemPaiGo.Models.TypeTeacherTransaction", "Type")
-                        .WithOne()
-                        .HasForeignKey("SemPaiGo.Models.TeacherWalletTransaction", "TypeId")
+                        .WithMany()
+                        .HasForeignKey("TypeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -1892,65 +1967,32 @@ namespace SemPaiGo.Migrations
 
             modelBuilder.Entity("SemPaiGo.Models.UserApp", b =>
                 {
-                    b.HasOne("SemPaiGo.Models.Gender", "Gender")
-                        .WithMany()
-                        .HasForeignKey("GenderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("SempaiGo.Models.StatusAccount", "Status")
                         .WithMany()
                         .HasForeignKey("StatusId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Gender");
-
                     b.Navigation("Status");
                 });
 
-            modelBuilder.Entity("TeachersXLanguages", b =>
-                {
-                    b.HasOne("SemPaiGo.Models.Language", null)
-                        .WithMany()
-                        .HasForeignKey("LanguageId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("SemPaiGo.Models.ProfileTeacher", null)
-                        .WithMany()
-                        .HasForeignKey("TeacherId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("SemPaiGo.Models.Order", b =>
-                {
-                    b.Navigation("Payment");
-
-                    b.Navigation("Reservations");
-                });
-
-            modelBuilder.Entity("SemPaiGo.Models.ProfileStudent", b =>
+            modelBuilder.Entity("BonProf.Models.Profile", b =>
                 {
                     b.Navigation("Addresses");
 
                     b.Navigation("Formations");
 
-                    b.Navigation("Orders");
-
-                    b.Navigation("Reservations");
+                    b.Navigation("Languages");
                 });
 
-            modelBuilder.Entity("SemPaiGo.Models.ProfileTeacher", b =>
+            modelBuilder.Entity("SemPaiGo.Models.Language", b =>
                 {
-                    b.Navigation("Cursuses");
+                    b.Navigation("Teachers");
+                });
 
-                    b.Navigation("Experiences");
-
-                    b.Navigation("Formations");
-
-                    b.Navigation("Slots");
+            modelBuilder.Entity("SemPaiGo.Models.Order", b =>
+                {
+                    b.Navigation("Reservations");
                 });
 
             modelBuilder.Entity("SemPaiGo.Models.RoleApp", b =>
@@ -1963,9 +2005,30 @@ namespace SemPaiGo.Migrations
                     b.Navigation("Reservation");
                 });
 
+            modelBuilder.Entity("SemPaiGo.Models.Student", b =>
+                {
+                    b.Navigation("Orders");
+
+                    b.Navigation("Reservations");
+                });
+
+            modelBuilder.Entity("SemPaiGo.Models.Teacher", b =>
+                {
+                    b.Navigation("Cursuses");
+
+                    b.Navigation("Experiences");
+
+                    b.Navigation("Slots");
+                });
+
             modelBuilder.Entity("SemPaiGo.Models.UserApp", b =>
                 {
-                    b.Navigation("Addresses");
+                    b.Navigation("Profile")
+                        .IsRequired();
+
+                    b.Navigation("Student");
+
+                    b.Navigation("Teacher");
 
                     b.Navigation("UserRoles");
                 });
