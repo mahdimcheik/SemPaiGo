@@ -1,3 +1,4 @@
+using System.Text;
 using BonProf.Services;
 using BonProf.Services.Interfaces;
 using Hangfire;
@@ -12,7 +13,6 @@ using SemPaiGo.Contexts;
 using SemPaiGo.Models;
 using SemPaiGo.Services;
 using SemPaiGo.Utilities;
-using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,6 +30,7 @@ using (var scope = app.Services.CreateScope())
 
     // Seed default users
     SeedUsers(scope.ServiceProvider);
+    InitialToken(scope.ServiceProvider);
 }
 
 // Configurer le pipeline de middleware
@@ -57,6 +58,7 @@ static void ConfigureServices(IServiceCollection services)
     services.AddTransient<SlotsService>();
     services.AddTransient<GendersService>();
     services.AddTransient<RolesService>();
+    services.AddSingleton<TokenService>();
     services.AddHttpClient<IFileService, SeaweedService>();
 
     services.AddLogging(loggingBuilder =>
@@ -236,7 +238,6 @@ static void ConfigureSwagger(IServiceCollection services)
                     "JWT Authorization header using the Bearer scheme. \r\n\r\n Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\nExample: \"Bearer 12345abcdef\"",
             }
         );
-
     });
 
     services.AddHttpClient();
@@ -313,7 +314,7 @@ static void SeedUsers(IServiceProvider serviceProvider)
             UserName = EnvironmentVariables.SUPER_ADMIN_EMAIL,
             Email = EnvironmentVariables.SUPER_ADMIN_EMAIL,
             EmailConfirmed = true,
-            StatusId = HardCode.ACCOUNT_ACTIVE
+            StatusId = HardCode.ACCOUNT_ACTIVE,
         };
         var superAdminPassword = EnvironmentVariables.SUPER_ADMIN_PASSWORD;
         if (userManager.FindByEmailAsync(superAdminEmail.Email).Result == null)
@@ -331,6 +332,34 @@ static void SeedUsers(IServiceProvider serviceProvider)
                 userManager.AddToRoleAsync(superAdminEmail, "SuperAdmin").Wait();
             }
         }
+    }
+}
+#endregion
+
+#region initialization
+static void InitialToken(IServiceProvider serviceProvider)
+{
+    using (var scope = serviceProvider.CreateScope())
+    {
+        var tokenService = scope.ServiceProvider.GetRequiredService<TokenService>();
+
+        // Run immediately on startup
+        try
+        {
+            tokenService.GetAsync("BonProf").Wait();
+        }
+        catch (Exception ex)
+        {
+            var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+            logger.LogError(ex, "Failed to initialize token on startup");
+        }
+
+        // Schedule recurring job - Hangfire will resolve dependencies
+        RecurringJob.AddOrUpdate<TokenService>(
+            "RefreshFilerToken",
+            service => service.RefreshAsync("BonProf"),
+            Cron.Daily(1) // 01:00 AM
+        );
     }
 }
 #endregion
