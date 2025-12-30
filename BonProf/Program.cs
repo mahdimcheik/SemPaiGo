@@ -30,8 +30,10 @@ using (var scope = app.Services.CreateScope())
 
     // Seed default users
     SeedUsers(scope.ServiceProvider);
-    InitialToken(scope.ServiceProvider);
 }
+
+// Initialize token AFTER Hangfire server is started
+InitialToken(app.Services);
 
 // Configurer le pipeline de middleware
 ConfigureMiddlewarePipeline(app);
@@ -347,19 +349,29 @@ static void InitialToken(IServiceProvider serviceProvider)
         try
         {
             tokenService.GetAsync("BonProf").Wait();
+            var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+            logger.LogInformation("Token initialized successfully on startup");
         }
         catch (Exception ex)
         {
             var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
             logger.LogError(ex, "Failed to initialize token on startup");
         }
+    }
 
-        // Schedule recurring job - Hangfire will resolve dependencies
-        RecurringJob.AddOrUpdate<TokenService>(
+    // Schedule recurring job - must be done AFTER app.Build() and Hangfire initialization
+    // Use IRecurringJobManager instead of static RecurringJob
+    using (var scope = serviceProvider.CreateScope())
+    {
+        var recurringJobManager = scope.ServiceProvider.GetRequiredService<IRecurringJobManager>();
+        recurringJobManager.AddOrUpdate<TokenService>(
             "RefreshFilerToken",
             service => service.RefreshAsync("BonProf"),
             Cron.Daily(1) // 01:00 AM
         );
+        
+        var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+        logger.LogInformation("Recurring job 'RefreshFilerToken' scheduled successfully");
     }
 }
 #endregion
