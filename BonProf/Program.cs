@@ -366,7 +366,7 @@ static void InitialToken(IServiceProvider serviceProvider)
         var recurringJobManager = scope.ServiceProvider.GetRequiredService<IRecurringJobManager>();
         recurringJobManager.AddOrUpdate<TokenService>(
             "RefreshFilerToken",
-            service => service.RefreshAsync("BonProf"),
+            service => service.GetAsync("BonProf"),
             Cron.Daily(1) // 01:00 AM
         );
         

@@ -2,6 +2,5 @@
 
 public interface ITokenService
 {
-    Task<string> GetAsync(string serviceName);
-    Task RefreshAsync(string serviceName);
+    Task GetAsync(string serviceName);
 }
