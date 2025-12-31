@@ -61,7 +61,8 @@ static void ConfigureServices(IServiceCollection services)
     services.AddTransient<GendersService>();
     services.AddTransient<RolesService>();
     services.AddSingleton<TokenService>();
-    services.AddHttpClient<IFileService, SeaweedService>();
+    //services.AddHttpClient<IFileService, SeaweedService>();
+    services.AddHttpClient<IFileService, FileService>();
 
     services.AddLogging(loggingBuilder =>
     {

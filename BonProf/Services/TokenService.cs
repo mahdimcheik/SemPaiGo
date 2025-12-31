@@ -12,26 +12,46 @@ public class TokenService : ITokenService
     public static string FilerToken = "";
     private readonly HttpClient _httpClient;
     private readonly string _filerUrl;
+    private readonly ILogger<TokenService> _logger;
 
-    public TokenService(HttpClient httpClient)
+    public TokenService(HttpClient httpClient, ILogger<TokenService> logger)
     {
         _httpClient = httpClient;
         _filerUrl = EnvironmentVariables.FilerUrl ?? throw new ArgumentNullException("FilerUrl is missing");
+        _logger = logger;
     }
 
     public async Task GetAsync(string serviceName)
     {
-        var uri = new UriBuilder($"{_filerUrl}/auth");
-        var query = HttpUtility.ParseQueryString(uri.Query);
-        query["serviceName"] = serviceName;
-        uri.Query = query.ToString();
+        try
+        {
+            var uri = new UriBuilder($"{_filerUrl}/auth");
+            var query = HttpUtility.ParseQueryString(uri.Query);
+            query["serviceName"] = serviceName;
+            uri.Query = query.ToString();
 
-        using var response = await _httpClient.GetAsync(uri.Uri);
-        response.EnsureSuccessStatusCode();
+            _logger.LogInformation("Fetching token from: {Uri}", uri.Uri);
 
-        var bodyAsText = await response.Content.ReadAsStringAsync();
-        var bodyAsClass = System.Text.Json.JsonSerializer.Deserialize<FilerAuthResponse>(bodyAsText) ?? throw new Exception("Token deserialization failed");
+            using var response = await _httpClient.GetAsync(uri.Uri);
+            response.EnsureSuccessStatusCode();
 
-        FilerToken =  bodyAsClass.Token;
+            var bodyAsText = await response.Content.ReadAsStringAsync();
+            var bodyAsClass = System.Text.Json.JsonSerializer.Deserialize<FilerAuthResponse>(bodyAsText) 
+                ?? throw new Exception("Token deserialization failed");
+
+            FilerToken = bodyAsClass.Token;
+            _logger.LogInformation("Token fetched successfully");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to fetch token for service {ServiceName}", serviceName);
+            throw;
+        }
+    }
+
+    public async Task RefreshAsync(string serviceName)
+    {
+        _logger.LogInformation("Refreshing token for service {ServiceName}", serviceName);
+        await GetAsync(serviceName);
     }
 }
