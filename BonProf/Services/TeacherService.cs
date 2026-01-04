@@ -25,25 +25,26 @@ public class TeacherService
     /// <summary>
     /// R�cup�re tous les profils enseignants
     /// </summary>
-    public async Task<Response<List<TeacherDetails>>> GetAllTeacherProfilesAsync()
+    public async Task<Response<List<UserDetails>>> GetAllTeacherProfilesAsync()
     {
         try
         {
             var profiles = await _context
-                .Teachers.Include(p => p.User)
-                .Include(p => p.User)
+                .Users
+                .Include(p => p.Teacher)
+                .Include(p => p.Languages)
                 .ToListAsync();
 
-            return new Response<List<TeacherDetails>>
+            return new Response<List<UserDetails>>
             {
                 Status = 200,
                 Message = "Profils enseignants r�cup�r�s avec succ�s",
-                //Data = profiles.Select(p => new TeacherDetails(p)).ToList(),
+                Data = profiles.Select(p => new UserDetails(p, null)).ToList(),
             };
         }
         catch (Exception ex)
         {
-            return new Response<List<TeacherDetails>>
+            return new Response<List<UserDetails>>
             {
                 Status = 500,
                 Message = $"Erreur lors de la r�cup�ration des profils: {ex.Message}",
@@ -145,11 +146,11 @@ public class TeacherService
     /// <summary>
     /// Met � jour le profil enseignant de l'utilisateur connect�
     /// </summary>
-    /// <param name="teacherUpdateDto">Donn�es de mise � jour du profil enseignant</param>
+    /// <param name="userUpdate">Donn�es de mise � jour du profil enseignant</param>
     /// <param name="userPrincipal">Principal de l'utilisateur connect�</param>
     /// <returns>Profil enseignant mis � jour</returns>
     public async Task<Response<UserDetails>> UpdateTeacherProfileAsync(
-        TeacherUpdate teacherUpdateDto,
+        UserUpdate userUpdate,
         ClaimsPrincipal userPrincipal
     )
     {
@@ -170,10 +171,10 @@ public class TeacherService
 
             // V�rifier que l'utilisateur est bien un enseignant
             var teacher = await _context
-                .Teachers
-                .Include(t => t.User)
-                .ThenInclude(p => p.Languages)
-                .FirstOrDefaultAsync(t => t.UserId == user.Id);
+                .Users
+                .Include(t => t.Teacher)
+                .Include(p => p.Languages)
+                .FirstOrDefaultAsync(t => t.Id == user.Id);
 
             if (teacher == null)
             {
@@ -185,56 +186,9 @@ public class TeacherService
                 };
             }
 
-            // Mettre � jour les informations du profil Teacher
-            teacher.Title = teacherUpdateDto.Title;
-            teacher.Description = teacherUpdateDto.Description;
-            teacher.LinkedIn = teacherUpdateDto.LinkedIn;
-            teacher.FaceBook = teacherUpdateDto.FaceBook;
-            teacher.GitHub = teacherUpdateDto.GitHub;
-            teacher.Twitter = teacherUpdateDto.Twitter;
-            teacher.PriceIndicative = teacherUpdateDto.PriceIndicative;
-            teacher.UpdatedAt = DateTimeOffset.UtcNow;
+            var languages = await _context.Languages.ToListAsync();
 
-            // Mettre � jour le profil de base si fourni
-       
-                teacher.User.FirstName = teacherUpdateDto.FirstName;
-                teacher.User.LastName = teacherUpdateDto.LastName;
-                teacher.User.DateOfBirth = teacherUpdateDto.DateOfBirth;
-                teacher.User.GenderId = teacherUpdateDto.GenderId;
-                teacher.User.UpdatedAt = DateTimeOffset.UtcNow;
-          
-
-            // Mettre � jour les langues si fournies
-            if (teacherUpdateDto.LanguageIds != null && teacherUpdateDto.LanguageIds.Any())
-            {
-                // R�cup�rer les langues depuis la base de donn�es
-                var languages = await _context
-                    .Languages
-                    .Where(l => teacherUpdateDto.LanguageIds.Contains(l.Id) && l.ArchivedAt == null)
-                    .ToListAsync();
-
-                // V�rifier que toutes les langues existent
-                if (languages.Count != teacherUpdateDto.LanguageIds.Count)
-                {
-                    await transaction.RollbackAsync();
-                    return new Response<UserDetails>
-                    {
-                        Status = 400,
-                        Message = "Une ou plusieurs langues sp�cifi�es n'existent pas",
-                        Data = null,
-                    };
-                }
-
-                // Remplacer les langues du profil
-                if (teacher.User != null)
-                {
-                    teacher.User.Languages.Clear();
-                    foreach (var language in languages)
-                    {
-                        teacher.User.Languages.Add(language);
-                    }
-                }
-            }
+            userUpdate.UpdateUser(user, languages);
 
             await _context.SaveChangesAsync();
             await transaction.CommitAsync();

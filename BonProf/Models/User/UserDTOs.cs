@@ -14,9 +14,9 @@ public class UserDetails
     
     public required DateTimeOffset DateOfBirth { get; set; }
     
-    public required string FirstName { get; set; } = string.Empty;
+    public required string FirstName { get; set; } 
 
-    public required string LastName { get; set; } = string.Empty;
+    public required string LastName { get; set; } 
 
     public string? ImgUrl { get; set; }
 
@@ -46,11 +46,9 @@ public class UserDetails
         Teacher = user.Teacher is not null ? new TeacherDetails(user.Teacher) : null;
         Student = user.Student is not null ? new StudentDetails(user.Student) : null;
 
-        Formations = user.Formations.Select(f => new FormationDetails(f)).ToList() ;
-        Addresses = user.Addresses.Select(f => new AddressDetails(f)).ToList() ;
-        Languages = user.Languages.Select(f => new LanguageDetails(f)).ToList() ;
-
-
+        Formations = user.Formations?.Select(f => new FormationDetails(f)).ToList() ?? [];
+        Addresses = user.Addresses?.Select(f => new AddressDetails(f)).ToList() ?? [];
+        Languages = user.Languages?.Select(f => new LanguageDetails(f)).ToList() ?? [];
     }
 }
 
@@ -172,10 +170,33 @@ public class Login
 }
 
 public class UserUpdate
-{    
-    public void UpdateUser(UserApp user)
+{
+    [Required]
+    [MaxLength(64)]
+    public string FirstName { get; set; } = string.Empty;
+
+    [Required]
+    [MaxLength(64)]
+    public string LastName { get; set; } = string.Empty;
+
+    [Required]
+    public required DateTimeOffset DateOfBirth { get; set; }
+    [Required]
+    public Guid GenderId { get; set; }
+    public List<Guid> LanguagesIds { get; set; }
+    public TeacherUpdate? Teacher { get; set; }
+
+    public void UpdateUser(UserApp user, List<Language> languages)
     {
-        user.UpdatedAt  = DateTimeOffset.UtcNow;
+        user.FirstName = FirstName;
+        user.FirstName = LastName;
+        user.DateOfBirth =  DateOfBirth;
+        user.Languages.Clear();
+        user.Languages = languages.Where(l => LanguagesIds.Any(lid => l.Id == lid )).ToList();
+        if (Teacher is not null &&  user.Teacher is not null)
+        {
+            Teacher.UpdateTeacher(user.Teacher);
+        }
     }
 }
 
