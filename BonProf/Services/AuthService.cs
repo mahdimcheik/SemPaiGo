@@ -131,7 +131,7 @@ public class AuthService
             await context.SaveChangesAsync();
 
             // creer les profiles
-            //await CreateProfile(newUser, newUserDTO);
+            await CreateProfile(newUser, newUserDTO);
             await transaction.CommitAsync();
 
             try
@@ -176,15 +176,7 @@ public class AuthService
         {
             if (userCreate.RoleId == HardCode.ROLE_TEACHER)
             {
-                Teacher newTeacher = new Teacher
-                {
-                    Id = newUser.Id,
-                    UserId = newUser.Id,
-                    LinkedIn = null,
-                    FaceBook = null,
-                    GitHub = null,
-                    Twitter = null,
-                };
+                Teacher newTeacher = new Teacher(newUser.Id, userCreate.Teacher?.Title, userCreate.Teacher?.Description);
                 await context.Teachers.AddAsync(newTeacher);
                 await context.SaveChangesAsync();
             }
@@ -200,97 +192,6 @@ public class AuthService
             throw;
         }
     }
-
-    public async Task<Response<UserDetails>> GetPublicInformations(Guid userId)
-    {
-        var user = await context.Users.FirstOrDefaultAsync(u => u.Id == userId);
-        if (user is null)
-        {
-            return new Response<UserDetails>
-            {
-                Message = "Demande acceptée",
-                Status = 400,
-                Data = null,
-            };
-        }
-        var userRoles = await userManager.GetRolesAsync(user);
-        var roles = context.Roles.ToList();
-
-        var rolesDetailed = roles
-            .Where(r => userRoles.Contains(r.Name ?? string.Empty))
-            .Select(r => new RoleDetails(r))
-            .ToList();
-
-        return new Response<UserDetails>
-        {
-            Message = "Demande acceptée",
-            Status = 200,
-            Data = new UserDetails(user, rolesDetailed),
-        };
-    }
-
-    /// <summary>
-    /// Met à jour les informations d'un utilisateur
-    /// </summary>
-    /// <param name="model">Données de mise à jour</param>
-    /// <param name="UserPrincipal">Principal de l'utilisateur connecté</param>
-    /// <returns>Réponse contenant les informations mises à jour</returns>
-    public async Task<Response<UserDetails>> Update(UserUpdate model, ClaimsPrincipal UserPrincipal)
-    {
-        var user = CheckUser.GetUserFromClaim(UserPrincipal, context);
-        if (user is null)
-        {
-            return new Response<UserDetails>
-            {
-                Status = 40,
-                Message = "Le compte n'existe pas ou ne correspond pas",
-            };
-        }
-
-        using var transaction = await context.Database.BeginTransactionAsync();
-        try
-        {
-            // Load user with existing relationships
-            var userWithLanguages = await context
-                .Users.Where(u => u.Id == user.Id)
-                .FirstOrDefaultAsync();
-
-            if (userWithLanguages == null)
-            {
-                return new Response<UserDetails>
-                {
-                    Status = 404,
-                    Message = "Utilisateur non trouvé",
-                };
-            }
-
-            // Update basic data
-            model.UpdateUser(userWithLanguages);
-
-            await context.SaveChangesAsync();
-            await transaction.CommitAsync();
-
-            var userRoles = await userManager.GetRolesAsync(userWithLanguages);
-            var roles = context.Roles.ToList();
-
-            var rolesDetailed = roles
-                .Where(r => userRoles.Contains(r.Name ?? string.Empty))
-                .Select(r => new RoleDetails(r))
-                .ToList();
-            return new Response<UserDetails>
-            {
-                Message = "Profil mis à jour",
-                Status = 200,
-                Data = new UserDetails(userWithLanguages, rolesDetailed),
-            };
-        }
-        catch (Exception ex)
-        {
-            await transaction.RollbackAsync();
-            return new Response<UserDetails> { Status = 500, Message = ex.Message };
-        }
-    }
-
     /// <summary>
     /// Confirme l'email d'un utilisateur
     /// </summary>

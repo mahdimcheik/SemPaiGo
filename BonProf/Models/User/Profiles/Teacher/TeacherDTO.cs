@@ -81,17 +81,6 @@ public class TeacherCreate
     /// <example>Enseignant passionn� avec 10 ans d'exp�rience</example>
     [StringLength(1000, ErrorMessage = "La description ne peut pas d�passer 1000 caract�res")]
     public string? Description { get; set; }
-
-    /// <summary>
-    /// Identifiant de l'utilisateur associ�
-    /// </summary>
-    [Required(ErrorMessage = "L'identifiant utilisateur est requis")]
-    public Guid UserId { get; set; }
-    public string? LinkedIn { get; set; }
-    public string? FaceBook { get; set; }
-    public string? GitHub { get; set; }
-    public string? Twitter { get; set; }
-    public decimal PriceIndicative { get; set; }
 }
 
 /// <summary>

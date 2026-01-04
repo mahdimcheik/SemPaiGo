@@ -82,6 +82,14 @@ public class ConfirmAccount
 public class UserCreate
 {
     [Required]
+    [MaxLength(64)]
+    public string FirstName { get; set; } = string.Empty;
+
+    [Required]
+    [MaxLength(64)]
+    public string LastName { get; set; } = string.Empty;
+    
+    [Required]
     [EmailAddress]
     public required string Email { get; set; }
 
@@ -95,18 +103,14 @@ public class UserCreate
     public required bool PrivacyPolicyConsent { get; set; } = false;
     [Required]
     public Guid RoleId { get; set; } = HardCode.ROLE_STUDENT;
-    
-    [Required]
-    [MaxLength(64)]
-    public string FirstName { get; set; } = string.Empty;
 
-    [Required]
-    [MaxLength(64)]
-    public string LastName { get; set; } = string.Empty;
     [Required]
     public required DateTimeOffset DateOfBirth { get; set; }
     [Required]
     public Guid GenderId { get; set; }
+
+    public TeacherCreate? Teacher { get; set; }
+    // public StudentCreate? Student { get; set; }
 }
 
 public class PasswordReset
