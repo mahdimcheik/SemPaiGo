@@ -96,7 +96,7 @@ public class AddressDetails
         AdditionalInfo = address.AdditionalInfo;
         Longitude = address.Longitude;
         Latitude = address.Latitude;
-        ProfileId = address.ProfileId;
+        ProfileId = address.UserId;
         TypeId = address.TypeId;
         CreatedAt = address.CreatedAt;
         UpdatedAt = address.UpdatedAt;

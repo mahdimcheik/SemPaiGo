@@ -23,7 +23,7 @@ public class TeacherService
     }
 
     /// <summary>
-    /// Récupère tous les profils enseignants
+    /// Rï¿½cupï¿½re tous les profils enseignants
     /// </summary>
     public async Task<Response<List<TeacherDetails>>> GetAllTeacherProfilesAsync()
     {
@@ -37,7 +37,7 @@ public class TeacherService
             return new Response<List<TeacherDetails>>
             {
                 Status = 200,
-                Message = "Profils enseignants récupérés avec succès",
+                Message = "Profils enseignants rï¿½cupï¿½rï¿½s avec succï¿½s",
                 //Data = profiles.Select(p => new TeacherDetails(p)).ToList(),
             };
         }
@@ -46,13 +46,13 @@ public class TeacherService
             return new Response<List<TeacherDetails>>
             {
                 Status = 500,
-                Message = $"Erreur lors de la récupération des profils: {ex.Message}",
+                Message = $"Erreur lors de la rï¿½cupï¿½ration des profils: {ex.Message}",
             };
         }
     }
 
     /// <summary>
-    /// Récupère un profil enseignant par son identifiant
+    /// Rï¿½cupï¿½re un profil enseignant par son identifiant
     /// </summary>
     public async Task<Response<UserDetails>> GetTeacherFullProfileAsync(ClaimsPrincipal User)
     {
@@ -64,16 +64,14 @@ public class TeacherService
                 return new Response<UserDetails>
                 {
                     Status = 404,
-                    Message = "Profil enseignant non trouvé",
+                    Message = "Profil enseignant non trouvï¿½",
                 };
             }
             var teacher = await _context
                 .Users
                 .Where(p => p.Id == user.Id)
-                .Include(p => p.Profile)
-                .ThenInclude(p => p.Gender)
-                .Include(p => p.Profile)
-                .ThenInclude(p => p.Languages)
+                .Include(p => p.Gender)
+                .Include(p => p.Languages)
                 .Include(p => p.Teacher)
                 .FirstOrDefaultAsync();
                 
@@ -83,7 +81,7 @@ public class TeacherService
                 return new Response<UserDetails>
                 {
                     Status = 404,
-                    Message = "Profil enseignant non trouvé",
+                    Message = "Profil enseignant non trouvï¿½",
                 };
             }
 
@@ -92,7 +90,7 @@ public class TeacherService
             return new Response<UserDetails>
             {
                 Status = 200,
-                Message = "Profil enseignant récupéré avec succès",
+                Message = "Profil enseignant rï¿½cupï¿½rï¿½ avec succï¿½s",
                 Data = new UserDetails(teacher, null),
             };
         }
@@ -101,13 +99,13 @@ public class TeacherService
             return new Response<UserDetails>
             {
                 Status = 500,
-                Message = $"Erreur lors de la récupération du profil: {ex.Message}",
+                Message = $"Erreur lors de la rï¿½cupï¿½ration du profil: {ex.Message}",
             };
         }
     }
 
     /// <summary>
-    /// Récupère un profil enseignant par l'identifiant de l'utilisateur
+    /// Rï¿½cupï¿½re un profil enseignant par l'identifiant de l'utilisateur
     /// </summary>
     public async Task<Response<UserDetails>> GetTeacherProfileByUserIdAsync(Guid userId)
     {
@@ -116,7 +114,6 @@ public class TeacherService
             var teacher = await _context
                 .Users
                 .Where(p => p.Id == userId)
-                .Include(p => p.Profile)
                 .Include(p => p.Teacher)
                 .FirstOrDefaultAsync();
             if (teacher == null)
@@ -124,14 +121,14 @@ public class TeacherService
                 return new Response<UserDetails>
                 {
                     Status = 404,
-                    Message = "Profil enseignant non trouvé",
+                    Message = "Profil enseignant non trouvï¿½",
                 };
             }
 
             return new Response<UserDetails>
             {
                 Status = 200,
-                Message = "Profil enseignant récupéré avec succès",
+                Message = "Profil enseignant rï¿½cupï¿½rï¿½ avec succï¿½s",
                 Data = new UserDetails(teacher, null),
             };
         }
@@ -140,17 +137,17 @@ public class TeacherService
             return new Response<UserDetails>
             {
                 Status = 500,
-                Message = $"Erreur lors de la récupération du profil: {ex.Message}",
+                Message = $"Erreur lors de la rï¿½cupï¿½ration du profil: {ex.Message}",
             };
         }
     }
 
     /// <summary>
-    /// Met à jour le profil enseignant de l'utilisateur connecté
+    /// Met ï¿½ jour le profil enseignant de l'utilisateur connectï¿½
     /// </summary>
-    /// <param name="teacherUpdateDto">Données de mise à jour du profil enseignant</param>
-    /// <param name="userPrincipal">Principal de l'utilisateur connecté</param>
-    /// <returns>Profil enseignant mis à jour</returns>
+    /// <param name="teacherUpdateDto">Donnï¿½es de mise ï¿½ jour du profil enseignant</param>
+    /// <param name="userPrincipal">Principal de l'utilisateur connectï¿½</param>
+    /// <returns>Profil enseignant mis ï¿½ jour</returns>
     public async Task<Response<UserDetails>> UpdateTeacherProfileAsync(
         TeacherUpdate teacherUpdateDto,
         ClaimsPrincipal userPrincipal
@@ -159,23 +156,22 @@ public class TeacherService
         using var transaction = await _context.Database.BeginTransactionAsync();
         try
         {
-            // Récupérer l'utilisateur connecté
+            // Rï¿½cupï¿½rer l'utilisateur connectï¿½
             var user = CheckUser.GetUserFromClaim(userPrincipal, _context);
             if (user == null)
             {
                 return new Response<UserDetails>
                 {
                     Status = 401,
-                    Message = "Utilisateur non authentifié",
+                    Message = "Utilisateur non authentifiï¿½",
                     Data = null,
                 };
             }
 
-            // Vérifier que l'utilisateur est bien un enseignant
+            // Vï¿½rifier que l'utilisateur est bien un enseignant
             var teacher = await _context
                 .Teachers
                 .Include(t => t.User)
-                .ThenInclude(u => u.Profile)
                 .ThenInclude(p => p.Languages)
                 .FirstOrDefaultAsync(t => t.UserId == user.Id);
 
@@ -184,12 +180,12 @@ public class TeacherService
                 return new Response<UserDetails>
                 {
                     Status = 404,
-                    Message = "Profil enseignant non trouvé",
+                    Message = "Profil enseignant non trouvï¿½",
                     Data = null,
                 };
             }
 
-            // Mettre à jour les informations du profil Teacher
+            // Mettre ï¿½ jour les informations du profil Teacher
             teacher.Title = teacherUpdateDto.Title;
             teacher.Description = teacherUpdateDto.Description;
             teacher.LinkedIn = teacherUpdateDto.LinkedIn;
@@ -199,44 +195,43 @@ public class TeacherService
             teacher.PriceIndicative = teacherUpdateDto.PriceIndicative;
             teacher.UpdatedAt = DateTimeOffset.UtcNow;
 
-            // Mettre à jour le profil de base si fourni
-            if (teacherUpdateDto.Profile != null && teacher.User?.Profile != null)
-            {
-                teacher.User.Profile.FirstName = teacherUpdateDto.Profile.FirstName;
-                teacher.User.Profile.LastName = teacherUpdateDto.Profile.LastName;
-                teacher.User.Profile.DateOfBirth = teacherUpdateDto.Profile.DateOfBirth;
-                teacher.User.Profile.GenderId = teacherUpdateDto.Profile.GenderId;
-                teacher.User.Profile.UpdatedAt = DateTimeOffset.UtcNow;
-            }
+            // Mettre ï¿½ jour le profil de base si fourni
+       
+                teacher.User.FirstName = teacherUpdateDto.FirstName;
+                teacher.User.LastName = teacherUpdateDto.LastName;
+                teacher.User.DateOfBirth = teacherUpdateDto.DateOfBirth;
+                teacher.User.GenderId = teacherUpdateDto.GenderId;
+                teacher.User.UpdatedAt = DateTimeOffset.UtcNow;
+          
 
-            // Mettre à jour les langues si fournies
+            // Mettre ï¿½ jour les langues si fournies
             if (teacherUpdateDto.LanguageIds != null && teacherUpdateDto.LanguageIds.Any())
             {
-                // Récupérer les langues depuis la base de données
+                // Rï¿½cupï¿½rer les langues depuis la base de donnï¿½es
                 var languages = await _context
                     .Languages
                     .Where(l => teacherUpdateDto.LanguageIds.Contains(l.Id) && l.ArchivedAt == null)
                     .ToListAsync();
 
-                // Vérifier que toutes les langues existent
+                // Vï¿½rifier que toutes les langues existent
                 if (languages.Count != teacherUpdateDto.LanguageIds.Count)
                 {
                     await transaction.RollbackAsync();
                     return new Response<UserDetails>
                     {
                         Status = 400,
-                        Message = "Une ou plusieurs langues spécifiées n'existent pas",
+                        Message = "Une ou plusieurs langues spï¿½cifiï¿½es n'existent pas",
                         Data = null,
                     };
                 }
 
                 // Remplacer les langues du profil
-                if (teacher.User?.Profile != null)
+                if (teacher.User != null)
                 {
-                    teacher.User.Profile.Languages.Clear();
+                    teacher.User.Languages.Clear();
                     foreach (var language in languages)
                     {
-                        teacher.User.Profile.Languages.Add(language);
+                        teacher.User.Languages.Add(language);
                     }
                 }
             }
@@ -244,17 +239,13 @@ public class TeacherService
             await _context.SaveChangesAsync();
             await transaction.CommitAsync();
 
-            // Recharger les données complètes pour la réponse
+            // Recharger les donnï¿½es complï¿½tes pour la rï¿½ponse
             var updatedUser = await _context
                 .Users
-                .Include(u => u.Profile)
-                .ThenInclude(p => p.Gender)
-                .Include(u => u.Profile)
-                .ThenInclude(p => p.Languages)
-                .Include(u => u.Profile)
-                .ThenInclude(p => p.Formations)
-                .Include(u => u.Profile)
-                .ThenInclude(p => p.Addresses)
+                .Include(p => p.Gender)
+                .Include(p => p.Languages)
+                .Include(p => p.Formations)
+                .Include(p => p.Addresses)
                 .Include(u => u.Teacher)
                 .ThenInclude(t => t.Cursuses)
                 .FirstOrDefaultAsync(u => u.Id == user.Id);
@@ -262,7 +253,7 @@ public class TeacherService
             return new Response<UserDetails>
             {
                 Status = 200,
-                Message = "Profil enseignant mis à jour avec succès",
+                Message = "Profil enseignant mis ï¿½ jour avec succï¿½s",
                 Data = new UserDetails(updatedUser!, null),
             };
         }
@@ -272,7 +263,7 @@ public class TeacherService
             return new Response<UserDetails>
             {
                 Status = 500,
-                Message = $"Erreur lors de la mise à jour du profil: {ex.Message}",
+                Message = $"Erreur lors de la mise ï¿½ jour du profil: {ex.Message}",
                 Data = null,
             };
         }

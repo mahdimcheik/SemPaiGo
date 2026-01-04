@@ -34,9 +34,9 @@ public class Address : BaseModel
     public float? Latitude { get; set; }
     
     [Required]
-    [ForeignKey(nameof(Profile))]
-    public Guid ProfileId { get; set; }
-    public Profile? Profile { get; set; }
+    [ForeignKey(nameof(User))]
+    public Guid UserId { get; set; }
+    public UserApp? User { get; set; }
     
     [Required]
     [ForeignKey(nameof(Type))]
@@ -58,7 +58,7 @@ public class Address : BaseModel
         AdditionalInfo = addressDto.AdditionalInfo;
         Longitude = addressDto.Longitude;
         Latitude = addressDto.Latitude;
-        ProfileId = addressDto.ProfileId;
+        UserId = addressDto.ProfileId;
         TypeId = HardCode.TYPE_ADDRESS_HOME;
         CreatedAt = DateTimeOffset.UtcNow;
     }

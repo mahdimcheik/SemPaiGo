@@ -93,11 +93,9 @@ public class AuthService
             newUser = await context
                 .Users.Where(u => u.Id == newUser.Id)
                 .Include(u => u.Status)
-                .Include(u => u.Profile)
-                .ThenInclude(x => x.Gender)
+                .Include(x => x.Gender)
                 .FirstOrDefaultAsync();
 
-            newUser.Profile.DateOfBirth = newUserDTO.Profile.DateOfBirth;
 
             if (newUser is null)
             {
@@ -345,8 +343,7 @@ public class AuthService
 
         var user = await context
             .Users.Where(u => u.Id == refreshTokenDB.UserId)
-            .Include(x => x.Profile)
-            .ThenInclude(p => p.Gender)
+            .Include(p => p.Gender)
             .Include(u => u.Teacher)
             .Include(u => u.Student)
             .FirstOrDefaultAsync();
@@ -486,8 +483,7 @@ public class AuthService
         //var user = await userManager.FindByEmailAsync(model.Email);
         var user = await context
             .Users.Where(u => u.UserName.ToLower() == model.Email)
-            .Include(x => x.Profile)
-            .ThenInclude(p => p.Gender)
+            .Include(p => p.Gender)
             .Include(u => u.Teacher)
             .Include(u => u.Student)
             .FirstOrDefaultAsync();

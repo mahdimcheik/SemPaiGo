@@ -19,8 +19,6 @@ public class UserDetails
 
     [Required]
     public ICollection<RoleDetails>? Roles { get; set; }
-    [Required]
-    public ProfileDetails Profile { get; set; }
 
     public TeacherDetails? Teacher { get; set; }
     public StudentDetails? Student { get; set; }
@@ -31,7 +29,6 @@ public class UserDetails
         Email = user.Email ?? user.UserName ?? "";
         Roles = roles;
         Status = user.Status is not null ?  new StatusAccountDetails(user.Status) : null;
-        Profile = new ProfileDetails(user.Profile);
         Teacher = user.Teacher is not null ? new TeacherDetails(user.Teacher) : null;
         Student = user.Student is not null ? new StudentDetails(user.Student) : null;
     }
@@ -78,9 +75,18 @@ public class UserCreate
     public required bool PrivacyPolicyConsent { get; set; } = false;
     [Required]
     public Guid RoleId { get; set; } = HardCode.ROLE_STUDENT;
+    
+    [Required]
+    [MaxLength(64)]
+    public string FirstName { get; set; } = string.Empty;
 
     [Required]
-    public ProfileCreate Profile{ get; set; }
+    [MaxLength(64)]
+    public string LastName { get; set; } = string.Empty;
+    [Required]
+    public required DateTimeOffset DateOfBirth { get; set; }
+    [Required]
+    public Guid GenderId { get; set; }
 }
 
 public class PasswordReset

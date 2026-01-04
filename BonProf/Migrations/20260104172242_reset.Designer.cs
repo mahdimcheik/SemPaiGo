@@ -12,8 +12,8 @@ using SemPaiGo.Contexts;
 namespace BonProf.Migrations
 {
     [DbContext(typeof(MainContext))]
-    [Migration("20251220234425_correction")]
-    partial class correction
+    [Migration("20260104172242_reset")]
+    partial class reset
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -60,55 +60,6 @@ namespace BonProf.Migrations
                     b.HasIndex("CursusId");
 
                     b.ToTable("Products");
-                });
-
-            modelBuilder.Entity("BonProf.Models.Profile", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime?>("ArchivedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime>("DateOfBirth")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasMaxLength(64)
-                        .HasColumnType("character varying(64)");
-
-                    b.Property<Guid>("GenderId")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("ImgUrl")
-                        .HasMaxLength(500)
-                        .HasColumnType("character varying(500)");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasMaxLength(64)
-                        .HasColumnType("character varying(64)");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("GenderId");
-
-                    b.HasIndex("UserId")
-                        .IsUnique();
-
-                    b.ToTable("Profiles");
                 });
 
             modelBuilder.Entity("CategoryCursusCursus", b =>
@@ -272,9 +223,6 @@ namespace BonProf.Migrations
                     b.Property<float?>("Longitude")
                         .HasColumnType("real");
 
-                    b.Property<Guid>("ProfileId")
-                        .HasColumnType("uuid");
-
                     b.Property<string>("Street")
                         .IsRequired()
                         .HasMaxLength(250)
@@ -286,6 +234,9 @@ namespace BonProf.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("ZipCode")
                         .IsRequired()
                         .HasMaxLength(20)
@@ -293,9 +244,9 @@ namespace BonProf.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ProfileId");
-
                     b.HasIndex("TypeId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Addresses");
                 });
@@ -494,9 +445,6 @@ namespace BonProf.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)");
 
-                    b.Property<Guid?>("ProfileId")
-                        .HasColumnType("uuid");
-
                     b.Property<Guid>("TeacherId")
                         .HasColumnType("uuid");
 
@@ -508,11 +456,14 @@ namespace BonProf.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<Guid?>("UserAppId")
+                        .HasColumnType("uuid");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("ProfileId");
-
                     b.HasIndex("TeacherId");
+
+                    b.HasIndex("UserAppId");
 
                     b.ToTable("Formations");
                 });
@@ -605,15 +556,15 @@ namespace BonProf.Migrations
                         .HasMaxLength(64)
                         .HasColumnType("character varying(64)");
 
-                    b.Property<Guid?>("ProfileId")
-                        .HasColumnType("uuid");
-
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<Guid?>("UserAppId")
+                        .HasColumnType("uuid");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("ProfileId");
+                    b.HasIndex("UserAppId");
 
                     b.ToTable("Languages");
 
@@ -1502,12 +1453,32 @@ namespace BonProf.Migrations
                     b.Property<bool>("DataProcessingConsent")
                         .HasColumnType("boolean");
 
+                    b.Property<DateTime>("DateOfBirth")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("boolean");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
+                    b.Property<Guid>("GenderId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("ImgUrl")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("boolean");
@@ -1552,6 +1523,8 @@ namespace BonProf.Migrations
                         .HasColumnType("character varying(256)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("GenderId");
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
@@ -1637,25 +1610,6 @@ namespace BonProf.Migrations
                     b.Navigation("Cursus");
                 });
 
-            modelBuilder.Entity("BonProf.Models.Profile", b =>
-                {
-                    b.HasOne("SemPaiGo.Models.Gender", "Gender")
-                        .WithMany()
-                        .HasForeignKey("GenderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("SemPaiGo.Models.UserApp", "User")
-                        .WithOne("Profile")
-                        .HasForeignKey("BonProf.Models.Profile", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Gender");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("CategoryCursusCursus", b =>
                 {
                     b.HasOne("SemPaiGo.Models.CategoryCursus", null)
@@ -1732,21 +1686,21 @@ namespace BonProf.Migrations
 
             modelBuilder.Entity("SemPaiGo.Models.Address", b =>
                 {
-                    b.HasOne("BonProf.Models.Profile", "Profile")
-                        .WithMany("Addresses")
-                        .HasForeignKey("ProfileId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("SemPaiGo.Models.TypeAddress", "Type")
                         .WithMany()
                         .HasForeignKey("TypeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Profile");
+                    b.HasOne("SemPaiGo.Models.UserApp", "User")
+                        .WithMany("Addresses")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Type");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("SemPaiGo.Models.Cursus", b =>
@@ -1781,24 +1735,24 @@ namespace BonProf.Migrations
 
             modelBuilder.Entity("SemPaiGo.Models.Formation", b =>
                 {
-                    b.HasOne("BonProf.Models.Profile", null)
-                        .WithMany("Formations")
-                        .HasForeignKey("ProfileId");
-
                     b.HasOne("SemPaiGo.Models.Teacher", "Teacher")
                         .WithMany()
                         .HasForeignKey("TeacherId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("SemPaiGo.Models.UserApp", null)
+                        .WithMany("Formations")
+                        .HasForeignKey("UserAppId");
+
                     b.Navigation("Teacher");
                 });
 
             modelBuilder.Entity("SemPaiGo.Models.Language", b =>
                 {
-                    b.HasOne("BonProf.Models.Profile", null)
+                    b.HasOne("SemPaiGo.Models.UserApp", null)
                         .WithMany("Languages")
-                        .HasForeignKey("ProfileId");
+                        .HasForeignKey("UserAppId");
                 });
 
             modelBuilder.Entity("SemPaiGo.Models.Order", b =>
@@ -1970,22 +1924,21 @@ namespace BonProf.Migrations
 
             modelBuilder.Entity("SemPaiGo.Models.UserApp", b =>
                 {
+                    b.HasOne("SemPaiGo.Models.Gender", "Gender")
+                        .WithMany()
+                        .HasForeignKey("GenderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("SempaiGo.Models.StatusAccount", "Status")
                         .WithMany()
                         .HasForeignKey("StatusId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("Gender");
+
                     b.Navigation("Status");
-                });
-
-            modelBuilder.Entity("BonProf.Models.Profile", b =>
-                {
-                    b.Navigation("Addresses");
-
-                    b.Navigation("Formations");
-
-                    b.Navigation("Languages");
                 });
 
             modelBuilder.Entity("SemPaiGo.Models.Language", b =>
@@ -2026,8 +1979,11 @@ namespace BonProf.Migrations
 
             modelBuilder.Entity("SemPaiGo.Models.UserApp", b =>
                 {
-                    b.Navigation("Profile")
-                        .IsRequired();
+                    b.Navigation("Addresses");
+
+                    b.Navigation("Formations");
+
+                    b.Navigation("Languages");
 
                     b.Navigation("Student");
 

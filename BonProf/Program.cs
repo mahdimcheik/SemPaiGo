@@ -310,7 +310,11 @@ static void SeedUsers(IServiceProvider serviceProvider)
             UserName = EnvironmentVariables.SUPER_ADMIN_EMAIL,
             Email = EnvironmentVariables.SUPER_ADMIN_EMAIL,
             EmailConfirmed = true,
-            StatusId = HardCode.ACCOUNT_ACTIVE
+            StatusId = HardCode.ACCOUNT_ACTIVE,
+            GenderId = HardCode.GENDER_OTHER,
+            FirstName = "Super",
+            LastName = "Admin",
+            DateOfBirth = DateTimeOffset.Now.AddYears((-20))
         };
         var superAdminPassword = EnvironmentVariables.SUPER_ADMIN_PASSWORD;
         if (userManager.FindByEmailAsync(superAdminEmail.Email).Result == null)

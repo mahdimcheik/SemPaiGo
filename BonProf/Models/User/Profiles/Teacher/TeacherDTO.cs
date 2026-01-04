@@ -5,7 +5,7 @@ using BonProf.Models;
 namespace SemPaiGo.Models;
 
 /// <summary>
-/// DTO pour l'affichage détaillé du profil d'un enseignant
+/// DTO pour l'affichage dï¿½taillï¿½ du profil d'un enseignant
 /// </summary>
 public class TeacherDetails
 {
@@ -18,23 +18,23 @@ public class TeacherDetails
     /// <summary>
     /// Titre professionnel de l'enseignant
     /// </summary>
-    /// <example>Professeur de Mathématiques</example>
+    /// <example>Professeur de Mathï¿½matiques</example>
     public string? Title { get; set; }
 
     /// <summary>
     /// Description du profil de l'enseignant
     /// </summary>
-    /// <example>Enseignant passionné avec 10 ans d'expérience</example>
+    /// <example>Enseignant passionnï¿½ avec 10 ans d'expï¿½rience</example>
     public string? Description { get; set; }
 
     /// <summary>
-    /// Date de création du profil
+    /// Date de crï¿½ation du profil
     /// </summary>
     [Required]
     public DateTimeOffset CreatedAt { get; set; }
 
     /// <summary>
-    /// Date de dernière mise à jour du profil
+    /// Date de derniï¿½re mise ï¿½ jour du profil
     /// </summary>
     public DateTimeOffset? UpdatedAt { get; set; }
     public List<CursusDetails> Cursuses { get; set; }
@@ -64,26 +64,26 @@ public class TeacherDetails
 }
 
 /// <summary>
-/// DTO pour la création d'un profil enseignant
+/// DTO pour la crï¿½ation d'un profil enseignant
 /// </summary>
 public class TeacherCreate
 {
     /// <summary>
     /// Titre professionnel de l'enseignant
     /// </summary>
-    /// <example>Professeur de Mathématiques</example>
-    [StringLength(200, ErrorMessage = "Le titre ne peut pas dépasser 200 caractères")]
+    /// <example>Professeur de Mathï¿½matiques</example>
+    [StringLength(200, ErrorMessage = "Le titre ne peut pas dï¿½passer 200 caractï¿½res")]
     public string? Title { get; set; }
 
     /// <summary>
     /// Description du profil de l'enseignant
     /// </summary>
-    /// <example>Enseignant passionné avec 10 ans d'expérience</example>
-    [StringLength(1000, ErrorMessage = "La description ne peut pas dépasser 1000 caractères")]
+    /// <example>Enseignant passionnï¿½ avec 10 ans d'expï¿½rience</example>
+    [StringLength(1000, ErrorMessage = "La description ne peut pas dï¿½passer 1000 caractï¿½res")]
     public string? Description { get; set; }
 
     /// <summary>
-    /// Identifiant de l'utilisateur associé
+    /// Identifiant de l'utilisateur associï¿½
     /// </summary>
     [Required(ErrorMessage = "L'identifiant utilisateur est requis")]
     public Guid UserId { get; set; }
@@ -95,28 +95,35 @@ public class TeacherCreate
 }
 
 /// <summary>
-/// DTO pour la mise à jour d'un profil enseignant
+/// DTO pour la mise ï¿½ jour d'un profil enseignant
 /// </summary>
 public class TeacherUpdate
 {
     /// <summary>
     /// Titre professionnel de l'enseignant
     /// </summary>
-    /// <example>Professeur de Mathématiques</example>
-    [StringLength(200, ErrorMessage = "Le titre ne peut pas dépasser 200 caractères")]
+    /// <example>Professeur de Mathï¿½matiques</example>
+    [StringLength(200, ErrorMessage = "Le titre ne peut pas dï¿½passer 200 caractï¿½res")]
     public string? Title { get; set; }
 
     /// <summary>
     /// Description du profil de l'enseignant
     /// </summary>
-    /// <example>Enseignant passionné avec 10 ans d'expérience</example>
-    [StringLength(1000, ErrorMessage = "La description ne peut pas dépasser 1000 caractères")]
+    /// <example>Enseignant passionnï¿½ avec 10 ans d'expï¿½rience</example>
+    [StringLength(1000, ErrorMessage = "La description ne peut pas dï¿½passer 1000 caractï¿½res")]
     public string? Description { get; set; }
+    [Required]
+    [MaxLength(64)]
+    public string FirstName { get; set; } = string.Empty;
 
-    /// <summary>
-    /// Informations du profil de base (prénom, nom, date de naissance, genre)
-    /// </summary>
-    public ProfileUpdate? Profile { get; set; }
+    [Required]
+    [MaxLength(64)]
+    public string LastName { get; set; } = string.Empty;
+    [Required]
+    public required DateTimeOffset DateOfBirth { get; set; }
+    
+    [Required]
+    public Guid GenderId { get; set; }
 
     /// <summary>
     /// Liste des identifiants de langues

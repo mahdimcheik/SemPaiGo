@@ -29,7 +29,7 @@ public class AddressesService(MainContext context)
                     Message = $"L'utilisateur n'existe pas",
                 };
             }
-            var profile = await context.Profiles.FirstOrDefaultAsync(p => p.UserId == user.Id);
+            var profile = await context.Users.FirstOrDefaultAsync(p => p.Id == user.Id);
             if (profile is null)
             {
                 return new Response<List<AddressDetails>>
@@ -41,7 +41,7 @@ public class AddressesService(MainContext context)
 
             var addresses = await context.Addresses
                 .AsNoTracking()
-                .Where(a => a.ProfileId == profile.Id)
+                .Where(a => a.UserId == profile.Id)
                 .OrderByDescending(a => a.CreatedAt)
                 .Select(a => new AddressDetails(a))
                 .ToListAsync();
@@ -85,7 +85,7 @@ public class AddressesService(MainContext context)
                     Data = null
                 };
             }
-            var profile = await context.Profiles.FirstOrDefaultAsync(p => p.UserId == user.Id);
+            var profile = await context.Users.FirstOrDefaultAsync(p => p.Id == user.Id);
             if (profile is null)
             {
                 return new Response<AddressDetails>
@@ -95,7 +95,7 @@ public class AddressesService(MainContext context)
                     Data = null
                 };
             }
-            var addressesCount = await context.Addresses.CountAsync(a => a.ProfileId == profile.Id && a.ArchivedAt == null);
+            var addressesCount = await context.Addresses.CountAsync(a => a.UserId == profile.Id && a.ArchivedAt == null);
 
             if (addressesCount >= 2)
             {
@@ -167,7 +167,7 @@ public class AddressesService(MainContext context)
                     Data = null
                 };
             }
-            var profile = await context.Profiles.FirstOrDefaultAsync(p => p.UserId == user.Id);
+            var profile = await context.Users.FirstOrDefaultAsync(p => p.Id == user.Id);
             if (profile is null)
             {
                 return new Response<AddressDetails>
@@ -219,7 +219,7 @@ public class AddressesService(MainContext context)
                     Message = "Utilisateur non trouvé",
                 };
             }
-            var profile = await context.Profiles.FirstOrDefaultAsync(p => p.UserId == user.Id);
+            var profile = await context.Users.FirstOrDefaultAsync(p => p.Id == user.Id);
             if (profile is null)
             {
                 return new Response<object>
@@ -229,7 +229,7 @@ public class AddressesService(MainContext context)
                 };
             }
             var address = await context.Addresses
-                .FirstOrDefaultAsync(a => a.Id == id && a.ProfileId == profile.Id);
+                .FirstOrDefaultAsync(a => a.Id == id && a.UserId == profile.Id);
 
             if (address == null)
             {

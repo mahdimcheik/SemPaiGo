@@ -63,8 +63,8 @@ public class LanguagesService(MainContext context)
                 };
             }
   
-            var languages = await context.Profiles
-                .Where(p => p.UserId == user.Id)
+            var languages = await context.Users
+                .Where(p => p.Id == user.Id)
                 .AsNoTracking()
                 .Include(p => p.Languages)
                 .SelectMany(p => p.Languages)
@@ -268,8 +268,8 @@ public class LanguagesService(MainContext context)
                     Data = null
                 };
             }
-            var profile = await context.Profiles.FirstOrDefaultAsync(p => p.UserId == user!.Id);
-            if (profile is null)
+            var userWithLanguage = await context.Users.FirstOrDefaultAsync(p => p.Id == user!.Id);
+            if (userWithLanguage is null)
             {
                 return new Response<List<LanguageDetails>>
                 {
@@ -283,7 +283,7 @@ public class LanguagesService(MainContext context)
                 .Where(l => languagesIds.Contains(l.Id))
                 .ToListAsync();
 
-            profile.Languages = newLanguages;
+            userWithLanguage.Languages = newLanguages;
             await context.SaveChangesAsync();
 
             return new Response<List<LanguageDetails>>

@@ -9,7 +9,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BonProf.Migrations
 {
     /// <inheritdoc />
-    public partial class correction : Migration
+    public partial class reset : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -234,6 +234,11 @@ namespace BonProf.Migrations
                     ArchivedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     StatusId = table.Column<Guid>(type: "uuid", nullable: false),
+                    FirstName = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false),
+                    LastName = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false),
+                    DateOfBirth = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    ImgUrl = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
+                    GenderId = table.Column<Guid>(type: "uuid", nullable: false),
                     UserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
@@ -253,9 +258,50 @@ namespace BonProf.Migrations
                 {
                     table.PrimaryKey("PK_Users", x => x.Id);
                     table.ForeignKey(
+                        name: "FK_Users_Genders_GenderId",
+                        column: x => x.GenderId,
+                        principalTable: "Genders",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
                         name: "FK_Users_StatusAccount_StatusId",
                         column: x => x.StatusId,
                         principalTable: "StatusAccount",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Addresses",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Street = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: false),
+                    City = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
+                    Country = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
+                    ZipCode = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
+                    AdditionalInfo = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
+                    Longitude = table.Column<float>(type: "real", nullable: true),
+                    Latitude = table.Column<float>(type: "real", nullable: true),
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    TypeId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    ArchivedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Addresses", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Addresses_TypeAddresses_TypeId",
+                        column: x => x.TypeId,
+                        principalTable: "TypeAddresses",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Addresses_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -358,35 +404,26 @@ namespace BonProf.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Profiles",
+                name: "Languages",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    FirstName = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false),
-                    LastName = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false),
-                    DateOfBirth = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    ImgUrl = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
-                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
-                    GenderId = table.Column<Guid>(type: "uuid", nullable: false),
+                    UserAppId = table.Column<Guid>(type: "uuid", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    ArchivedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    ArchivedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    Name = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false),
+                    Color = table.Column<string>(type: "character varying(16)", maxLength: 16, nullable: false),
+                    Icon = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Profiles", x => x.Id);
+                    table.PrimaryKey("PK_Languages", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Profiles_Genders_GenderId",
-                        column: x => x.GenderId,
-                        principalTable: "Genders",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Profiles_Users_UserId",
-                        column: x => x.UserId,
+                        name: "FK_Languages_Users_UserAppId",
+                        column: x => x.UserAppId,
                         principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -427,64 +464,6 @@ namespace BonProf.Migrations
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Addresses",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Street = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: false),
-                    City = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
-                    Country = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
-                    ZipCode = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
-                    AdditionalInfo = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
-                    Longitude = table.Column<float>(type: "real", nullable: true),
-                    Latitude = table.Column<float>(type: "real", nullable: true),
-                    ProfileId = table.Column<Guid>(type: "uuid", nullable: false),
-                    TypeId = table.Column<Guid>(type: "uuid", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    ArchivedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Addresses", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Addresses_Profiles_ProfileId",
-                        column: x => x.ProfileId,
-                        principalTable: "Profiles",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Addresses_TypeAddresses_TypeId",
-                        column: x => x.TypeId,
-                        principalTable: "TypeAddresses",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Languages",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    ProfileId = table.Column<Guid>(type: "uuid", nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    ArchivedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    Name = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false),
-                    Color = table.Column<string>(type: "character varying(16)", maxLength: 16, nullable: false),
-                    Icon = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Languages", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Languages_Profiles_ProfileId",
-                        column: x => x.ProfileId,
-                        principalTable: "Profiles",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -590,7 +569,7 @@ namespace BonProf.Migrations
                     DateFrom = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     DateTo = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     TeacherId = table.Column<Guid>(type: "uuid", nullable: false),
-                    ProfileId = table.Column<Guid>(type: "uuid", nullable: true),
+                    UserAppId = table.Column<Guid>(type: "uuid", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     ArchivedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
@@ -599,16 +578,16 @@ namespace BonProf.Migrations
                 {
                     table.PrimaryKey("PK_Formations", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Formations_Profiles_ProfileId",
-                        column: x => x.ProfileId,
-                        principalTable: "Profiles",
-                        principalColumn: "Id");
-                    table.ForeignKey(
                         name: "FK_Formations_Teachers_TeacherId",
                         column: x => x.TeacherId,
                         principalTable: "Teachers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Formations_Users_UserAppId",
+                        column: x => x.UserAppId,
+                        principalTable: "Users",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -876,7 +855,7 @@ namespace BonProf.Migrations
 
             migrationBuilder.InsertData(
                 table: "Languages",
-                columns: new[] { "Id", "ArchivedAt", "Color", "CreatedAt", "Icon", "Name", "ProfileId", "UpdatedAt" },
+                columns: new[] { "Id", "ArchivedAt", "Color", "CreatedAt", "Icon", "Name", "UpdatedAt", "UserAppId" },
                 values: new object[,]
                 {
                     { new Guid("3aa916ed-53d2-4f93-80e9-b49171a7ebe1"), null, "#ab69b4", new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "", "Anglais", null, null },
@@ -967,14 +946,14 @@ namespace BonProf.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Addresses_ProfileId",
-                table: "Addresses",
-                column: "ProfileId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Addresses_TypeId",
                 table: "Addresses",
                 column: "TypeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Addresses_UserId",
+                table: "Addresses",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -1027,19 +1006,19 @@ namespace BonProf.Migrations
                 column: "TeacherId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Formations_ProfileId",
-                table: "Formations",
-                column: "ProfileId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Formations_TeacherId",
                 table: "Formations",
                 column: "TeacherId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Languages_ProfileId",
+                name: "IX_Formations_UserAppId",
+                table: "Formations",
+                column: "UserAppId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Languages_UserAppId",
                 table: "Languages",
-                column: "ProfileId");
+                column: "UserAppId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Orders_PaymentId",
@@ -1065,17 +1044,6 @@ namespace BonProf.Migrations
                 name: "IX_Products_CursusId",
                 table: "Products",
                 column: "CursusId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Profiles_GenderId",
-                table: "Profiles",
-                column: "GenderId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Profiles_UserId",
-                table: "Profiles",
-                column: "UserId",
-                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_RefreshTokens_UserId",
@@ -1165,6 +1133,11 @@ namespace BonProf.Migrations
                 name: "EmailIndex",
                 table: "Users",
                 column: "NormalizedEmail");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_GenderId",
+                table: "Users",
+                column: "GenderId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Users_StatusId",
@@ -1275,13 +1248,10 @@ namespace BonProf.Migrations
                 name: "Languages");
 
             migrationBuilder.DropTable(
-                name: "Profiles");
+                name: "Users");
 
             migrationBuilder.DropTable(
                 name: "Genders");
-
-            migrationBuilder.DropTable(
-                name: "Users");
 
             migrationBuilder.DropTable(
                 name: "StatusAccount");
