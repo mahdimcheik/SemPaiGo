@@ -58,7 +58,7 @@ public class Address : BaseModel
         AdditionalInfo = addressDto.AdditionalInfo;
         Longitude = addressDto.Longitude;
         Latitude = addressDto.Latitude;
-        UserId = addressDto.ProfileId;
+        UserId = addressDto.UserId;
         TypeId = HardCode.TYPE_ADDRESS_HOME;
         CreatedAt = DateTimeOffset.UtcNow;
     }

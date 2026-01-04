@@ -163,7 +163,7 @@ public class AddressCreate
     public float? Latitude { get; set; }
 
     [Required(ErrorMessage = "L'identifiant utilisateur est requis")]
-    public Guid ProfileId { get; set; }
+    public Guid UserId { get; set; }
     [Required(ErrorMessage = "Le type est requis")]
     public Guid TypeId { get; set; }
 }

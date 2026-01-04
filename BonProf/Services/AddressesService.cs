@@ -107,7 +107,7 @@ public class AddressesService(MainContext context)
                 };
             }
 
-            addressDto.ProfileId = profile.Id;
+            addressDto.UserId = profile.Id;
             var address = new Address(addressDto);
 
             context.Addresses.Add(address);
