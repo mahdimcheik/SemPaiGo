@@ -158,7 +158,7 @@ public class AuthService
                 };
             }
         }
-        catch
+        catch(Exception ex)
         {
             await transaction.RollbackAsync();
             return new Response<UserDetails>
