@@ -74,9 +74,9 @@ public class TeacherService
                 .Include(p => p.Gender)
                 .Include(p => p.Languages)
                 .Include(p => p.Teacher)
+                .Include(p => p.Addresses)
                 .FirstOrDefaultAsync();
-                
-
+            
             if (teacher == null)
             {
                 return new Response<UserDetails>
@@ -85,9 +85,6 @@ public class TeacherService
                     Message = "Profil enseignant non trouv�",
                 };
             }
-
-            
-
             return new Response<UserDetails>
             {
                 Status = 200,
