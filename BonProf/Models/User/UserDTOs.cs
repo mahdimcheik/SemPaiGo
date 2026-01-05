@@ -39,6 +39,7 @@ public class UserDetails
         Email = user.Email ?? user.UserName ?? "";
         FirstName = user.FirstName;
         LastName = user.LastName;
+        DateOfBirth = user.DateOfBirth;
         
         Roles = roles;
         Status = user.Status is not null ?  new StatusAccountDetails(user.Status) : null;
@@ -191,9 +192,10 @@ public class UserUpdate
         user.FirstName = FirstName;
         user.FirstName = LastName;
         user.DateOfBirth =  DateOfBirth;
+        user.GenderId = GenderId;
         user.Languages.Clear();
         user.Languages = languages.Where(l => LanguagesIds.Any(lid => l.Id == lid )).ToList();
-        if (Teacher is not null &&  user.Teacher is not null)
+        if (user.Teacher is not null)
         {
             Teacher.UpdateTeacher(user.Teacher);
         }

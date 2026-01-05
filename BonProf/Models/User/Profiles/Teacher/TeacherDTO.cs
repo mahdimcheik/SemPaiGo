@@ -48,9 +48,9 @@ public class TeacherDetails
     [SetsRequiredMembers]
     public TeacherDetails(Teacher teacher)
     {
+        Id = teacher.Id;
         Title = teacher.Title;
         Description = teacher.Description;
-        Id = teacher.Id;
         CreatedAt = teacher.CreatedAt;
         UpdatedAt = teacher.UpdatedAt;
 
@@ -102,12 +102,12 @@ public class TeacherUpdate
     
     public void UpdateTeacher(Teacher teacher)
     {
-        Title = teacher.Title;
-        Description = teacher.Description;
-        LinkedIn = teacher.LinkedIn;
-        FaceBook = teacher.FaceBook;
-        GitHub = teacher.GitHub;
-        Twitter = teacher.Twitter;
-        PriceIndicative = teacher.PriceIndicative;
+        teacher.Title = Title;
+        teacher.Description = Description;
+        teacher.LinkedIn = LinkedIn;
+        teacher.FaceBook = FaceBook;
+        teacher.GitHub = GitHub;
+        teacher.Twitter = Twitter;
+        teacher.PriceIndicative = PriceIndicative;
     }
 }
