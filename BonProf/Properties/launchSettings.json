@@ -30,7 +30,8 @@
         "MINIO_BUCKETNAME": "sempaigo",
         "MINIO_ENDPOINT": "localhost:9000",
         "MINIO_ACCESSKEY": "minioadmin",
-        "MINIO_SECRETKEY": "miniosecret"
+        "MINIO_SECRETKEY": "miniosecret",
+        "FILER_URL":"https://files.bonprof.fr"
       },
       "useSSL": true,
       "dotnetRunMessages": true,

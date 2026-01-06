@@ -11,6 +11,8 @@ using SemPaiGo.Models;
 using SemPaiGo.Services;
 using SemPaiGo.Utilities;
 using System.Text;
+using BonProf.Services;
+using BonProf.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,6 +30,7 @@ using (var scope = app.Services.CreateScope())
 
     // Seed default users
     SeedUsers(scope.ServiceProvider);
+    InitialToken(scope.ServiceProvider);
 }
 
 // Configurer le pipeline de middleware
@@ -55,6 +58,9 @@ static void ConfigureServices(IServiceCollection services)
     services.AddTransient<SlotsService>();
     services.AddTransient<GendersService>();
     services.AddTransient<RolesService>();
+    services.AddSingleton<TokenService>();
+    //services.AddHttpClient<IFileService, SeaweedService>();
+    services.AddHttpClient<IFileService, FileService>();
 
     services.AddLogging(loggingBuilder =>
     {
@@ -334,4 +340,33 @@ static void SeedUsers(IServiceProvider serviceProvider)
         }
     }
 }
+#endregion
+
+#region initialization
+static void InitialToken(IServiceProvider serviceProvider)
+{
+    using var scope = serviceProvider.CreateScope();
+
+    var tokenService = scope.ServiceProvider.GetRequiredService<TokenService>();
+    var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+    var recurringJobManager = scope.ServiceProvider.GetRequiredService<IRecurringJobManager>();
+
+    // Exécution immédiate au démarrage
+    try
+    {
+        tokenService.GetAsync("BonProf").Wait();
+    }
+    catch (Exception ex)
+    {
+        logger.LogError(ex, "Failed to initialize token on startup");
+    }
+
+    // Job récurrent Hangfire
+    recurringJobManager.AddOrUpdate<TokenService>(
+        "RefreshFilerToken",
+        service => service.RefreshAsync("BonProf"),
+        Cron.Daily(1) // 01:00
+    );
+}
+
 #endregion
