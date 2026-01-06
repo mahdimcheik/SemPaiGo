@@ -190,7 +190,7 @@ public class UserUpdate
     public void UpdateUser(UserApp user, List<Language> languages)
     {
         user.FirstName = FirstName;
-        user.FirstName = LastName;
+        user.LastName = LastName;
         user.DateOfBirth =  DateOfBirth;
         user.GenderId = GenderId;
         user.Languages.Clear();
