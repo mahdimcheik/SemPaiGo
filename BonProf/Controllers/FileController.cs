@@ -17,11 +17,6 @@ namespace BonProf.Controllers
             _logger = logger;
         }
 
-        /// <summary>
-        /// Téléverse un fichier vers SeaweedFS
-        /// </summary>
-        /// <param name="file">Le fichier provenant du formulaire</param>
-        /// <param name="folder">Le dossier de destination (optionnel)</param>
         [HttpPost("upload")]
         [DisableRequestSizeLimit] // Utile pour les gros fichiers
         public async Task<IActionResult> Upload(
@@ -57,10 +52,6 @@ namespace BonProf.Controllers
             }
         }
 
-        /// <summary>
-        /// Télécharge un fichier depuis SeaweedFS
-        /// </summary>
-        /// <param name="path">Chemin complet du fichier (ex: uploads/mon-image.png)</param>
         [HttpGet("download")]
         public async Task<IActionResult> Download([FromQuery] string path)
         {
@@ -86,9 +77,6 @@ namespace BonProf.Controllers
             }
         }
 
-        /// <summary>
-        /// Supprime un fichier
-        /// </summary>
         [HttpDelete]
         public async Task<IActionResult> Delete([FromQuery] string path)
         {

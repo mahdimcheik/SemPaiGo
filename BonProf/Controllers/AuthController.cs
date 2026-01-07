@@ -54,12 +54,6 @@ public class AuthController : ControllerBase
     #endregion
 
     #region Register update upload
-
-    /// <summary>
-    /// Enregistre un nouvel utilisateur.
-    /// </summary>
-    /// <param name="model">Données de création de l'utilisateur.</param>
-    /// <returns>Résultat de l'opération.</returns>
     [AllowAnonymous]
     [EnableCors]
     [HttpPost("register")]
@@ -86,12 +80,6 @@ public class AuthController : ControllerBase
     #endregion
 
     #region POST Login
-
-    /// <summary>
-    /// Connecte un utilisateur.
-    /// </summary>
-    /// <param name="model">Données de connexion de l'utilisateur.</param>
-    /// <returns>Résultat de l'opération.</returns>
     [AllowAnonymous]
     [Route("login")]
     [HttpPost]
@@ -120,13 +108,6 @@ public class AuthController : ControllerBase
     #endregion
 
     #region Confirm account
-
-    /// <summary>
-    /// Valide une adresse e-mail.
-    /// </summary>
-    /// <param name="userId">Identifiant de l'utilisateur.</param>
-    /// <param name="confirmationToken">Token de confirmation.</param>
-    /// <returns>Résultat de l'opération.</returns>
     [AllowAnonymous]
     [Route("email-confirmation")]
     [HttpGet]
@@ -147,11 +128,6 @@ public class AuthController : ControllerBase
     #endregion
 
     #region CurrentUser informations
-
-    /// <summary>
-    /// Récupère les informations de l'utilisateur connecté.
-    /// </summary>
-    /// <returns>Informations de l'utilisateur.</returns>
     [HttpGet("my-informations")]
     public async Task<ActionResult<Response<UserInfosWithtoken>>> GetMyInformations()
     {
@@ -190,12 +166,6 @@ public class AuthController : ControllerBase
     #endregion
 
     #region POST AskForPasswordRecoveryMail
-
-    /// <summary>
-    /// Demande un e-mail de récupération de mot de passe.
-    /// </summary>
-    /// <param name="model">Données pour la récupération du mot de passe.</param>
-    /// <returns>Résultat de l'opération.</returns>
     [AllowAnonymous]
     [Route("forgot-password")]
     [HttpPost]
@@ -226,12 +196,6 @@ public class AuthController : ControllerBase
     #endregion
 
     #region PasswordChange after recovery
-
-    /// <summary>
-    /// Change le mot de passe après une récupération.
-    /// </summary>
-    /// <param name="model">Données pour changer le mot de passe.</param>
-    /// <returns>Résultat de l'opération.</returns>
     [AllowAnonymous]
     [Route("reset-password")]
     [HttpPost]
@@ -258,11 +222,6 @@ public class AuthController : ControllerBase
     #endregion
 
     #region refresh token
-
-    /// <summary>
-    /// Met à jour le token de rafraîchissement.
-    /// </summary>
-    /// <returns>Résultat de l'opération.</returns>
     [Route("refresh-token")]
     [AllowAnonymous]
     [HttpGet]
@@ -308,11 +267,6 @@ public class AuthController : ControllerBase
     #endregion
 
     #region avatar
-    /// <summary>
-    /// Télécharge un avatar (image) pour l'utilisateur.
-    /// </summary>
-    /// <param name="file">Fichier de l'avatar.</param>
-    /// <returns>Résultat de l'opération.</returns>
     [HttpPost("upload-avatar")]
     [Consumes("multipart/form-data")]
     [Produces("application/json")]
