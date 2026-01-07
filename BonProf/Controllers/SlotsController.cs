@@ -7,7 +7,7 @@ using SemPaiGo.Services;
 namespace SemPaiGo.Controllers;
 
 /// <summary>
-/// Contrôleur pour la gestion des créneaux
+/// Contrï¿½leur pour la gestion des crï¿½neaux
 /// </summary>
 [Produces("application/json")]
 [Consumes("application/json")]
@@ -17,15 +17,15 @@ namespace SemPaiGo.Controllers;
 public class SlotsController(SlotsService slotsService) : ControllerBase
 {
     /// <summary>
-    /// Ajoute un nouveau créneau pour l'enseignant connecté
+    /// Ajoute un nouveau crï¿½neau pour l'enseignant connectï¿½
     /// </summary>
-    /// <param name="slotDto">Données du créneau à créer</param>
-    /// <returns>Créneau créé</returns>
-    /// <response code="201">Créneau créé avec succès</response>
-    /// <response code="400">Données invalides ou chevauchement de créneaux</response>
-    /// <response code="401">Utilisateur non authentifié</response>
-    /// <response code="403">Vous devez être un enseignant</response>
-    /// <response code="404">Type de créneau non trouvé</response>
+    /// <param name="slotDto">Donnï¿½es du crï¿½neau ï¿½ crï¿½er</param>
+    /// <returns>Crï¿½neau crï¿½ï¿½</returns>
+    /// <response code="201">Crï¿½neau crï¿½ï¿½ avec succï¿½s</response>
+    /// <response code="400">Donnï¿½es invalides ou chevauchement de crï¿½neaux</response>
+    /// <response code="401">Utilisateur non authentifiï¿½</response>
+    /// <response code="403">Vous devez ï¿½tre un enseignant</response>
+    /// <response code="404">Type de crï¿½neau non trouvï¿½</response>
     /// <response code="500">Erreur interne du serveur</response>
     [Authorize(Roles = "Teacher")]
     [HttpPost("teacher/add")]
@@ -45,7 +45,7 @@ public class SlotsController(SlotsService slotsService) : ControllerBase
                 new Response<object>
                 {
                     Status = 400,
-                    Message = "Données de validation invalides",
+                    Message = "Donnï¿½es de validation invalides",
                     Data = ModelState,
                 }
             );
@@ -57,15 +57,15 @@ public class SlotsController(SlotsService slotsService) : ControllerBase
     }
 
     /// <summary>
-    /// Ajoute un nouveau créneau pour l'enseignant connecté
+    /// Ajoute un nouveau crï¿½neau pour l'enseignant connectï¿½
     /// </summary>
-    /// <param name="slotDto">Données du créneau à créer</param>
-    /// <returns>Créneau créé</returns>
-    /// <response code="201">Créneau créé avec succès</response>
-    /// <response code="400">Données invalides ou chevauchement de créneaux</response>
-    /// <response code="401">Utilisateur non authentifié</response>
-    /// <response code="403">Vous devez être un enseignant</response>
-    /// <response code="404">Type de créneau non trouvé</response>
+    /// <param name="slotDto">Donnï¿½es du crï¿½neau ï¿½ crï¿½er</param>
+    /// <returns>Crï¿½neau crï¿½ï¿½</returns>
+    /// <response code="201">Crï¿½neau crï¿½ï¿½ avec succï¿½s</response>
+    /// <response code="400">Donnï¿½es invalides ou chevauchement de crï¿½neaux</response>
+    /// <response code="401">Utilisateur non authentifiï¿½</response>
+    /// <response code="403">Vous devez ï¿½tre un enseignant</response>
+    /// <response code="404">Type de crï¿½neau non trouvï¿½</response>
     /// <response code="500">Erreur interne du serveur</response>
     [Authorize(Roles = "Teacher")]
     [HttpPut("teacher/update")]
@@ -85,7 +85,7 @@ public class SlotsController(SlotsService slotsService) : ControllerBase
                 new Response<object>
                 {
                     Status = 400,
-                    Message = "Données de validation invalides",
+                    Message = "Donnï¿½es de validation invalides",
                     Data = ModelState,
                 }
             );
@@ -97,15 +97,15 @@ public class SlotsController(SlotsService slotsService) : ControllerBase
     }
 
     /// <summary>
-    /// Supprime un créneau de l'enseignant connecté (suppression logique)
+    /// Supprime un crï¿½neau de l'enseignant connectï¿½ (suppression logique)
     /// </summary>
-    /// <param name="slotId">Identifiant du créneau à supprimer</param>
-    /// <returns>Résultat de l'opération de suppression</returns>
-    /// <response code="200">Créneau supprimé avec succès</response>
-    /// <response code="400">Créneau déjà réservé</response>
-    /// <response code="401">Utilisateur non authentifié</response>
-    /// <response code="403">Vous n'êtes pas autorisé à supprimer ce créneau</response>
-    /// <response code="404">Créneau non trouvé</response>
+    /// <param name="slotId">Identifiant du crï¿½neau ï¿½ supprimer</param>
+    /// <returns>Rï¿½sultat de l'opï¿½ration de suppression</returns>
+    /// <response code="200">Crï¿½neau supprimï¿½ avec succï¿½s</response>
+    /// <response code="400">Crï¿½neau dï¿½jï¿½ rï¿½servï¿½</response>
+    /// <response code="401">Utilisateur non authentifiï¿½</response>
+    /// <response code="403">Vous n'ï¿½tes pas autorisï¿½ ï¿½ supprimer ce crï¿½neau</response>
+    /// <response code="404">Crï¿½neau non trouvï¿½</response>
     /// <response code="500">Erreur interne du serveur</response>
     [Authorize(Roles = "Teacher")]
     [HttpDelete("teacher/remove/{slotId:guid}")]
@@ -125,43 +125,41 @@ public class SlotsController(SlotsService slotsService) : ControllerBase
     }
 
     /// <summary>
-    /// Récupère les créneaux de l'enseignant connecté entre deux dates
+    /// Rï¿½cupï¿½re les crï¿½neaux de l'enseignant connectï¿½ entre deux dates
     /// </summary>
-    /// <param name="dateFrom">Date de début (format ISO 8601)</param>
-    /// <param name="dateTo">Date de fin (format ISO 8601)</param>
-    /// <returns>Liste des créneaux</returns>
-    /// <response code="200">Créneaux récupérés avec succès</response>
+    /// <param name="periodTime">Date de dï¿½but et de fin (format ISO 8601)</param>
+    /// <returns>Liste des crï¿½neaux</returns>
+    /// <response code="200">Crï¿½neaux rï¿½cupï¿½rï¿½s avec succï¿½s</response>
     /// <response code="400">Dates invalides</response>
-    /// <response code="401">Utilisateur non authentifié</response>
-    /// <response code="403">Vous devez être un enseignant</response>
+    /// <response code="401">Utilisateur non authentifiï¿½</response>
+    /// <response code="403">Vous devez ï¿½tre un enseignant</response>
     /// <response code="500">Erreur interne du serveur</response>
     [Authorize(Roles = "Teacher")]
-    [HttpGet("teacher/my-slots")]
+    [HttpPost("teacher/my-slots")]
     [ProducesResponseType(typeof(Response<List<SlotDetails>>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(Response<object>), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(Response<object>), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(Response<object>), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(Response<object>), StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<Response<List<SlotDetails>>>> GetSlotsByTeacher(
-        [FromQuery] DateTimeOffset dateFrom,
-        [FromQuery] DateTimeOffset dateTo
+        [FromBody] PeriodTime periodTime
     )
     {
-        var response = await slotsService.GetSlotsByTeacherAndDatesAsync(User, dateFrom, dateTo);
+        var response = await slotsService.GetSlotsByTeacherAndDatesAsync(User, periodTime.DateFrom, periodTime.DateTo);
 
         return StatusCode(response.Status, response);
     }
 
     /// <summary>
-    /// Récupère les créneaux disponibles d'un enseignant entre deux dates (consultation publique)
+    /// Rï¿½cupï¿½re les crï¿½neaux disponibles d'un enseignant entre deux dates (consultation publique)
     /// </summary>
     /// <param name="teacherId">Identifiant de l'enseignant</param>
-    /// <param name="dateFrom">Date de début (format ISO 8601)</param>
+    /// <param name="dateFrom">Date de dï¿½but (format ISO 8601)</param>
     /// <param name="dateTo">Date de fin (format ISO 8601)</param>
-    /// <returns>Liste des créneaux disponibles</returns>
-    /// <response code="200">Créneaux disponibles récupérés avec succès</response>
+    /// <returns>Liste des crï¿½neaux disponibles</returns>
+    /// <response code="200">Crï¿½neaux disponibles rï¿½cupï¿½rï¿½s avec succï¿½s</response>
     /// <response code="400">Dates invalides</response>
-    /// <response code="404">Enseignant non trouvé</response>
+    /// <response code="404">Enseignant non trouvï¿½</response>
     /// <response code="500">Erreur interne du serveur</response>
     [AllowAnonymous]
     [HttpGet("teacher/{teacherId:guid}/available-slots")]

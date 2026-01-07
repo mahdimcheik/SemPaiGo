@@ -8,19 +8,27 @@ using System.Diagnostics.CodeAnalysis;
 
 public class UserDetails
 {
-    [Required]
     public required Guid Id { get; set; }
 
-    [Required]
-    public required string Email { get; set; } = null!;
-    public DateTimeOffset DateOfBirth { get; set; }
+    public required string Email { get; set; }
+    
+    public required DateTimeOffset DateOfBirth { get; set; }
+    
+    public required string FirstName { get; set; } 
+
+    public required string LastName { get; set; } 
+
+    public string? ImgUrl { get; set; }
+
 
     public StatusAccountDetails? Status { get; set; }
-
+    public GenderDetails? Gender { get; set; }
+    
     [Required]
-    public ICollection<RoleDetails>? Roles { get; set; }
-    [Required]
-    public ProfileDetails Profile { get; set; }
+    public required ICollection<RoleDetails>? Roles { get; set; }
+    public  required ICollection<AddressDetails> Addresses { get; set; } 
+    public  required ICollection<FormationDetails> Formations { get; set; }
+    public required ICollection<LanguageDetails> Languages { get; set; } 
 
     public TeacherDetails? Teacher { get; set; }
     public StudentDetails? Student { get; set; }
@@ -29,11 +37,19 @@ public class UserDetails
     {
         Id = user.Id;
         Email = user.Email ?? user.UserName ?? "";
+        FirstName = user.FirstName;
+        LastName = user.LastName;
+        DateOfBirth = user.DateOfBirth;
+        
         Roles = roles;
         Status = user.Status is not null ?  new StatusAccountDetails(user.Status) : null;
-        Profile = new ProfileDetails(user.Profile);
+        Gender = user.Gender is not null ?  new GenderDetails(user.Gender) : null;
         Teacher = user.Teacher is not null ? new TeacherDetails(user.Teacher) : null;
         Student = user.Student is not null ? new StudentDetails(user.Student) : null;
+
+        Formations = user.Formations?.Select(f => new FormationDetails(f)).ToList() ?? [];
+        Addresses = user.Addresses?.Select(f => new AddressDetails(f)).ToList() ?? [];
+        Languages = user.Languages?.Select(f => new LanguageDetails(f)).ToList() ?? [];
     }
 }
 
@@ -65,6 +81,14 @@ public class ConfirmAccount
 public class UserCreate
 {
     [Required]
+    [MaxLength(64)]
+    public string FirstName { get; set; } = string.Empty;
+
+    [Required]
+    [MaxLength(64)]
+    public string LastName { get; set; } = string.Empty;
+    
+    [Required]
     [EmailAddress]
     public required string Email { get; set; }
 
@@ -80,7 +104,12 @@ public class UserCreate
     public Guid RoleId { get; set; } = HardCode.ROLE_STUDENT;
 
     [Required]
-    public ProfileCreate Profile{ get; set; }
+    public required DateTimeOffset DateOfBirth { get; set; }
+    [Required]
+    public Guid GenderId { get; set; }
+
+    public TeacherCreate? Teacher { get; set; }
+    // public StudentCreate? Student { get; set; }
 }
 
 public class PasswordReset
@@ -142,10 +171,34 @@ public class Login
 }
 
 public class UserUpdate
-{    
-    public void UpdateUser(UserApp user)
+{
+    [Required]
+    [MaxLength(64)]
+    public string FirstName { get; set; } = string.Empty;
+
+    [Required]
+    [MaxLength(64)]
+    public string LastName { get; set; } = string.Empty;
+
+    [Required]
+    public required DateTimeOffset DateOfBirth { get; set; }
+    [Required]
+    public Guid GenderId { get; set; }
+    public List<Guid> LanguagesIds { get; set; }
+    public TeacherUpdate? Teacher { get; set; }
+
+    public void UpdateUser(UserApp user, List<Language> languages)
     {
-        user.UpdatedAt  = DateTimeOffset.UtcNow;
+        user.FirstName = FirstName;
+        user.LastName = LastName;
+        user.DateOfBirth =  DateOfBirth;
+        user.GenderId = GenderId;
+        user.Languages.Clear();
+        user.Languages = languages.Where(l => LanguagesIds.Any(lid => l.Id == lid )).ToList();
+        if (user.Teacher is not null)
+        {
+            Teacher.UpdateTeacher(user.Teacher);
+        }
     }
 }
 

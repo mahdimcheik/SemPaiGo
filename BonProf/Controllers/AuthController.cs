@@ -82,33 +82,7 @@ public class AuthController : ControllerBase
         }
         return BadRequest(response);
     }
-
-    /// <summary>
-    /// Met à jour les informations d'un utilisateur.
-    /// </summary>
-    /// <param name="model">Données de mise à jour de l'utilisateur.</param>
-    /// <returns>Résultat de l'opération.</returns>
-    [EnableCors]
-    [Route("update")]
-    [HttpPatch]
-    public async Task<ActionResult<Response<UserDetails>>> Update(
-        [FromBody] UserUpdate model
-    )
-    {
-        if (!ModelState.IsValid)
-        {
-            return BadRequest(ModelState);
-        }
-
-        var result = await authService.Update(model, HttpContext.User);
-
-        if (result.Status == 200 || result.Status == 201)
-        {
-            return Ok(result);
-        }
-        return BadRequest(result);
-    }
-
+    
     #endregion
 
     #region POST Login
@@ -213,25 +187,6 @@ public class AuthController : ControllerBase
             }
         );
     }
-
-    /// <summary>
-    /// Récupère les informations de l'utilisateur connecté.
-    /// </summary>
-    /// <returns>Informations de l'utilisateur.</returns>
-    [HttpGet("public-informations")]
-    public async Task<ActionResult<Response<UserDetails>>> GetPublicInformations(
-        Guid userId
-    )
-    {
-        var response = await authService.GetPublicInformations(userId);
-        if (response.Status >= 400)
-        {
-            return BadRequest(response);
-        }
-
-        return Ok(response);
-    }
-
     #endregion
 
     #region POST AskForPasswordRecoveryMail

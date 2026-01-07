@@ -5,7 +5,7 @@ using BonProf.Models;
 namespace SemPaiGo.Models;
 
 /// <summary>
-/// DTO pour l'affichage détaillé du profil d'un enseignant
+/// DTO pour l'affichage dï¿½taillï¿½ du profil d'un enseignant
 /// </summary>
 public class TeacherDetails
 {
@@ -18,23 +18,23 @@ public class TeacherDetails
     /// <summary>
     /// Titre professionnel de l'enseignant
     /// </summary>
-    /// <example>Professeur de Mathématiques</example>
+    /// <example>Professeur de Mathï¿½matiques</example>
     public string? Title { get; set; }
 
     /// <summary>
     /// Description du profil de l'enseignant
     /// </summary>
-    /// <example>Enseignant passionné avec 10 ans d'expérience</example>
+    /// <example>Enseignant passionnï¿½ avec 10 ans d'expï¿½rience</example>
     public string? Description { get; set; }
 
     /// <summary>
-    /// Date de création du profil
+    /// Date de crï¿½ation du profil
     /// </summary>
     [Required]
     public DateTimeOffset CreatedAt { get; set; }
 
     /// <summary>
-    /// Date de dernière mise à jour du profil
+    /// Date de derniï¿½re mise ï¿½ jour du profil
     /// </summary>
     public DateTimeOffset? UpdatedAt { get; set; }
     public List<CursusDetails> Cursuses { get; set; }
@@ -48,9 +48,9 @@ public class TeacherDetails
     [SetsRequiredMembers]
     public TeacherDetails(Teacher teacher)
     {
+        Id = teacher.Id;
         Title = teacher.Title;
         Description = teacher.Description;
-        Id = teacher.Id;
         CreatedAt = teacher.CreatedAt;
         UpdatedAt = teacher.UpdatedAt;
 
@@ -64,68 +64,50 @@ public class TeacherDetails
 }
 
 /// <summary>
-/// DTO pour la création d'un profil enseignant
+/// DTO pour la crï¿½ation d'un profil enseignant
 /// </summary>
 public class TeacherCreate
 {
     /// <summary>
     /// Titre professionnel de l'enseignant
     /// </summary>
-    /// <example>Professeur de Mathématiques</example>
-    [StringLength(200, ErrorMessage = "Le titre ne peut pas dépasser 200 caractères")]
+    /// <example>Professeur de Mathï¿½matiques</example>
+    [StringLength(200, ErrorMessage = "Le titre ne peut pas dï¿½passer 200 caractï¿½res")]
     public string? Title { get; set; }
 
     /// <summary>
     /// Description du profil de l'enseignant
     /// </summary>
-    /// <example>Enseignant passionné avec 10 ans d'expérience</example>
-    [StringLength(1000, ErrorMessage = "La description ne peut pas dépasser 1000 caractères")]
+    /// <example>Enseignant passionnï¿½ avec 10 ans d'expï¿½rience</example>
+    [StringLength(1000, ErrorMessage = "La description ne peut pas dï¿½passer 1000 caractï¿½res")]
     public string? Description { get; set; }
-
-    /// <summary>
-    /// Identifiant de l'utilisateur associé
-    /// </summary>
-    [Required(ErrorMessage = "L'identifiant utilisateur est requis")]
-    public Guid UserId { get; set; }
-    public string? LinkedIn { get; set; }
-    public string? FaceBook { get; set; }
-    public string? GitHub { get; set; }
-    public string? Twitter { get; set; }
-    public decimal PriceIndicative { get; set; }
 }
 
 /// <summary>
-/// DTO pour la mise à jour d'un profil enseignant
+/// DTO pour la mise ï¿½ jour d'un profil enseignant
 /// </summary>
 public class TeacherUpdate
 {
-    /// <summary>
-    /// Titre professionnel de l'enseignant
-    /// </summary>
-    /// <example>Professeur de Mathématiques</example>
-    [StringLength(200, ErrorMessage = "Le titre ne peut pas dépasser 200 caractères")]
+    [StringLength(200, ErrorMessage = "Le titre ne peut pas dï¿½passer 200 caractï¿½res")]
     public string? Title { get; set; }
 
-    /// <summary>
-    /// Description du profil de l'enseignant
-    /// </summary>
-    /// <example>Enseignant passionné avec 10 ans d'expérience</example>
-    [StringLength(1000, ErrorMessage = "La description ne peut pas dépasser 1000 caractères")]
+    [StringLength(1000, ErrorMessage = "La description ne peut pas dï¿½passer 1000 caractï¿½res")]
     public string? Description { get; set; }
-
-    /// <summary>
-    /// Informations du profil de base (prénom, nom, date de naissance, genre)
-    /// </summary>
-    public ProfileUpdate? Profile { get; set; }
-
-    /// <summary>
-    /// Liste des identifiants de langues
-    /// </summary>
-    public List<Guid> LanguageIds { get; set; } = new();
-
     public string? LinkedIn { get; set; }
     public string? FaceBook { get; set; }
     public string? GitHub { get; set; }
     public string? Twitter { get; set; }
     public decimal PriceIndicative { get; set; }
+    
+    
+    public void UpdateTeacher(Teacher teacher)
+    {
+        teacher.Title = Title;
+        teacher.Description = Description;
+        teacher.LinkedIn = LinkedIn;
+        teacher.FaceBook = FaceBook;
+        teacher.GitHub = GitHub;
+        teacher.Twitter = Twitter;
+        teacher.PriceIndicative = PriceIndicative;
+    }
 }
